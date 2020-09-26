@@ -1,0 +1,9 @@
+{
+	"PurchaseOrderResponse": {
+		"customer": {
+			"receiveDate": "2020-09-07T16:07:55",
+			"orderId": "123456-2020-09-07T16:07:55",
+			"orderQuantity": 16
+		}
+	}
+}

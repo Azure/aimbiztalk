@@ -1,0 +1,1350 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AnalysisHeadingLinks" xml:space="preserve">
+    <value>Links:</value>
+  </data>
+  <data name="AnalysisHeadingMessages" xml:space="preserve">
+    <value>Messages:</value>
+  </data>
+  <data name="AnalysisHeadingProperties" xml:space="preserve">
+    <value>Properties:</value>
+  </data>
+  <data name="AnalysisHeadingReferences" xml:space="preserve">
+    <value>Linked Resources:</value>
+  </data>
+  <data name="AnalysisHeadingResources" xml:space="preserve">
+    <value>Resources:</value>
+  </data>
+  <data name="AnalysisMessageNoMessages" xml:space="preserve">
+    <value>There are no analysis messages for this item.</value>
+  </data>
+  <data name="AnalysisMessageNoProperties" xml:space="preserve">
+    <value>This item has no properties listed.</value>
+  </data>
+  <data name="AnalysisMessageNoReferenceLinks" xml:space="preserve">
+    <value>This item has no links or references.</value>
+  </data>
+  <data name="AnalysisMessageNoResources" xml:space="preserve">
+    <value>This item has no Azure resources associated with it.</value>
+  </data>
+  <data name="AnalysisMessageNull" xml:space="preserve">
+    <value>null</value>
+  </data>
+  <data name="AnalysisSnippetErrorMessage" xml:space="preserve">
+    <value>&lt;div class="text-gray-dark small align-middle"&gt;&lt;i class="fas fa-exclamation-circle text-danger mr-2 ml-2 resource-icon analysis-icon"&gt;&lt;/i&gt;{0}&lt;/div&gt;</value>
+  </data>
+  <data name="AnalysisSnippetHeading" xml:space="preserve">
+    <value>&lt;div class="mt-2 text-gray-dark small"&gt;&lt;strong&gt;{0}&lt;/strong&gt;&lt;/div&gt;</value>
+  </data>
+  <data name="AnalysisSnippetInformationMessage" xml:space="preserve">
+    <value>&lt;div class="text-gray-dark small align-middle"&gt;&lt;i class="fas fa-info-circle text-info mr-2 ml-2 resource-icon analysis-icon"&gt;&lt;/i&gt;{0}&lt;/div&gt;</value>
+  </data>
+  <data name="AnalysisSnippetLink" xml:space="preserve">
+    <value>&lt;div class="text-gray-dark small align-middle"&gt;
+	&lt;i class="fas fa-link text-secondary mr-2 ml-2 resource-icon analysis-icon"&gt;&lt;/i&gt;
+	&lt;a href="{0}#resource-{1}" class="text-gray-dark"&gt;&lt;strong&gt;{2} ({3}):&lt;/strong&gt; {4}&lt;/a&gt;
+&lt;/div&gt;</value>
+  </data>
+  <data name="AnalysisSnippetProperty" xml:space="preserve">
+    <value>&lt;div class="text-gray-dark small align-middle"&gt;&lt;i class="fas fa-circle text-success mr-2 ml-2 small"&gt;&lt;/i&gt;&lt;strong&gt;{0}&lt;/strong&gt;: {1}&lt;/div&gt;</value>
+  </data>
+  <data name="AnalysisSnippetTargetReportLink" xml:space="preserve">
+    <value>&lt;div class="text-gray-dark small align-middle"&gt;
+	&lt;i class="fas fa-link text-success mr-2 ml-2 resource-icon analysis-icon"&gt;&lt;/i&gt;
+	&lt;a href="{0}" class="text-gray-dark" target="_blank"&gt;{1}&lt;/a&gt;
+&lt;/div&gt;</value>
+  </data>
+  <data name="AnalysisSnippetTargetResource" xml:space="preserve">
+    <value>&lt;div class="text-gray-dark small align-middle"&gt;
+	{0}
+	&lt;strong&gt;{1}:&lt;/strong&gt; {2}
+&lt;/div&gt;</value>
+  </data>
+  <data name="AnalysisSnippetWarningMessage" xml:space="preserve">
+    <value>&lt;div class="text-gray-dark small align-middle"&gt;&lt;i class="fas fa-exclamation-triangle text-warning mr-2 ml-2 resource-icon analysis-icon"&gt;&lt;/i&gt;{0}&lt;/div&gt;</value>
+  </data>
+  <data name="ApplicationDefaultDescription" xml:space="preserve">
+    <value>This section shows the analysis for each BizTalk element within the application.</value>
+  </data>
+  <data name="ApplicationResourceChildJQuery" xml:space="preserve">
+    <value>//*[@id='multi-collapse-{0}-detail-content']</value>
+  </data>
+  <data name="ApplicationSectionChildJQuery" xml:space="preserve">
+    <value>//*[@id='application-{0}-contents']</value>
+  </data>
+  <data name="ApplicationSnippetResource" xml:space="preserve">
+    <value>&lt;a name="resource-{refId}"/&gt;&lt;div class="media text-muted pt-3 border-bottom border-gray"&gt;
+  				{icon}
+  				&lt;div class="media-body pb-3 mb-0 small lh-125"&gt;
+  					&lt;div class="d-flex justify-content-between align-items-center w-100"&gt;
+  						&lt;strong class="text-gray-dark"&gt;{name}&lt;/strong&gt;
+  						&lt;a id="{refId}-detail-more" href="#{refId}-detail-more" data-toggle="collapse" data-target=".multi-collapse-{refId}-detail" class="collapse show multi-collapse-{refId}-detail" role="button" aria-expanded="true" aria-controls="{refId} {refId}-detail-more {refId}-detail-less"&gt;More&lt;/a&gt;
+  						&lt;a id="{refId}-detail-less" href="#{refId}-detail-less" data-toggle="collapse" data-target=".multi-collapse-{refId}-detail" class="collapse multi-collapse-{refId}-detail" role="button" aria-expanded="false" aria-controls="{refId} {refId}-detail-more {refId}-detail-less"&gt;Less&lt;/a&gt;
+  					&lt;/div&gt;
+					{stars}
+					&lt;br/&gt;
+  					&lt;span class="d-block"&gt;{description}&lt;/span&gt;
+  				&lt;/div&gt;
+  			&lt;/div&gt;
+  			&lt;div class="collapse text-muted pt-3 pl-3 multi-collapse-{refId}-detail border-bottom border-gray pb-2" id="multi-collapse-{refId}-detail-content"&gt;&lt;/div&gt;</value>
+  </data>
+  <data name="ApplicationSubsectionHeading" xml:space="preserve">
+    <value>&lt;a name="{0}"/&gt;&lt;h6 class="border-bottom border-gray pb-2 mb-0"&gt;{1}&lt;/h6&gt;</value>
+  </data>
+  <data name="BackToTopSnippet" xml:space="preserve">
+    <value>&lt;small class="d-block text-right mt-3"&gt;
+  				&lt;a href="#"&gt;Back to top&lt;/a&gt;
+  			&lt;/small&gt;</value>
+  </data>
+  <data name="FileListMessageBus" xml:space="preserve">
+    <value>Message Bus</value>
+  </data>
+  <data name="FileListMessageBusDescription" xml:space="preserve">
+    <value>This application contains the core components to replace the BizTalk Message Box.</value>
+  </data>
+  <data name="FileListPrefixSource" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="FileListPrefixTarget" xml:space="preserve">
+    <value>Target</value>
+  </data>
+  <data name="FileListSummary" xml:space="preserve">
+    <value>Summary</value>
+  </data>
+  <data name="HomePageLinkJQuery" xml:space="preserve">
+    <value>//*[@id='home-link']</value>
+  </data>
+  <data name="HtmlPageTemplate" xml:space="preserve">
+    <value>&lt;!doctype html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;!-- Required meta tags --&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"&gt;
+
+    &lt;!-- Bootstrap CSS --&gt;
+    &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"&gt;
+    &lt;link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"&gt;
+
+    &lt;!-- Custom styles for this template --&gt;
+    &lt;!--&lt;link href="offcanvas.css" rel="stylesheet"&gt;--&gt;
+
+    &lt;title&gt;BizTalk to Azure Integration Services Migration Report&lt;/title&gt;
+
+    &lt;style&gt;
+        html,
+        body {
+            overflow-x: hidden; /* Prevent scroll on narrow devices */
+        }
+
+        body {
+            padding-top: 56px;
+        }
+
+        @media (max-width: 767.98px) {
+            .offcanvas-collapse {
+                position: fixed;
+                top: 56px; /* Height of navbar */
+                bottom: 0;
+                width: 100%;
+                padding-right: 1rem;
+                padding-left: 1rem;
+                overflow-y: auto;
+                background-color: var(--gray-dark);
+                transition: -webkit-transform .3s ease-in-out;
+                transition: transform .3s ease-in-out;
+                transition: transform .3s ease-in-out, -webkit-transform .3s ease-in-out;
+                -webkit-transform: translateX(100%);
+                transform: translateX(100%);
+            }
+
+                .offcanvas-collapse.open {
+                    -webkit-transform: translateX(-1rem);
+                    transform: translateX(-1rem); /* Account for horizontal padding on navbar */
+                }
+        }
+
+        .nav-scroller {
+            position: relative;
+            z-index: 2;
+            height: 2.75rem;
+            overflow-y: hidden;
+        }
+
+            .nav-scroller .nav {
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -ms-flex-wrap: nowrap;
+                flex-wrap: nowrap;
+                padding-bottom: 1rem;
+                margin-top: -1px;
+                overflow-x: auto;
+                color: rgba(255, 255, 255, .75);
+                text-align: center;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
+
+        .nav-underline .nav-link {
+            padding-top: .75rem;
+            padding-bottom: .75rem;
+            font-size: .875rem;
+            color: var(--secondary);
+        }
+
+            .nav-underline .nav-link:hover {
+                color: var(--blue);
+            }
+
+        .nav-underline .active {
+            font-weight: 500;
+            color: var(--gray-dark);
+        }
+
+        .text-white-50 {
+            color: rgba(255, 255, 255, .5);
+        }
+
+        .bg-purple {
+            background-color: var(--purple);
+        }
+
+        .border-bottom {
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .box-shadow {
+            box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+        }
+
+        .lh-100 {
+            line-height: 1;
+        }
+
+        .lh-125 {
+            line-height: 1.25;
+        }
+
+        .lh-150 {
+            line-height: 1.5;
+        }
+
+        .section-icon {
+            font-size: 48px;
+        }
+
+        .resource-icon {
+            font-size: 32px;
+        }
+
+        .analysis-icon {
+            font-size: 1rem;
+        }
+
+        .expand-apps:before {
+            content: "Expand Applications";
+        }
+
+        .expand-apps.active:before {
+            content: "Collapse Applications";
+        }
+
+        .expand-resources:before {
+            content: "Expand Resources";
+        }
+
+        .expand-resources.active:before {
+            content: "Collapse Resources";
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;nav class="navbar navbar-expand-md fixed-top navbar-dark bg-primary"&gt;
+        &lt;a class="navbar-brand" href="BizTalkMigrationReport.html" id="home-link"&gt;BizTalk Migration Report&lt;/a&gt;
+        &lt;button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas"&gt;
+            &lt;span class="navbar-toggler-icon"&gt;&lt;/span&gt;
+        &lt;/button&gt;
+
+        &lt;div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault"&gt;
+            &lt;ul class="navbar-nav mr-auto" id="navbar-list"&gt;
+                &lt;li class="nav-item dropdown"&gt;
+                    &lt;a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"&gt;Input BizTalk Applications&lt;/a&gt;
+                    &lt;div class="dropdown-menu" aria-labelledby="dropdown01" id="source-application-dropdown"&gt;
+                        &lt;!-- Application menu links are rendered in here. --&gt;
+                    &lt;/div&gt;
+                &lt;/li&gt;
+                &lt;li class="nav-item dropdown"&gt;
+                    &lt;a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"&gt;Output AIS Applications&lt;/a&gt;
+                    &lt;div class="dropdown-menu" aria-labelledby="dropdown01" id="target-application-dropdown"&gt;
+                        &lt;!-- Application menu links are rendered in here. --&gt;
+                    &lt;/div&gt;
+                &lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/div&gt;
+
+    &lt;/nav&gt;
+
+    &lt;main role="main" class="container"&gt;
+        &lt;div id="report-content"&gt;
+            &lt;!-- Report content is rendered in here. --&gt;
+        &lt;/div&gt;
+    &lt;/main&gt;
+
+
+
+    &lt;!-- Optional JavaScript --&gt;
+    &lt;!-- jQuery first, then Popper.js, then Bootstrap JS --&gt;
+    &lt;script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"&gt;&lt;/script&gt;
+    &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"&gt;&lt;/script&gt;
+    &lt;script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"&gt;&lt;/script&gt;
+    &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.7/holder.min.js" crossorigin="anonymous"&gt;&lt;/script&gt;
+    &lt;script type='text/javascript' src='https://kit.fontawesome.com/79f5499051.js?ver=2.6.2'&gt;&lt;/script&gt;
+    &lt;!-- embedded offcanvas script --&gt;
+    &lt;script language="javascript"&gt;
+        $(function () {
+            'use strict'
+
+            $('[data-toggle="offcanvas"]').on('click', function () {
+                $('.offcanvas-collapse').toggleClass('open')
+            })
+        })
+
+        // Expand / collapse all applications
+        $(document).ready(function () {
+            $(".expand-apps").on("click", function () {
+                console.log("Expanding / collapsing all application panels");
+                $(this).toggleClass("active");
+                if ($(this).hasClass("active")) {
+                    $('.application-more').collapse('hide');
+                    $('.application-less').collapse('show');
+                }
+                else {
+                    $('.application-more').collapse('show');
+                    $('.application-less').collapse('hide');
+                }
+            })
+            $(".expand-resources").on("click", function () {
+                console.log("Expanding / collapsing all resource panels");
+                $(this).toggleClass("active");
+                if ($(this).hasClass("active")) {
+                    $('#resource-container-content').find('.rc-more').collapse('hide');
+                    $('#resource-container-content').find('.rc-less').collapse('show');
+                }
+                else {
+                    $('#resource-container-content').find('.rc-more').collapse('show');
+                    $('#resource-container-content').find('.rc-less').collapse('hide');
+                }
+            })
+            $(".resource-link").on("click", function () {
+                console.log("Resource linking to associated resource");
+                // Get the resource refid from the class
+                var refId = this.id;
+                console.log(refId);
+                // Look up the section contents by the refId and check to see if it's already expanded
+                var applicationContents = $("#multi-collapse-" + refId + "-detail-content").closest(".application-section");
+
+                // If not expanded then expand
+                if (applicationContents) {
+                    var hasExpanded = applicationContents.hasClass("show");
+                    console.log("Check to see if application section is already expanded: " + hasExpanded);
+                    if (!hasExpanded) {
+                        console.log("Looking up application section so it can be expanded.");
+                        var applicationSection = applicationContents.closest(".application-container");
+                        console.log("Application section: " + applicationSection.prop("tagName"));
+                        applicationSection.find(".application-more").collapse("hide");
+                        applicationSection.find(".application-less").collapse("show");
+                    }
+                    setTimeout(function () {
+                        var element = document.getElementById(refId + "-detail-more");
+                        var offset = 60;
+                        var elementPosition = element.getBoundingClientRect().top;
+                        var position = elementPosition - offset;
+                        console.log("Scrolling to: " + position);
+                        window.scrollTo({
+                            top: position,
+                            behavior: "smooth"
+                        });
+                    }, 500);
+                }
+                else {
+                    console.log("Application contents not located.");
+                }
+                return false;
+            })
+        })
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</value>
+  </data>
+  <data name="NavbarListJQuery" xml:space="preserve">
+    <value>//*[@id='navbar-list']</value>
+  </data>
+  <data name="NavbarResourcesDropdownJQuery" xml:space="preserve">
+    <value>.//*[@id='resources-dropdown']</value>
+  </data>
+  <data name="NavbarResourcesHeading" xml:space="preserve">
+    <value>Resources</value>
+  </data>
+  <data name="NavbarResourcesId" xml:space="preserve">
+    <value>resources-dropdown</value>
+  </data>
+  <data name="NavbarScenariosHeading" xml:space="preserve">
+    <value>Scenarios</value>
+  </data>
+  <data name="ReportContentJQuery" xml:space="preserve">
+    <value>//*[@id='report-content']</value>
+  </data>
+  <data name="ResourceContainerAssembly" xml:space="preserve">
+    <value>Assembly</value>
+  </data>
+  <data name="ResourceContainerCab" xml:space="preserve">
+    <value>CAB</value>
+  </data>
+  <data name="ResourceContainerChildJQuery" xml:space="preserve">
+    <value>//*[@id='multi-collapse-{0}-rc-content']</value>
+  </data>
+  <data name="ResourceContainerDefault" xml:space="preserve">
+    <value>Resource Container</value>
+  </data>
+  <data name="ResourceContainerIconAssembly" xml:space="preserve">
+    <value>&lt;i class="fas fa-cubes text-secondary mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceContainerIconCab" xml:space="preserve">
+    <value>&lt;i class="fa fa-file-archive text-secondary mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceContainerIconDefault" xml:space="preserve">
+    <value>&lt;i class="fa fa-clone text-secondary mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceContainerIconMsi" xml:space="preserve">
+    <value>&lt;i class="fa fa-box-open text-secondary mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceContainerMsi" xml:space="preserve">
+    <value>MSI</value>
+  </data>
+  <data name="ResourceContainerNoneFoundSnippet" xml:space="preserve">
+    <value>&lt;div class="media text-muted pt-3"&gt;
+  				&lt;i class="fas fa-times-circle text-danger mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;
+  				&lt;div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray"&gt;
+  					&lt;div class="d-flex justify-content-between align-items-center w-100"&gt;
+  						&lt;strong class="text-gray-dark"&gt;No Resource Containers&lt;/strong&gt;
+  					&lt;/div&gt;
+  					&lt;span class="d-block"&gt;No resource containers were found using the arguments you supplied.&lt;/span&gt;
+  				&lt;/div&gt;
+  			&lt;/div&gt;</value>
+  </data>
+  <data name="ResourceContainerParentJQuery" xml:space="preserve">
+    <value>//*[@id='resource-container-content']</value>
+  </data>
+  <data name="ResourceDefaultDescription" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ResourceDefinitionIconApplicationDefinition" xml:space="preserve">
+    <value>&lt;i class="fa fa-file-code text-primary mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceDefinitionIconBindings" xml:space="preserve">
+    <value>&lt;i class="fa fa-file-code text-primary mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceDefinitionIconDefault" xml:space="preserve">
+    <value>&lt;i class="fa fa-file-exclamation text-primary mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceDefinitionIconFile" xml:space="preserve">
+    <value>&lt;i class="fa fa-file-check text-primary mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceDefinitionIconMap" xml:space="preserve">
+    <value>&lt;i class="fa fa-project-diagram text-primary mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceDefinitionIconOrchestration" xml:space="preserve">
+    <value>&lt;i class="fa fa-sitemap text-primary mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceDefinitionIconReceivePipeline" xml:space="preserve">
+    <value>&lt;i class="fa fa-code-branch text-primary mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceDefinitionIconSchema" xml:space="preserve">
+    <value>&lt;i class="fas fa-file-code text-primary mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceDefinitionIconSendPipeline" xml:space="preserve">
+    <value>&lt;i class="fa fa-code-branch text-primary mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceDefinitionNameApplicationDefinition" xml:space="preserve">
+    <value>Application Definition File</value>
+  </data>
+  <data name="ResourceDefinitionNameBindings" xml:space="preserve">
+    <value>Binding File</value>
+  </data>
+  <data name="ResourceDefinitionNameDefault" xml:space="preserve">
+    <value>Resource Definition</value>
+  </data>
+  <data name="ResourceDefinitionNameFile" xml:space="preserve">
+    <value>File Resource</value>
+  </data>
+  <data name="ResourceDefinitionNameMap" xml:space="preserve">
+    <value>BizTalk Map</value>
+  </data>
+  <data name="ResourceDefinitionNameOrchestration" xml:space="preserve">
+    <value>BizTalk Orchestration</value>
+  </data>
+  <data name="ResourceDefinitionNameReceivePipeline" xml:space="preserve">
+    <value>BizTalk Receive Pipeline</value>
+  </data>
+  <data name="ResourceDefinitionNameSchema" xml:space="preserve">
+    <value>XML Schema</value>
+  </data>
+  <data name="ResourceDefinitionNameSendPipeline" xml:space="preserve">
+    <value>BizTalk Send Pipeline</value>
+  </data>
+  <data name="ResourceIconApplication" xml:space="preserve">
+    <value>&lt;i class="fas fa-cogs text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconContextProperty" xml:space="preserve">
+    <value>&lt;i class="fab fa-font-awesome-flag text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconCorrelationSet" xml:space="preserve">
+    <value>&lt;i class="fas fa-th text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconCorrelationType" xml:space="preserve">
+    <value>&lt;i class="fas fa-th-large text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconDefault" xml:space="preserve">
+    <value>&lt;i class="fas fa-expand text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconDistributionList" xml:space="preserve">
+    <value>&lt;i class="fas fa-object-group text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconDocumentSchema" xml:space="preserve">
+    <value>&lt;i class="fa fa-file-code text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconFilter" xml:space="preserve">
+    <value>&lt;i class="fas fa-filter text-success mary mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconLogicalPort" xml:space="preserve">
+    <value>&lt;i class="fas fa-sign-out-alt text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconMap" xml:space="preserve">
+    <value>&lt;i class="fa fa-project-diagram text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconMessage" xml:space="preserve">
+    <value>&lt;i class="far fa-envelope text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconMessageType" xml:space="preserve">
+    <value>&lt;i class="fas fa-code text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconMetaModel" xml:space="preserve">
+    <value>&lt;i class="fas fa-file-code text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconModule" xml:space="preserve">
+    <value>&lt;i class="fas fa-cube text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconMultipartMessageType" xml:space="preserve">
+    <value>&lt;i class="fas fa-vector-square text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconOrchestration" xml:space="preserve">
+    <value>&lt;i class="fas fa-cog text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconPipelineComponent" xml:space="preserve">
+    <value>&lt;i class="fas fa-expand text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconPortType" xml:space="preserve">
+    <value>&lt;i class="fas fa-sign-in-alt text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconPropertySchema" xml:space="preserve">
+    <value>&lt;i class="fa fa-file-powerpoint text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconReceiveLocation" xml:space="preserve">
+    <value>&lt;i class="fas fa-exchange-alt text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconReceivePipeline" xml:space="preserve">
+    <value>&lt;i class="fa fa-code-branch text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconReceivePort" xml:space="preserve">
+    <value>&lt;i class="fas fa-arrow-circle-right text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconSendPipeline" xml:space="preserve">
+    <value>&lt;i class="fa fa-code-branch text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconSendPort" xml:space="preserve">
+    <value>&lt;i class="fas fa-arrow-circle-left text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconService" xml:space="preserve">
+    <value>&lt;i class="fa fa-sitemap text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceIconServiceLinkType" xml:space="preserve">
+    <value>&lt;i class="fas fa-sign-in-alt text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceNameApplication" xml:space="preserve">
+    <value>BizTalk Application</value>
+  </data>
+  <data name="ResourceNameContextProperty" xml:space="preserve">
+    <value>Context Property</value>
+  </data>
+  <data name="ResourceNameCorrelationSet" xml:space="preserve">
+    <value>Correlation Set</value>
+  </data>
+  <data name="ResourceNameCorrelationType" xml:space="preserve">
+    <value>Correlation Type</value>
+  </data>
+  <data name="ResourceNameDefault" xml:space="preserve">
+    <value>Resource</value>
+  </data>
+  <data name="ResourceNameDistributionList" xml:space="preserve">
+    <value>Send Port Group</value>
+  </data>
+  <data name="ResourceNameDocumentSchema" xml:space="preserve">
+    <value>Document Schema</value>
+  </data>
+  <data name="ResourceNameFilter" xml:space="preserve">
+    <value>Subscription</value>
+  </data>
+  <data name="ResourceNameLogicalPort" xml:space="preserve">
+    <value>Logical Port (Orchestration Port)</value>
+  </data>
+  <data name="ResourceNameMap" xml:space="preserve">
+    <value>BizTalk Map</value>
+  </data>
+  <data name="ResourceNameMessage" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="ResourceNameMessageType" xml:space="preserve">
+    <value>Message Type</value>
+  </data>
+  <data name="ResourceNameMetaModel" xml:space="preserve">
+    <value>Orchestration MetaModel (ODX)</value>
+  </data>
+  <data name="ResourceNameModule" xml:space="preserve">
+    <value>Module</value>
+  </data>
+  <data name="ResourceNameMultipartMessageType" xml:space="preserve">
+    <value>Multipart Message Type</value>
+  </data>
+  <data name="ResourceNamePipelineComponent" xml:space="preserve">
+    <value>Pipeline Component</value>
+  </data>
+  <data name="ResourceNamePortType" xml:space="preserve">
+    <value>Port Type</value>
+  </data>
+  <data name="ResourceNamePropertySchema" xml:space="preserve">
+    <value>Property Schema</value>
+  </data>
+  <data name="ResourceNameReceiveLocation" xml:space="preserve">
+    <value>Receive Location</value>
+  </data>
+  <data name="ResourceNameReceivePipeline" xml:space="preserve">
+    <value>Receive Pipeline</value>
+  </data>
+  <data name="ResourceNameReceivePort" xml:space="preserve">
+    <value>Receive Port</value>
+  </data>
+  <data name="ResourceNameSendPipeline" xml:space="preserve">
+    <value>Send Pipeline</value>
+  </data>
+  <data name="ResourceNameSendPort" xml:space="preserve">
+    <value>Send Port</value>
+  </data>
+  <data name="ResourceNameService" xml:space="preserve">
+    <value>Service (Orchestration)</value>
+  </data>
+  <data name="ResourceNameServiceDeclaration" xml:space="preserve">
+    <value>Service Declaration</value>
+  </data>
+  <data name="ResourceNameServiceLinkType" xml:space="preserve">
+    <value>Service Link Type</value>
+  </data>
+  <data name="ResourceStarSnippetEmpty" xml:space="preserve">
+    <value>&lt;i class="far fa-star text-success"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="ResourceStarSnippetFilled" xml:space="preserve">
+    <value>&lt;i class="fas fa-star text-success"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="SnippetDropdownMenuItem" xml:space="preserve">
+    <value>&lt;a class="dropdown-item" href="{0}"&gt;{1}&lt;/a&gt;</value>
+  </data>
+  <data name="SnippetEmptyDiv" xml:space="preserve">
+    <value>&lt;div&gt;&lt;/div&gt;</value>
+  </data>
+  <data name="SnippetNavbarDropdown" xml:space="preserve">
+    <value>&lt;li class="nav-item dropdown"&gt;
+                    &lt;a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"&gt;{0}&lt;/a&gt;
+                    &lt;div class="dropdown-menu" aria-labelledby="dropdown01" id="{1}"&gt;
+                        &lt;!-- Application menu links are rendered in here. --&gt;
+                    &lt;/div&gt;
+                &lt;/li&gt;</value>
+  </data>
+  <data name="SnippetResourceContainer" xml:space="preserve">
+    <value>&lt;div class="media text-muted pt-3"&gt;
+  				{icon}
+  				&lt;div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray"&gt;
+  					&lt;div class="d-flex justify-content-between align-items-center w-100"&gt;
+  						&lt;strong class="text-gray-dark"&gt;{type}: {name}&lt;/strong&gt;
+  						&lt;a id="{refId}-more" href="#{refId}-more" data-toggle="collapse" data-target=".multi-collapse-{refId}-rc" class="collapse show multi-collapse-{refId}-rc rc-more" role="button" aria-expanded="true" aria-controls="{refId} {refId}-more {refId}-less"&gt;More&lt;/a&gt;
+  						&lt;a id="{refId}-less" href="#{refId}-less" data-toggle="collapse" data-target=".multi-collapse-{refId}-rc" class="collapse multi-collapse-{refId}-rc rc-less" role="button" aria-expanded="false" aria-controls="{refId} {refId}-more {refId}-less"&gt;Less&lt;/a&gt;
+  					&lt;/div&gt;
+  					&lt;span class="d-block"&gt;{description}&lt;/span&gt;
+  				&lt;/div&gt;
+  			&lt;/div&gt;
+  			&lt;div class="collapse text-muted pt-3 pl-3 multi-collapse-{refId}-rc rc-less" id="multi-collapse-{refId}-rc-content"&gt;&lt;/div&gt;</value>
+  </data>
+  <data name="SourceApplicationMenuJQuery" xml:space="preserve">
+    <value>//*[@id='source-application-dropdown']</value>
+  </data>
+  <data name="SourceApplicationNoneFoundSnippet" xml:space="preserve">
+    <value>&lt;div class="media text-muted pt-3"&gt;
+  				&lt;i class="fas fa-times-circle text-danger mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;
+  				&lt;div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray"&gt;
+  					&lt;div class="d-flex justify-content-between align-items-center w-100"&gt;
+  						&lt;strong class="text-gray-dark"&gt;No Input BizTalk Applications&lt;/strong&gt;
+  					&lt;/div&gt;
+  					&lt;span class="d-block"&gt;No input BizTalk applications were found using the arguments you supplied.&lt;/span&gt;
+  				&lt;/div&gt;
+  			&lt;/div&gt;</value>
+  </data>
+  <data name="SourceApplicationResourceSnippet" xml:space="preserve">
+    <value>&lt;a name="resource-{refId}"/&gt;&lt;div class="media text-muted pt-3 border-bottom border-gray"&gt;
+{icon}
+&lt;div class="media-body pb-3 mb-0 small lh-125"&gt;
+	&lt;div class="d-flex justify-content-between align-items-center w-100"&gt;
+		&lt;strong class="text-gray-dark"&gt;{name}&lt;/strong&gt;
+		&lt;a id="{refId}-detail-more" href="#{refId}-detail-more" data-toggle="collapse" data-target=".multi-collapse-{refId}-detail" class="collapse show multi-collapse-{refId}-detail" role="button" aria-expanded="true" aria-controls="{refId} {refId}-detail-more {refId}-detail-less"&gt;More&lt;/a&gt;
+		&lt;a id="{refId}-detail-less" href="#{refId}-detail-less" data-toggle="collapse" data-target=".multi-collapse-{refId}-detail" class="collapse multi-collapse-{refId}-detail" role="button" aria-expanded="false" aria-controls="{refId} {refId}-detail-more {refId}-detail-less"&gt;Less&lt;/a&gt;
+	&lt;/div&gt;
+	&lt;span class="d-block"&gt;{description}&lt;/span&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="collapse text-muted pt-3 pl-3 multi-collapse-{refId}-detail border-bottom border-gray pb-2" id="multi-collapse-{refId}-detail-content"&gt;&lt;/div&gt;</value>
+  </data>
+  <data name="SourceApplicationSectionSnippet" xml:space="preserve">
+    <value>&lt;a name="application-{refId}"/&gt;
+	&lt;div id="{refId}" class="application-container"&gt;
+		&lt;div class="d-flex align-items-center p-2 my-3 text-white-50 bg-secondary rounded box-shadow"&gt;
+  			&lt;i class="fas fa-poll-h text-white mr-2 ml-2 mb-2 section-icon"&gt;&lt;/i&gt;
+			&lt;div class="lh-100"&gt;
+				&lt;h6 class="mb-1 text-white lh-100"&gt;BizTalk Application: {name}&lt;/h6&gt;
+				&lt;small&gt;{description}&lt;/small&gt;
+			&lt;/div&gt;
+  		&lt;/div&gt;
+		
+  		&lt;div class="my-3 pr-2 pb-2 bg-white rounded box-shadow multi-collapse-{refId}-application application-section application-less" id="application-{refId}-contents"&gt;
+
+  		&lt;/div&gt;
+	&lt;/div&gt;</value>
+  </data>
+  <data name="SummaryApplicationResourceSnippetExpand" xml:space="preserve">
+    <value>&lt;a name="resource-{refId}"/&gt;&lt;div class="media text-muted pt-3 border-bottom border-gray"&gt;
+{icon}
+&lt;div class="media-body pb-3 mb-0 small lh-125"&gt;
+	&lt;div class="d-flex justify-content-between align-items-center w-100"&gt;
+		&lt;strong class="text-gray-dark"&gt;{name}&lt;/strong&gt;
+		&lt;a id="{refId}-detail-more" href="#{refId}-detail-more" data-toggle="collapse" data-target=".multi-collapse-{refId}-detail" class="collapse show multi-collapse-{refId}-detail" role="button" aria-expanded="true" aria-controls="{refId} {refId}-detail-more {refId}-detail-less"&gt;More&lt;/a&gt;
+		&lt;a id="{refId}-detail-less" href="#{refId}-detail-less" data-toggle="collapse" data-target=".multi-collapse-{refId}-detail" class="collapse multi-collapse-{refId}-detail" role="button" aria-expanded="false" aria-controls="{refId} {refId}-detail-more {refId}-detail-less"&gt;Less&lt;/a&gt;
+	&lt;/div&gt;
+	&lt;span class="d-block"&gt;{description}&lt;/span&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="collapse text-muted pt-3 pl-3 multi-collapse-{refId}-detail border-bottom border-gray pb-2" id="multi-collapse-{refId}-detail-content"&gt;&lt;/div&gt;</value>
+  </data>
+  <data name="SummaryApplicationResourceSnippetNoExpand" xml:space="preserve">
+    <value>&lt;div class="media text-muted pt-3 border-bottom border-gray"&gt;
+	{icon}
+	&lt;div class="media-body pb-3 mb-0 small lh-125"&gt;
+		&lt;div class="d-flex justify-content-between align-items-center w-100"&gt;
+			&lt;strong class="text-gray-dark"&gt;{name}&lt;/strong&gt;
+		&lt;/div&gt;
+		&lt;span class="d-block"&gt;{description}&lt;/span&gt;
+	&lt;/div&gt;
+&lt;/div&gt;</value>
+  </data>
+  <data name="SummaryReportArgumentCount" xml:space="preserve">
+    <value>Number of Arguments: {0}</value>
+  </data>
+  <data name="SummaryReportFileLink" xml:space="preserve">
+    <value>&lt;div class="media text-muted pt-3 border-bottom border-gray"&gt;
+	&lt;i class="fas fa-file-alt text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;
+	&lt;div class="media-body pb-3 mb-0 small lh-125"&gt;
+		&lt;div class="d-flex justify-content-between align-items-center w-100"&gt;
+			&lt;a href="{0}"&gt;&lt;strong class="text-gray-dark"&gt;{1}&lt;/strong&gt;&lt;/a&gt;
+		&lt;/div&gt;
+		&lt;span class="d-block"&gt;{2}&lt;/span&gt;
+	&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="collapse text-muted pt-3 pl-3 border-bottom border-gray pb-2"&gt;&lt;/div&gt;</value>
+  </data>
+  <data name="SummaryReportIconArguments" xml:space="preserve">
+    <value>&lt;i class="fas fa-terminal text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="SummaryReportIconStageRunners" xml:space="preserve">
+    <value>&lt;i class="fas fa-cube text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="SummaryReportIconTimings" xml:space="preserve">
+    <value>&lt;i class="fas fa-history text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="SummaryReportNameArguments" xml:space="preserve">
+    <value>Command Line Arguments</value>
+  </data>
+  <data name="SummaryReportNameStageRunners" xml:space="preserve">
+    <value>Stage Runners</value>
+  </data>
+  <data name="SummaryReportNameTimings" xml:space="preserve">
+    <value>Run Times</value>
+  </data>
+  <data name="SummaryReportResourceSnippet" xml:space="preserve">
+    <value>&lt;a name="resource-{refId}"/&gt;&lt;div class="media text-muted pt-3 border-bottom border-gray"&gt;
+{icon}
+&lt;div class="media-body pb-3 mb-0 small lh-125"&gt;
+	&lt;div class="d-flex justify-content-between align-items-center w-100"&gt;
+		&lt;strong class="text-gray-dark"&gt;{name}&lt;/strong&gt;
+		&lt;a id="{refId}-detail-more" href="#{refId}-detail-more" data-toggle="collapse" data-target=".multi-collapse-{refId}-detail" class="collapse show multi-collapse-{refId}-detail" role="button" aria-expanded="true" aria-controls="{refId} {refId}-detail-more {refId}-detail-less"&gt;More&lt;/a&gt;
+		&lt;a id="{refId}-detail-less" href="#{refId}-detail-less" data-toggle="collapse" data-target=".multi-collapse-{refId}-detail" class="collapse multi-collapse-{refId}-detail" role="button" aria-expanded="false" aria-controls="{refId} {refId}-detail-more {refId}-detail-less"&gt;Less&lt;/a&gt;
+	&lt;/div&gt;
+	&lt;span class="d-block"&gt;{description}&lt;/span&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="collapse text-muted pt-3 pl-3 multi-collapse-{refId}-detail border-bottom border-gray pb-2" id="multi-collapse-{refId}-detail-content"&gt;&lt;/div&gt;</value>
+  </data>
+  <data name="SummaryReportRunStartAndEnd" xml:space="preserve">
+    <value>Run start: {0:s}</value>
+  </data>
+  <data name="SummaryReportStageRunnerCount" xml:space="preserve">
+    <value>Number of Stage Runners (Components): {0}</value>
+  </data>
+  <data name="SummaryReportStageRunnerSnippet" xml:space="preserve">
+    <value>&lt;div class="text-gray-dark small align-middle"&gt;&lt;i class="fas fa-caret-right text-black mr-2 ml-2 small"&gt;&lt;/i&gt;
+	&lt;strong&gt;Name&lt;/strong&gt;: {0}
+	&lt;br/&gt;&lt;i class="fas fa-ellipsis-h text-black mr-2 ml-2 small"&gt;&lt;/i&gt;Priority: {1}
+	&lt;br/&gt;&lt;i class="fas fa-ellipsis-h text-black mr-2 ml-2 small"&gt;&lt;/i&gt;Skip: {2}
+	&lt;br/&gt;&lt;i class="fas fa-ellipsis-h text-black mr-2 ml-2 small"&gt;&lt;/i&gt;Stages: {3}
+&lt;/div&gt;</value>
+  </data>
+  <data name="SummaryRunInfoHeading" xml:space="preserve">
+    <value>&lt;div id="{refId}" class="application-container"&gt;
+	&lt;div class="d-flex align-items-center p-2 my-3 text-white-50 bg-secondary rounded box-shadow"&gt;
+		&lt;i class="fas fa-poll-h text-white mr-2 ml-2 mb-2 section-icon"&gt;&lt;/i&gt;
+		&lt;div class="lh-100"&gt;
+			&lt;h6 class="mb-1 text-white lh-100"&gt;Run Information&lt;/h6&gt;
+			&lt;small&gt;A summary of the run information for the BizTalk Migrator.&lt;/small&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+	
+	&lt;div class="my-3 pr-2 pb-2 bg-white rounded box-shadow" id="report-summary-contents"&gt;
+
+	&lt;/div&gt;
+&lt;/div&gt;</value>
+  </data>
+  <data name="SummaryRunInfoJQuery" xml:space="preserve">
+    <value>//*[@id='report-summary-contents']</value>
+  </data>
+  <data name="SummarySourceApplicationHeading" xml:space="preserve">
+    <value>&lt;div id="{refId}" class="application-container"&gt;
+	&lt;div class="d-flex align-items-center p-2 my-3 text-white-50 bg-secondary rounded box-shadow"&gt;
+		&lt;i class="fas fa-poll-h text-white mr-2 ml-2 mb-2 section-icon"&gt;&lt;/i&gt;
+		&lt;div class="lh-100"&gt;
+			&lt;h6 class="mb-1 text-white lh-100"&gt;Input BizTalk Applications&lt;/h6&gt;
+			&lt;small&gt;These are the BizTalk applications discovered by the BizTalk Migrator.&lt;/small&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+	
+	&lt;div class="my-3 pr-2 pb-2 bg-white rounded box-shadow" id="source-application-list"&gt;
+
+	&lt;/div&gt;
+&lt;/div&gt;</value>
+  </data>
+  <data name="SummarySourceApplicationJQuery" xml:space="preserve">
+    <value>//*[@id='source-application-list']</value>
+  </data>
+  <data name="SummaryTargetApplicationHeading" xml:space="preserve">
+    <value>&lt;div id="{refId}" class="application-container"&gt;
+	&lt;div class="d-flex align-items-center p-2 my-3 text-white-50 bg-secondary rounded box-shadow"&gt;
+		&lt;i class="fas fa-poll-h text-white mr-2 ml-2 mb-2 section-icon"&gt;&lt;/i&gt;
+		&lt;div class="lh-100"&gt;
+			&lt;h6 class="mb-1 text-white lh-100"&gt;Output AIS Applications&lt;/h6&gt;
+			&lt;small&gt;These are the converted applications generated by the BizTalk Migrator.&lt;/small&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+	
+	&lt;div class="my-3 pr-2 pb-2 bg-white rounded box-shadow" id="target-application-list"&gt;
+
+	&lt;/div&gt;
+&lt;/div&gt;</value>
+  </data>
+  <data name="SummaryTargetApplicationJQuery" xml:space="preserve">
+    <value>//*[@id='target-application-list']</value>
+  </data>
+  <data name="SummaryTargetMessageBusHeading" xml:space="preserve">
+    <value>&lt;div id="{refId}" class="application-container"&gt;
+	&lt;div class="d-flex align-items-center p-2 my-3 text-white-50 bg-secondary rounded box-shadow"&gt;
+		&lt;i class="fas fa-poll-h text-white mr-2 ml-2 mb-2 section-icon"&gt;&lt;/i&gt;
+		&lt;div class="lh-100"&gt;
+			&lt;h6 class="mb-1 text-white lh-100"&gt;Core AIS Infrastructure&lt;/h6&gt;
+			&lt;small&gt;This core infrastructure replaces a BizTalk Group and is generated by the BizTalk Migrator.&lt;/small&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+	
+	&lt;div class="my-3 pr-2 pb-2 bg-white rounded box-shadow" id="target-messagebus-list"&gt;
+
+	&lt;/div&gt;
+&lt;/div&gt;</value>
+  </data>
+  <data name="SummaryTargetMessageBusJQuery" xml:space="preserve">
+    <value>//*[@id='target-messagebus-list']</value>
+  </data>
+  <data name="TargetAnalysisSnippetProperty" xml:space="preserve">
+    <value>&lt;div class="text-gray-dark small align-middle"&gt;{0}&lt;i class="fas fa-circle text-black mr-2 ml-2 small"&gt;&lt;/i&gt;&lt;strong&gt;{1}&lt;/strong&gt;: {2}&lt;/div&gt;</value>
+  </data>
+  <data name="TargetAnalysisSnippetPropertyIndent" xml:space="preserve">
+    <value>&lt;i class="fas fa-ellipsis-h text-black mr-2 ml-2 small"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetApplicationMenuJQuery" xml:space="preserve">
+    <value>//*[@id='target-application-dropdown']</value>
+  </data>
+  <data name="TargetApplicationNoneFoundSnippet" xml:space="preserve">
+    <value>&lt;div class="media text-muted pt-3"&gt;
+	&lt;i class="fas fa-times-circle text-danger mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;
+	&lt;div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray"&gt;
+		&lt;div class="d-flex justify-content-between align-items-center w-100"&gt;
+			&lt;strong class="text-gray-dark"&gt;No Target Applications&lt;/strong&gt;
+		&lt;/div&gt;
+		&lt;span class="d-block"&gt;No output AIS applications were generated by the BizTalk Migrator.&lt;/span&gt;
+	&lt;/div&gt;
+&lt;/div&gt;</value>
+  </data>
+  <data name="TargetApplicationNoScenarios" xml:space="preserve">
+    <value>&lt;div class="media text-muted pt-3 border-bottom border-gray"&gt;
+	&lt;i class="fas fa-cogs text-error mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;
+	&lt;div class="media-body pb-3 mb-0 small lh-125"&gt;
+		&lt;div class="d-flex justify-content-between align-items-center w-100"&gt;
+			&lt;strong class="text-gray-dark"&gt;No Scenarios Found&lt;/strong&gt;
+		&lt;/div&gt;
+		&lt;span class="d-block"&gt;The analysis discovered no scenarios within this application.&lt;/span&gt;
+	&lt;/div&gt;
+&lt;/div&gt;</value>
+  </data>
+  <data name="TargetApplicationPropertyChannelType" xml:space="preserve">
+    <value>Channel Type</value>
+  </data>
+  <data name="TargetApplicationPropertyEndpointType" xml:space="preserve">
+    <value>Endpoint Type</value>
+  </data>
+  <data name="TargetApplicationPropertyIntermediaryType" xml:space="preserve">
+    <value>Intermediary Type</value>
+  </data>
+  <data name="TargetApplicationPropertyMessageDeliveryGuarantee" xml:space="preserve">
+    <value>Message Delivery Guarantee</value>
+  </data>
+  <data name="TargetApplicationPropertyMessageExchangePattern" xml:space="preserve">
+    <value>Message Exchange Pattern</value>
+  </data>
+  <data name="TargetApplicationPropertyMessageProcessorType" xml:space="preserve">
+    <value>Message Processor Type</value>
+  </data>
+  <data name="TargetApplicationPropertyMessageRouterType" xml:space="preserve">
+    <value>Message Router Type</value>
+  </data>
+  <data name="TargetApplicationPropertyNumberofChannels" xml:space="preserve">
+    <value>Number of Channels</value>
+  </data>
+  <data name="TargetApplicationPropertyNumberOfEndpoints" xml:space="preserve">
+    <value>Number of Endpoints</value>
+  </data>
+  <data name="TargetApplicationPropertyNumberOfIntermediaries" xml:space="preserve">
+    <value>Number of Intermediaries</value>
+  </data>
+  <data name="TargetApplicationPropertyNumberOfMessages" xml:space="preserve">
+    <value>Number of Messages</value>
+  </data>
+  <data name="TargetApplicationPropertyNumberOfResources" xml:space="preserve">
+    <value>Number Of Resources (Files) Generated</value>
+  </data>
+  <data name="TargetApplicationPropertyNumberOfScenarios" xml:space="preserve">
+    <value>Number of Scenarios</value>
+  </data>
+  <data name="TargetApplicationPropertyResourceName" xml:space="preserve">
+    <value>Resource Name</value>
+  </data>
+  <data name="TargetApplicationPropertyResourceType" xml:space="preserve">
+    <value>Resource Type</value>
+  </data>
+  <data name="TargetApplicationPropertyTemplateKey" xml:space="preserve">
+    <value>Template Key</value>
+  </data>
+  <data name="TargetApplicationPropertyTemplateType" xml:space="preserve">
+    <value>Template Type</value>
+  </data>
+  <data name="TargetApplicationPropertyTriggerUrl" xml:space="preserve">
+    <value>Trigger URL</value>
+  </data>
+  <data name="TargetApplicationSnippetDescriptionRow" xml:space="preserve">
+    <value>&lt;br/&gt;&lt;span class="d-block"&gt;{0}&lt;/span&gt;</value>
+  </data>
+  <data name="TargetApplicationSnippetHalfStarFilled" xml:space="preserve">
+    <value>&lt;i class="fas fa-star-half-alt text-white"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetApplicationSnippetMessagingObject" xml:space="preserve">
+    <value>&lt;a name="resource-{refId}"/&gt;
+&lt;div class="media text-muted pt-3 border-bottom border-gray"&gt;
+	{icon}
+	&lt;div class="media-body pb-3 mb-0 small lh-125"&gt;
+		&lt;div class="d-flex justify-content-between align-items-center w-100"&gt;
+			&lt;strong class="text-gray-dark"&gt;{name}&lt;/strong&gt;
+			&lt;a id="{refId}-detail-more" href="#{refId}-detail-more" data-toggle="collapse" data-target=".multi-collapse-{refId}-detail" class="collapse show multi-collapse-{refId}-detail" role="button" aria-expanded="true" aria-controls="{refId} {refId}-detail-more {refId}-detail-less"&gt;More&lt;/a&gt;
+			&lt;a id="{refId}-detail-less" href="#{refId}-detail-less" data-toggle="collapse" data-target=".multi-collapse-{refId}-detail" class="collapse multi-collapse-{refId}-detail" role="button" aria-expanded="false" aria-controls="{refId} {refId}-detail-more {refId}-detail-less"&gt;Less&lt;/a&gt;
+		&lt;/div&gt;
+		{stars}
+		{description}
+	&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="collapse text-muted pt-3 pl-3 multi-collapse-{refId}-detail border-bottom border-gray pb-2" id="multi-collapse-{refId}-detail-content"&gt;&lt;/div&gt;</value>
+  </data>
+  <data name="TargetApplicationSnippetNewSection" xml:space="preserve">
+    <value>&lt;div id="{refId}" class="application-container"&gt;
+	&lt;div class="d-flex align-items-center p-2 my-3 text-white-50 bg-secondary rounded box-shadow"&gt;
+		&lt;i class="fas fa-poll-h text-white mr-2 ml-2 mb-2 section-icon"&gt;&lt;/i&gt;
+		&lt;div class="lh-100"&gt;
+			&lt;h6 class="mb-1 text-white lh-100"&gt;Output AIS Application: {name}&lt;/h6&gt;
+			{stars}
+			&lt;br/&gt;
+			&lt;small&gt;{description}&lt;/small&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+	
+	&lt;div class="my-3 pr-2 pb-2 bg-white rounded box-shadow multi-collapse-{refId}-application application-section application-less" id="application-{refId}-contents"&gt;
+
+	&lt;/div&gt;
+&lt;/div&gt;</value>
+  </data>
+  <data name="TargetApplicationSnippetPercent" xml:space="preserve">
+    <value> ({0:0.##}%)</value>
+  </data>
+  <data name="TargetApplicationSnippetPropertyRow" xml:space="preserve">
+    <value>&lt;br/&gt;&lt;span class="d-block"&gt;{0}: {1}&lt;/span&gt;</value>
+  </data>
+  <data name="TargetApplicationSnippetStarEmpty" xml:space="preserve">
+    <value>&lt;i class="far fa-star text-white"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetApplicationSnippetStarFilled" xml:space="preserve">
+    <value>&lt;i class="fas fa-star text-white"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetApplicationSnippetSummary" xml:space="preserve">
+    <value>&lt;a name="resource-{refId}"/&gt;
+&lt;div class="media text-muted pt-3 border-bottom border-gray"&gt;
+	&lt;i class="fas fa-info-circle text-info small mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;
+	&lt;div class="media-body pb-3 mb-0 small lh-125"&gt;
+		&lt;div class="d-flex justify-content-between align-items-center w-100"&gt;
+			&lt;strong class="text-gray-dark"&gt;Summary information for this application.&lt;/strong&gt;
+		&lt;/div&gt;
+		{description}
+	&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="collapse text-muted pt-3 pl-3 multi-collapse-{refId}-detail border-bottom border-gray pb-2" id="multi-collapse-{refId}-detail-content"&gt;&lt;/div&gt;</value>
+  </data>
+  <data name="TargetApplicationSummaryHeading" xml:space="preserve">
+    <value>&lt;h6 class="border-bottom border-gray pb-2 mb-0"&gt;Summary&lt;/h6&gt;</value>
+  </data>
+  <data name="TargetMessageBusSectionJQuery" xml:space="preserve">
+    <value>//*[@id='messagebus-application-contents']</value>
+  </data>
+  <data name="TargetMessageBusSectionSnippet" xml:space="preserve">
+    <value>&lt;div id="{refId}" class="application-container"&gt;
+	&lt;div class="d-flex align-items-center p-2 my-3 text-white-50 bg-secondary rounded box-shadow"&gt;
+		&lt;i class="fas fa-poll-h text-white mr-2 ml-2 mb-2 section-icon"&gt;&lt;/i&gt;
+		&lt;div class="lh-100"&gt;
+			&lt;h6 class="mb-1 text-white lh-100"&gt;Output AIS Application: {name}&lt;/h6&gt;
+			&lt;small&gt;{description}&lt;/small&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+	
+	&lt;div class="my-3 pr-2 pb-2 bg-white rounded box-shadow application-section" id="messagebus-application-contents"&gt;
+
+	&lt;/div&gt;
+&lt;/div&gt;</value>
+  </data>
+  <data name="TargetMessagingObjectIconChannel" xml:space="preserve">
+    <value>&lt;i class="fas fa-link text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetMessagingObjectIconEndpoint" xml:space="preserve">
+    <value>&lt;i class="fas fa-plug text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetMessagingObjectIconIntermediary" xml:space="preserve">
+    <value>&lt;i class="fab fa-connectdevelop text-success mr-2 ml-2 resource-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconApiManagement" xml:space="preserve">
+    <value>&lt;i class="fas fa-cloud text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconAppConfiguration" xml:space="preserve">
+    <value>&lt;i class="fas fa-cloud-upload-alt text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconApplicationInsights" xml:space="preserve">
+    <value>&lt;i class="fas fa-lightbulb text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconAppServicePlan" xml:space="preserve">
+    <value>&lt;i class="fas fa-server text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconAzureFunction" xml:space="preserve">
+    <value>&lt;i class="far fa-bolt text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconConfigurationEntry" xml:space="preserve">
+    <value>&lt;i class="far fa-bookmark text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconConnectionGateway" xml:space="preserve">
+    <value>&lt;i class="fas fa-external-link-square-alt text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconDefault" xml:space="preserve">
+    <value>&lt;i class="fas fa-expand text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconIntegrationAccount" xml:space="preserve">
+    <value>&lt;i class="fas fa-th text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconKeyVault" xml:space="preserve">
+    <value>&lt;i class="fas fa-key text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconLogicApp" xml:space="preserve">
+    <value>&lt;i class="fas fa-project-diagram text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconMessage" xml:space="preserve">
+    <value>&lt;i class="far fa-envelope text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconResourceGroup" xml:space="preserve">
+    <value>&lt;i class="fas fa-cube text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconRoutingProperties" xml:space="preserve">
+    <value>&lt;i class="fas fa-map-marker-alt text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconRoutingSlip" xml:space="preserve">
+    <value>&lt;i class="fas fa-route text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconScript" xml:space="preserve">
+    <value>&lt;i class="fas fa-scroll text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconSecurityRole" xml:space="preserve">
+    <value>&lt;i class="fas fa-user-lock text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconServiceBus" xml:space="preserve">
+    <value>&lt;i class="fas fa-bus-alt text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconServiceBusTopic" xml:space="preserve">
+    <value>&lt;i class="fas fa-tag text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconServiceBusTopicSubscription" xml:space="preserve">
+    <value>&lt;i class="fas fa-plus-square text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconStorageAccount" xml:space="preserve">
+    <value>&lt;i class="far fa-hdd text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconWebConnections" xml:space="preserve">
+    <value>&lt;i class="fas fa-globe text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconXmlSchema" xml:space="preserve">
+    <value>&lt;i class="fa fa-file-code text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceNameApiManagement" xml:space="preserve">
+    <value>API Management Service</value>
+  </data>
+  <data name="TargetResourceNameAppConfiguration" xml:space="preserve">
+    <value>App Configuration</value>
+  </data>
+  <data name="TargetResourceNameApplicationInsights" xml:space="preserve">
+    <value>Application Insights</value>
+  </data>
+  <data name="TargetResourceNameAppServicePlan" xml:space="preserve">
+    <value>App Service Plan</value>
+  </data>
+  <data name="TargetResourceNameAzureFunction" xml:space="preserve">
+    <value>Azure Function</value>
+  </data>
+  <data name="TargetResourceNameConfigurationEntry" xml:space="preserve">
+    <value>Configuration Entry</value>
+  </data>
+  <data name="TargetResourceNameConnectionGateway" xml:space="preserve">
+    <value>Connection Gateway</value>
+  </data>
+  <data name="TargetResourceNameIntegrationAccount" xml:space="preserve">
+    <value>Integration Account</value>
+  </data>
+  <data name="TargetResourceNameKeyVault" xml:space="preserve">
+    <value>Key Vault</value>
+  </data>
+  <data name="TargetResourceNameLogicApp" xml:space="preserve">
+    <value>Logic App</value>
+  </data>
+  <data name="TargetResourceNameMessage" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="TargetResourceNameResourceGroup" xml:space="preserve">
+    <value>Resource Group</value>
+  </data>
+  <data name="TargetResourceNameRoutingProperties" xml:space="preserve">
+    <value>Routing Properties</value>
+  </data>
+  <data name="TargetResourceNameRoutingSlip" xml:space="preserve">
+    <value>Routing Slip</value>
+  </data>
+  <data name="TargetResourceNameScript" xml:space="preserve">
+    <value>Deployment Script</value>
+  </data>
+  <data name="TargetResourceNameSecurityRole" xml:space="preserve">
+    <value>Security Role</value>
+  </data>
+  <data name="TargetResourceNameServiceBus" xml:space="preserve">
+    <value>Service Bus Namespace</value>
+  </data>
+  <data name="TargetResourceNameServiceBusTopic" xml:space="preserve">
+    <value>Service Bus Topic</value>
+  </data>
+  <data name="TargetResourceNameServiceBusTopicSubscription" xml:space="preserve">
+    <value>Service Bus Topic Subscription</value>
+  </data>
+  <data name="TargetResourceNameStorageAccount" xml:space="preserve">
+    <value>Storage Account</value>
+  </data>
+  <data name="TargetResourceNameWebConnections" xml:space="preserve">
+    <value>Web Connections</value>
+  </data>
+  <data name="TargetResourceNameXmlSchema" xml:space="preserve">
+    <value>XML Schema</value>
+  </data>
+  <data name="TargetResourceSectionChannels" xml:space="preserve">
+    <value>Channels</value>
+  </data>
+  <data name="TargetResourceSectionEndpoints" xml:space="preserve">
+    <value>Endpoints</value>
+  </data>
+  <data name="TargetResourceSectionIntermediaries" xml:space="preserve">
+    <value>Intermediaries</value>
+  </data>
+  <data name="TargetResourceSectionMessages" xml:space="preserve">
+    <value>Messages</value>
+  </data>
+  <data name="TargetResourceSectionResources" xml:space="preserve">
+    <value>Resources</value>
+  </data>
+  <data name="TargetResourceSnippet" xml:space="preserve">
+    <value>&lt;div class="media text-muted pt-3"&gt;
+	{icon}
+	&lt;div class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray"&gt;
+		&lt;div class="d-flex justify-content-between align-items-center w-100"&gt;
+			&lt;strong class="text-gray-dark"&gt;{type}&lt;/strong&gt;
+		&lt;/div&gt;
+		&lt;span class="d-block"&gt;{description}&lt;/span&gt;
+	&lt;/div&gt;
+&lt;/div&gt;</value>
+  </data>
+  <data name="TargetScenarioHeading" xml:space="preserve">
+    <value>&lt;a name="{0}"/&gt;
+&lt;h6 class="border-bottom border-gray pb-2 mb-0"&gt;Scenario: {1}&lt;/h6&gt;</value>
+  </data>
+</root>

@@ -1,0 +1,111 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29911.84
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AzureIntegrationMigration.BizTalk.Types", "src\Microsoft.AzureIntegrationMigration.BizTalk.Types\Microsoft.AzureIntegrationMigration.BizTalk.Types.csproj", "{70E4E7E4-3E64-4995-8E42-5D61668124CC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AzureIntegrationMigration.BizTalk.Discover", "src\Microsoft.AzureIntegrationMigration.BizTalk.Discover\Microsoft.AzureIntegrationMigration.BizTalk.Discover.csproj", "{7B3D4B91-5D75-4F46-841F-48054641E2A9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5F154C8B-4BC1-48D9-A6CC-4945915D1FA9}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		nuget.config = nuget.config
+		version-number.txt = version-number.txt
+		version-suffix.txt = version-suffix.txt
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AzureIntegrationMigration.BizTalk.Parse", "src\Microsoft.AzureIntegrationMigration.BizTalk.Parse\Microsoft.AzureIntegrationMigration.BizTalk.Parse.csproj", "{544D22C3-84C8-457B-BE59-87EDFBE8CC29}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AzureIntegrationMigration.BizTalk.Parse.Tests", "tests\Microsoft.AzureIntegrationMigration.BizTalk.Parse.Tests\Microsoft.AzureIntegrationMigration.BizTalk.Parse.Tests.csproj", "{8EA756B6-4323-46CC-B4CB-95CBCA605477}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AzureIntegrationMigration.BizTalk.StageRunners", "src\Microsoft.AzureIntegrationMigration.BizTalk.StageRunners\Microsoft.AzureIntegrationMigration.BizTalk.StageRunners.csproj", "{FB783DF8-E5C0-49DC-9EB9-7EB2593516C5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AzureIntegrationMigration.BizTalk.Discover.Tests", "tests\Microsoft.AzureIntegrationMigration.BizTalk.Discover.Tests\Microsoft.AzureIntegrationMigration.BizTalk.Discover.Tests.csproj", "{0B3D4040-F308-4D1C-BF86-60E23B345349}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AzureIntegrationMigration.BizTalk.Report", "src\Microsoft.AzureIntegrationMigration.BizTalk.Report\Microsoft.AzureIntegrationMigration.BizTalk.Report.csproj", "{B6EF7C24-5414-4415-BB51-CF11F6FD8073}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AzureIntegrationMigration.BizTalk.Report.Tests", "tests\Microsoft.AzureIntegrationMigration.BizTalk.Report.Tests\Microsoft.AzureIntegrationMigration.BizTalk.Report.Tests.csproj", "{0C0226C7-98E2-4EC9-AD19-42F7EA886328}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AzureIntegrationMigration.BizTalk.Analyze.Tests", "tests\Microsoft.AzureIntegrationMigration.BizTalk.Analyze.Tests\Microsoft.AzureIntegrationMigration.BizTalk.Analyze.Tests.csproj", "{E845F4CD-C380-4EED-A96B-E31ED3C2433A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AzureIntegrationMigration.BizTalk.Analyze", "src\Microsoft.AzureIntegrationMigration.BizTalk.Analyze\Microsoft.AzureIntegrationMigration.BizTalk.Analyze.csproj", "{CB61F8B2-B2D8-4B3E-B2DA-1591607DB75E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AzureIntegrationMigration.BizTalk.Cli.Tests", "tests\Microsoft.AzureIntegrationMigration.BizTalk.Cli.Tests\Microsoft.AzureIntegrationMigration.BizTalk.Cli.Tests.csproj", "{12C24DD1-63A2-48CB-8071-2374E7A17EDC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AzureIntegrationMigration.BizTalk.Types.Tests", "tests\Microsoft.AzureIntegrationMigration.BizTalk.Types.Tests\Microsoft.AzureIntegrationMigration.BizTalk.Types.Tests.csproj", "{4B11A104-F89E-4635-A96C-FBED908A3C71}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AzureIntegrationMigration.BizTalk.Convert", "src\Microsoft.AzureIntegrationMigration.BizTalk.Convert\Microsoft.AzureIntegrationMigration.BizTalk.Convert.csproj", "{FE346D71-8BC1-4373-B77F-51DA7F96AC59}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AzureIntegrationMigration.BizTalk.Convert.Tests", "tests\Microsoft.AzureIntegrationMigration.BizTalk.Convert.Tests\Microsoft.AzureIntegrationMigration.BizTalk.Convert.Tests.csproj", "{3B50752A-E601-4DE2-B5B2-127A08927C5F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{70E4E7E4-3E64-4995-8E42-5D61668124CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70E4E7E4-3E64-4995-8E42-5D61668124CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70E4E7E4-3E64-4995-8E42-5D61668124CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70E4E7E4-3E64-4995-8E42-5D61668124CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B3D4B91-5D75-4F46-841F-48054641E2A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B3D4B91-5D75-4F46-841F-48054641E2A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B3D4B91-5D75-4F46-841F-48054641E2A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B3D4B91-5D75-4F46-841F-48054641E2A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{544D22C3-84C8-457B-BE59-87EDFBE8CC29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{544D22C3-84C8-457B-BE59-87EDFBE8CC29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{544D22C3-84C8-457B-BE59-87EDFBE8CC29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{544D22C3-84C8-457B-BE59-87EDFBE8CC29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EA756B6-4323-46CC-B4CB-95CBCA605477}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EA756B6-4323-46CC-B4CB-95CBCA605477}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EA756B6-4323-46CC-B4CB-95CBCA605477}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EA756B6-4323-46CC-B4CB-95CBCA605477}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB783DF8-E5C0-49DC-9EB9-7EB2593516C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB783DF8-E5C0-49DC-9EB9-7EB2593516C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB783DF8-E5C0-49DC-9EB9-7EB2593516C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB783DF8-E5C0-49DC-9EB9-7EB2593516C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B3D4040-F308-4D1C-BF86-60E23B345349}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B3D4040-F308-4D1C-BF86-60E23B345349}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B3D4040-F308-4D1C-BF86-60E23B345349}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B3D4040-F308-4D1C-BF86-60E23B345349}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6EF7C24-5414-4415-BB51-CF11F6FD8073}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6EF7C24-5414-4415-BB51-CF11F6FD8073}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6EF7C24-5414-4415-BB51-CF11F6FD8073}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6EF7C24-5414-4415-BB51-CF11F6FD8073}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C0226C7-98E2-4EC9-AD19-42F7EA886328}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C0226C7-98E2-4EC9-AD19-42F7EA886328}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C0226C7-98E2-4EC9-AD19-42F7EA886328}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C0226C7-98E2-4EC9-AD19-42F7EA886328}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E845F4CD-C380-4EED-A96B-E31ED3C2433A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E845F4CD-C380-4EED-A96B-E31ED3C2433A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E845F4CD-C380-4EED-A96B-E31ED3C2433A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E845F4CD-C380-4EED-A96B-E31ED3C2433A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB61F8B2-B2D8-4B3E-B2DA-1591607DB75E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB61F8B2-B2D8-4B3E-B2DA-1591607DB75E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB61F8B2-B2D8-4B3E-B2DA-1591607DB75E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB61F8B2-B2D8-4B3E-B2DA-1591607DB75E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12C24DD1-63A2-48CB-8071-2374E7A17EDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12C24DD1-63A2-48CB-8071-2374E7A17EDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12C24DD1-63A2-48CB-8071-2374E7A17EDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12C24DD1-63A2-48CB-8071-2374E7A17EDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B11A104-F89E-4635-A96C-FBED908A3C71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B11A104-F89E-4635-A96C-FBED908A3C71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B11A104-F89E-4635-A96C-FBED908A3C71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B11A104-F89E-4635-A96C-FBED908A3C71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE346D71-8BC1-4373-B77F-51DA7F96AC59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE346D71-8BC1-4373-B77F-51DA7F96AC59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE346D71-8BC1-4373-B77F-51DA7F96AC59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE346D71-8BC1-4373-B77F-51DA7F96AC59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B50752A-E601-4DE2-B5B2-127A08927C5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B50752A-E601-4DE2-B5B2-127A08927C5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B50752A-E601-4DE2-B5B2-127A08927C5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B50752A-E601-4DE2-B5B2-127A08927C5F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C3FD15FA-A05D-4729-9827-FA149D5303EF}
+	EndGlobalSection
+EndGlobal

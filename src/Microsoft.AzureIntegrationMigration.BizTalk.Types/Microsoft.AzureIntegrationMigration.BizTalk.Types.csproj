@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+		<NeutralLanguage>en</NeutralLanguage>
+		<Authors>Microsoft Corporation</Authors>
+		<Product>Microsoft Azure Integration Migration Tool</Product>
+		<Description>Library that provides BizTalk types.</Description>
+		<Copyright>Copyright © Microsoft Corporation 2020</Copyright>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageOutputPath>$(MSBuildThisFileDirectory)\..\..\dist\packages</PackageOutputPath>
+		<PackageId>Microsoft.AzureIntegrationMigration.BizTalk.Types</PackageId>
+		<RepositoryUrl>https://github.com/azure/aimbiztalk</RepositoryUrl>
+		<Version>0.0.4-alpha</Version>
+		<NoWarn>NU5105</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<WarningsAsErrors />
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+	  <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.AzureIntegrationMigration.ApplicationModel" Version="0.3.0-alpha.2020092250449" />
+	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="3.6.0-beta1-20111-10">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Schemas\BizTalkServerPipelineSchema_v1.0.cs">
+	    <DependentUpon>BizTalkServerPipelineSchema_v1.0.xsd</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Schemas\BizTalkServerPipelineSchema_v1.0.xsd">
+	    <SubType>Designer</SubType>
+	  </None>
+	</ItemGroup>
+
+</Project>

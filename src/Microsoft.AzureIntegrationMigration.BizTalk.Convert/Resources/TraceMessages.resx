@@ -1,0 +1,297 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AddedActionForWorkflowActivityContainerToWorkflowDefinition" xml:space="preserve">
+    <value>{RuleId}: Added action {ActionName} for workflow activity container {ContainerName} to workflow definition actions.</value>
+  </data>
+  <data name="AddedActionForWorkflowActivityToWorkflowDefinition" xml:space="preserve">
+    <value>{RuleId}: Added action {ActionName} for workflow activity {ActivityName} to workflow definition actions.</value>
+  </data>
+  <data name="AddedPreBuiltActionsToWorkflowActivityContainer" xml:space="preserve">
+    <value>{RuleId}: Added {ActionCount} pre-built actions to workflow activity container {ContainerName}.</value>
+  </data>
+  <data name="AddedPreBuiltActionToWorkflowActivityContainer" xml:space="preserve">
+    <value>{RuleId}: Added pre-built action {ActionName} with resource type {ResourceType} to workflow activity container {ContainerName}.</value>
+  </data>
+  <data name="AddedWorkflowChannelToWorkflowDefinitionTriggers" xml:space="preserve">
+    <value>{RuleId}: Added workflow channel {ChannelName} to workflow definition triggers.</value>
+  </data>
+  <data name="AddedWorkflowMessageToWorkflowDefinition" xml:space="preserve">
+    <value>{RuleId}: Added workflow message {MessageName} to workflow definition actions.</value>
+  </data>
+  <data name="AddedWorkflowParameterToArmParameters" xml:space="preserve">
+    <value>{RuleId}: Added workflow parameter {ParameterName} to ARM parameters file.</value>
+  </data>
+  <data name="AddedWorkflowParameterToArmTemplate" xml:space="preserve">
+    <value>{RuleId}: Added workflow parameter {ParameterName} to ARM template.</value>
+  </data>
+  <data name="AddedWorkflowParameterToResourceParameters" xml:space="preserve">
+    <value>{RuleId}: Added workflow parameter {ParameterName} to workflow ARM resource type.</value>
+  </data>
+  <data name="AddedWorkflowParameterToWorkflowDefinition" xml:space="preserve">
+    <value>{RuleId}: Added workflow parameter {ParameterName} to workflow parameters definition.</value>
+  </data>
+  <data name="AddedWorkflowPropertyToResource" xml:space="preserve">
+    <value>{RuleId}: Added workflow property {PropertyName} to workflow ARM resource type.</value>
+  </data>
+  <data name="AddedWorkflowPropertyToResourceProperties" xml:space="preserve">
+    <value>{RuleId}: Added workflow property {PropertyName} to workflow resource properties.</value>
+  </data>
+  <data name="AddedWorkflowVariableToArmTemplate" xml:space="preserve">
+    <value>{RuleId}: Added workflow variable {VariableName} to ARM template.</value>
+  </data>
+  <data name="AddedWorkflowVariableToWorkflowDefinition" xml:space="preserve">
+    <value>{RuleId}: Added workflow variable {VariableName} to workflow definition actions.</value>
+  </data>
+  <data name="BindingAction" xml:space="preserve">
+    <value>{RuleId}: Binding action {ActionName} to {PreviousActionName}.</value>
+  </data>
+  <data name="BindingActions" xml:space="preserve">
+    <value>{RuleId}: Binding actions for process manager {ProcessManagerName}.</value>
+  </data>
+  <data name="CheckingInputChannels" xml:space="preserve">
+    <value>{RuleId}: Finding messaging objects in the route with input channels {InputChannels}.</value>
+  </data>
+  <data name="ConvertingActivity" xml:space="preserve">
+    <value>{RuleId}: Converting activity {ActivityName} with type {ActivityType}.</value>
+  </data>
+  <data name="ConvertingActivityContainer" xml:space="preserve">
+    <value>{RuleId}: Converting activity container {ActivityContainerName} with type {ActivityContainerType}.</value>
+  </data>
+  <data name="CopyingSnippet" xml:space="preserve">
+    <value>{RuleId}: Copying snippet file from {SourceFilePath} to {DestinationFilePath}.</value>
+  </data>
+  <data name="CopyingTemplate" xml:space="preserve">
+    <value>Copying template file from {SourceFilePath} to {DestinationFilePath}.</value>
+  </data>
+  <data name="CreatingConversionPath" xml:space="preserve">
+    <value>Creating conversion path {ConversionPath}.</value>
+  </data>
+  <data name="CreatingGenerationPath" xml:space="preserve">
+    <value>Creating generation path {GenerationPath}.</value>
+  </data>
+  <data name="FindingResourceTemplateByScenarioStepName" xml:space="preserve">
+    <value>{RuleId}: Finding resource template of type {ResourceTemplateType} for scenario step {ScenarioStepName} within the scope {ResourceScope}.</value>
+  </data>
+  <data name="FoundEndpointAttachedToChannel" xml:space="preserve">
+    <value>{RuleId}: Found endpoint {EndpointName} in the route with input channel {ChannelName}.</value>
+  </data>
+  <data name="FoundIntermediaryAttachedToChannel" xml:space="preserve">
+    <value>{RuleId}: Found intermediary {IntermediaryName} in the route with input channel {ChannelName}.</value>
+  </data>
+  <data name="FoundNoResourceTemplateByScenarioStepName" xml:space="preserve">
+    <value>{RuleId}: Found no resource template of type {ResourceTemplateType} for scenario step {ScenarioStepName} within the scope {ResourceScope}.</value>
+  </data>
+  <data name="FoundTooManyResourceTemplatesByScenarioStepName" xml:space="preserve">
+    <value>{RuleId}: Found {ResourceCount} resource templates of type {ResourceTemplateType} for scenario step {ScenarioStepName}, but only expecting to find a single template within the scope {ResourceScope}.</value>
+  </data>
+  <data name="GeneratingWorkflow" xml:space="preserve">
+    <value>{RuleId}: Generating workflow for process manager {ProcessManagerName}.</value>
+  </data>
+  <data name="GeneratorCompleted" xml:space="preserve">
+    <value>{GeneratorId}: Completed running rule {GeneratorName}.</value>
+  </data>
+  <data name="IgnoringChannel" xml:space="preserve">
+    <value>{RuleId}: Channel {ChannelName} is not part of the route, ignoring.</value>
+  </data>
+  <data name="LoadingSnippet" xml:space="preserve">
+    <value>{RuleId}: Loading snippet {SnippetPath}.</value>
+  </data>
+  <data name="LoadingTemplate" xml:space="preserve">
+    <value>Loading template {TemplatePath}.</value>
+  </data>
+  <data name="NoWorkflowsToGenerate" xml:space="preserve">
+    <value>{RuleId}: There are no workflows in application {ApplicationName} to be generated.</value>
+  </data>
+  <data name="RenderingSnippet" xml:space="preserve">
+    <value>{RuleId}: Rendering snippet {SnippetPath} using model and workflow object {WorkflowObjectName} of type {WorkflowObjectType}.</value>
+  </data>
+  <data name="RenderingTemplate" xml:space="preserve">
+    <value>Rendering template {TemplatePath} using model.</value>
+  </data>
+  <data name="RoutingSlipNotGeneratedForScenario" xml:space="preserve">
+    <value>{RuleId}: A routing slip has not been generated for the scenario {Scenario} because not all steps have been implemented as template resources.</value>
+  </data>
+  <data name="RunningGenerator" xml:space="preserve">
+    <value>{GeneratorId}: Running rule {GeneratorName}.</value>
+  </data>
+  <data name="SavedWorkflow" xml:space="preserve">
+    <value>{RuleId}: Saved workflow to {WorkflowPath} for process manager {ProcessManagerName}.</value>
+  </data>
+  <data name="SavingArtifact" xml:space="preserve">
+    <value>Saving artifact {ArtifactPath}.</value>
+  </data>
+  <data name="SavingSnippet" xml:space="preserve">
+    <value>{RuleId}: Saving rendered snippet {RenderedSnippetPath}.</value>
+  </data>
+  <data name="SavingTemplate" xml:space="preserve">
+    <value>Saving rendered template {RenderedTemplatePath}.</value>
+  </data>
+  <data name="SelectedRuleForWorkflowActivityContainer" xml:space="preserve">
+    <value>{RuleId}: Selected workflow definition actions container for rule {Rule}.</value>
+  </data>
+  <data name="SkippingRuleAsMigrationTargetMessageBusMissing" xml:space="preserve">
+    <value>{RuleId}: Skipping the rule {RuleName} as there is no migration target message bus.</value>
+  </data>
+  <data name="UnableToFindResourceWithTypeInTargetModelForScenarioStepName" xml:space="preserve">
+    <value>{RuleId}: Unable to find the resource template with the type {0} and scenario step name of {1} in the target model.</value>
+  </data>
+  <data name="WalkingOrchestrationRoute" xml:space="preserve">
+    <value>{RuleId}: Walking the route for scenario {ScenarioName} starting from activating intermediary {IntermediaryName}.</value>
+  </data>
+  <data name="WalkingReceiveRoute" xml:space="preserve">
+    <value>{RuleId}: Walking the route for scenario {ScenarioName} starting from activating endpoint {EndpointName}.</value>
+  </data>
+  <data name="WalkingSendRoute" xml:space="preserve">
+    <value>{RuleId}: Walking the route for scenario {ScenarioName} starting from activating intermediary {IntermediaryName}.</value>
+  </data>
+  <data name="WorkflowActivityContainerPlaceHolderSnippetNotFound" xml:space="preserve">
+    <value>{RuleId}: No workflow activity container placeholder snippet with type {SnippetResourceType} was found.</value>
+  </data>
+  <data name="WorkflowActivityContainerSnippetNotFound" xml:space="preserve">
+    <value>{RuleId}: No workflow activity container snippet with type {SnippetResourceType} was found, using placeholder instead.</value>
+  </data>
+  <data name="WorkflowActivityPlaceHolderSnippetNotFound" xml:space="preserve">
+    <value>{RuleId}: No workflow activity placeholder snippet with type {SnippetResourceType} was found.</value>
+  </data>
+  <data name="WorkflowActivitySnippetNotFound" xml:space="preserve">
+    <value>{RuleId}: No workflow activity snippet with type {SnippetResourceType} was found, using placeholder instead.</value>
+  </data>
+  <data name="WorkflowChannelSnippetsNotFound" xml:space="preserve">
+    <value>{RuleId}: No workflow channel snippets found for process manager {ProcessManagerName}.</value>
+  </data>
+  <data name="WorkflowMessagePlaceHolderSnippetNotFound" xml:space="preserve">
+    <value>{RuleId}: No workflow message placeholder snippet with type {SnippetResourceType} was found.</value>
+  </data>
+  <data name="WorkflowMessageSnippetsNotFound" xml:space="preserve">
+    <value>{RuleId}: No workflow message snippets found for process manager {ProcessManagerName}.</value>
+  </data>
+  <data name="WorkflowParameterSnippetsNotFound" xml:space="preserve">
+    <value>{RuleId}: No workflow parameter snippets found for process manager {ProcessManagerName}.</value>
+  </data>
+  <data name="WorkflowPropertySnippetsNotFound" xml:space="preserve">
+    <value>{RuleId}: No workflow property snippets found for process manager {ProcessManagerName}.</value>
+  </data>
+  <data name="WorkflowVariablePlaceHolderSnippetNotFound" xml:space="preserve">
+    <value>{RuleId}: No workflow variable placeholder snippet with type {SnippetResourceType} was found.</value>
+  </data>
+  <data name="WorkflowVariableSnippetsNotFound" xml:space="preserve">
+    <value>{RuleId}: No workflow variable snippets found for process manager {ProcessManagerName}.</value>
+  </data>
+</root>

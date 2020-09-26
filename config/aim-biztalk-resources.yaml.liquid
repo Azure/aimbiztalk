@@ -1,0 +1,577 @@
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- for endpoint in application.endpoints -%}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" %}      
+      {%- deploy_data_gateway = true -%}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+#
+# A target model is produced by analyzing the source model and adding logical messaging
+# objects that represent the source model artifacts.
+#
+# As part of the analysis stage, each logical messaging object is associated with a resource
+# map key.  This key is used to look up the resources in this configuration file and
+# associated template configuration files and the discovered resources are added to the target model.
+#
+# The configuration files themselves can also be rendered using the Liquid template language.
+#
+
+# A resource associates the templates that are used to represent and deploy the resource in Azure
+# keyed by the AIS target environment.  The target environment is an enumeration defined in the model
+# and determines what environment the templates support.
+resources:
+
+  # ------------------------------------------------------------------------------
+  # AIS generic resources
+  # ------------------------------------------------------------------------------
+
+  - resource: deployment
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - deployResources
+
+  - resource: messageBusGroup
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - messageBusAzureResourceGroup
+          - deployMessageBusGroup
+
+  - resource: messageBusService
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - messageBusServiceAzureRole
+          - messageBusServiceAzureApiManagement
+          - messageBusServiceAzureAppServiceConsumption
+          - messageBusServiceAzureStorageAccount
+          - deployMessageBusServiceRole
+          - deployMessageBusServiceApiManagement
+          - deployMessageBusServiceAppService
+          - deployMessageBusServiceStorage
+          - deployMessageBusGroupApimRoleAssignment
+  
+  - resource: messageBusOps
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - messageBusOpsAzureAppInsights
+          - deployMessageBusOpsAppInsights
+
+  - resource: messageBusPublishChannel
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - messageBusPublishChannelAzureApplicationConfiguration
+          - deployMessageBusOpsAppInsights
+
+  - resource: artifactStore
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - artifactStoreAzureIntegrationAccountBasic
+          - deployArtifactStore
+
+  - resource: routingStore
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - routingStoreAzureAppConfiguration
+          - routingStoreAzureKeyVault
+          - routingStoreAzureApiManagement
+          - deployRoutingStoreConfig
+          - deployRoutingStoreVault
+          - deployRoutingStoreApi
+
+  - resource: routingManager
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - routingManagerAzureFunctionConsumption
+          - routingManagerAzureApiManagement
+          - deployRoutingManagerFunc
+          - deployRoutingManagerApi
+
+  - resource: messagingManager
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - messagingManagerAzureFunctionConsumption
+          - messagingManagerAzureApiManagement
+          - deployMessagingManagerFunc
+          - deployMessagingManagerApi
+
+  - resource: configManager
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - configManagerAzureApiManagement          
+          - deployConfigManagerApi
+
+  - resource: routingSlipRouter
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - routingSlipRouterAzureLogicAppConsumption
+          - deployRoutingSlipRouterConsumption
+
+  - resource: xmlEnvelopeWrapper
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - xmlEnvelopeWrapperAzureLogicAppConsumption
+          - deployXmlEnvelopeWrapperConsumption
+
+  - resource: xmlMessageProcessor
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - xmlMessageProcessorAzureLogicAppConsumption
+          - deployXmlMessageProcessorConsumption
+
+  - resource: xmlMessageTranslator
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - xmlMessageTranslatorAzureLogicAppConsumption
+          - deployXmlMessageTranslatorConsumption
+
+  - resource: xmlMessageValidator
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - xmlMessageValidatorAzureLogicAppConsumption
+          - deployXmlMessageValidatorConsumption
+
+  - resource: messageConstructor
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - messageConstructorAzureLogicAppConsumption
+          - deployMessageConstructorConsumption
+
+  - resource: messageResponseHandler
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - messageResponseHandlerAzureLogicApp
+          - messageResponseHandlerAzureServiceBusApiConnection
+          - deployMessageResponseHandlerLogicApp
+          - deployMessageResponseHandlerServiceBusApiConnection
+ 
+  - resource: messageSuspendProcessor
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - messageSuspendProcessorAzureLogicApp
+          - messageSuspendProcessorAzureServiceBusApiConnection
+          - deployMessageSuspendProcessorLogicApp
+          - deployMessageSuspendProcessorServiceBusApiConnection
+
+  - resource: jsonDecoder
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - jsonDecoderAzureLogicApp
+          - deployJsonDecoderLogicApp
+
+  - resource: jsonEncoder
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - jsonEncoderAzureLogicApp
+          - deployJsonEncoderLogicApp
+
+  - resource: flatFileMessageProcessor
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - flatFileMessageProcessorAzureLogicApp
+          - deployFlatFileMessageProcessorLogicApp
+
+  - resource: systemApplicationGroup
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - systemApplicationAzureResourceGroup
+          - deploySystemApplicationGroup
+          - deploySystemApplicationGroupApimRoleAssignment
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {% assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" %}
+  {% if application.name != 'System Application' %}
+  - resource: applicationGroup{{ app_name }}
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - applicationAzureResourceGroup{{ app_name }}
+          - deployApplicationGroup{{ app_name }}
+          - deployApplicationGroupApimRoleAssignment{{ app_name }}
+  {%- endif %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications -%}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for message in application.messages %}
+    {% assign message_name = message.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - resource: applicationMessage{{ app_name }}{{ message_name }}
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - deploySchema{{ app_name }}{{ message_name }}
+          - messagesAzureIntegrationAccountSchema{{ app_name }}{{ message_name }}
+    {%- assign routing_property_count = message.routing_properties | size -%}
+    {%- if routing_property_count > 0 %}
+          - deployMessageRoutingPropertyConfiguration{{ app_name }}{{ message_name }}          
+          - messageRoutingPropertyConfiguration{{ app_name }}{{ message_name }}
+    {%- endif %}
+    {%- for transform in message.message_transforms %}
+      {% assign transform_name = transform.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+          - deployMap{{ app_name }}{{ message_name }}{{ transform_name }}    
+          - messagesAzureIntegrationAccountMap{{ app_name }}{{ message_name }}{{ transform_name }}
+    {%- endfor %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints -%}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FTP" and endpoint.message_exchange_pattern == "Accept" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - resource: ftpReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - ftpReceiveAzureFtpConnectionEndpoint{{ app_name }}{{ endpoint_name }}
+          - ftpReceiveAzureServiceBusConnectionEndpoint{{ app_name }}{{ endpoint_name }}
+          - ftpReceiveAzureAdapterEndpoint{{ app_name }}{{ endpoint_name }}          
+          - receiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
+          - receiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
+          - receiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
+          - deployFtpReceiveAdapterLogicApp{{ app_name }}{{ endpoint_name }}
+          - deployFtpReceiveAdapterFtpApiConnection{{ app_name }}{{ endpoint_name }}
+          - deployFtpReceiveAdapterServiceBusApiConnection{{ app_name }}{{ endpoint_name }}
+          - deployReceiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
+          - deployReceiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
+          - deployReceiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints -%}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FTP" and endpoint.message_exchange_pattern == "Send" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - resource: ftpSendAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - deployFtpSendAdapterLogicApp{{ app_name }}{{ endpoint_name }}
+          - deployFtpSendAdapterApiConnection{{ app_name }}{{ endpoint_name }}
+          - ftpSendAzureConnectionEndpoint{{ app_name }}{{ endpoint_name }}
+          - ftpSendAzureAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+     {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints -%}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Accept" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - resource: fileReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - fileReceiveAzureFileConnectionEndpoint{{ app_name }}{{ endpoint_name }}
+          - fileReceiveAzureServiceBusConnectionEndpoint{{ app_name }}{{ endpoint_name }}
+          - fileReceiveAzureAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+          - receiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
+          - receiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
+          - receiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
+          - deployFileReceiveAdapterLogicApp{{ app_name }}{{ endpoint_name }}
+          - deployFileReceiveAdapterFileApiConnection{{ app_name }}{{ endpoint_name }}
+          - deployFileReceiveAdapterServiceBusApiConnection{{ app_name }}{{ endpoint_name }}
+          - deployReceiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
+          - deployReceiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
+          - deployReceiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints -%}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Send" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - resource: fileSendAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - deployFileSendAdapterLogicApp{{ app_name }}{{ endpoint_name }}
+          - deployFileSendAdapterApiConnection{{ app_name }}{{ endpoint_name }}
+          - fileSendAzureConnectionEndpoint{{ app_name }}{{ endpoint_name }}
+          - fileSendAzureAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+     {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints -%}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "HTTP" and ( endpoint.message_exchange_pattern == "ReceiveResponse" or endpoint.message_exchange_pattern == "Receive" ) %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - resource: httpReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    targets:
+      - target: ['consumption', 'ise']
+        templates:          
+          - httpReceiveAzureAdapterEndpoint{{ app_name }}{{ endpoint_name }}          
+          - receiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
+          - receiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
+          - receiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
+          - deployHttpReceiveAdapterLogicApp{{ app_name }}{{ endpoint_name }}                    
+          - deployReceiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
+          - deployReceiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
+          - deployReceiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for channel in application.channels %}
+    {%- if channel.channel_type == "PublishSubscribe" %}
+      {%- assign channel_name = channel.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" -%}
+      {%- for subscription in channel.subscriptions %}
+        {% assign subscription_name = subscription.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - resource: topicSubscription{{ app_name }}{{ channel_name }}{{ subscription_name }}
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - deployTopicSubscription{{ app_name }}{{ channel_name }}{{ subscription_name }}
+          - topicSubscriptionAzureServiceBus{{ app_name }}{{ channel_name }}{{ subscription_name }}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for intermediary in application.intermediaries %}
+    {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "ProcessManager" and intermediary.activator == true %}
+      {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - resource: activatableProcessManager{{ app_name }}{{ intermediary_name }}
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - deployProcessManagerApiConnection{{ app_name }}{{ intermediary_name }}
+          - deployProcessManagerConfigurationEntry{{ app_name }}{{ intermediary_name }}
+          - deployProcessManagerLogicApp{{ app_name }}{{ intermediary_name }}
+          - deployProcessManagerRoutingSlip{{ app_name }}{{ intermediary_name }}
+          - activatableProcessManagerAzureApiConnection{{ app_name }}{{ intermediary_name }}
+          - activatableProcessManagerAzureConfigurationEntry{{ app_name }}{{ intermediary_name }}
+          - activatableProcessManagerAzureLogicApp{{ app_name }}{{ intermediary_name }}
+          - activatableProcessManagerRoutingSlip{{ app_name }}{{ intermediary_name }}          
+        snippets:
+          - activatableWorkflowDefinition{{ app_name }}{{ intermediary_name }}
+          - activatableWorkflowParametersDefinition{{ app_name }}{{ intermediary_name }}
+          - parameterMessageBusResourceGroup{{ app_name }}{{ intermediary_name }}
+          - parameterSystemApplicationResourceGroup{{ app_name }}{{ intermediary_name }}
+          - parameterApimService{{ app_name }}{{ intermediary_name }}
+          - parameterApimRetryPolicy{{ app_name }}{{ intermediary_name }}
+          - parameterApimSubscriptionKey{{ app_name }}{{ intermediary_name }}
+          - parameterMessageSuspendProcessorLogicApp{{ app_name }}{{ intermediary_name }}
+          - parameterSuspendQueueTopic{{ app_name }}{{ intermediary_name }}
+          - parameterRoutingSlipRouterLogicApp{{ app_name }}{{ intermediary_name }}
+          - parameterRoutingSlipRouterRetryPolicy{{ app_name }}{{ intermediary_name }}
+          - parameterIntegrationAccount{{ app_name }}{{ intermediary_name }}
+          - parameterServiceBusTopic{{ app_name }}{{ intermediary_name }}
+          - parameterServiceBusTopicSubscribeApiConnection{{ app_name }}{{ intermediary_name }}
+          - parameterServiceBusTopicPublishApiConnection{{ app_name }}{{ intermediary_name }}
+          - parameterServiceBusTopicSubscription{{ app_name }}{{ intermediary_name }}
+          - parameterServiceBusRecurrenceFrequency{{ app_name }}{{ intermediary_name }}
+          - parameterServiceBusRecurrenceInterval{{ app_name }}{{ intermediary_name }}
+          - parameterScenario{{ app_name }}{{ intermediary_name }}
+          - parameterScenarioStep{{ app_name }}{{ intermediary_name }}
+          - parameterTags{{ app_name }}{{ intermediary_name }}
+          - propertyTags{{ app_name }}{{ intermediary_name }}
+          - propertyIntegrationAccount{{ app_name }}{{ intermediary_name }}
+          - variableApimService{{ app_name }}{{ intermediary_name }}
+          - variableConfigurationManager{{ app_name }}{{ intermediary_name }}
+          - variableIntegrationAccount{{ app_name }}{{ intermediary_name }}
+          - variableMessagingManager{{ app_name }}{{ intermediary_name }}
+          - variableRoutingManager{{ app_name }}{{ intermediary_name }}
+          - variableRoutingSlipRouterLogicApp{{ app_name }}{{ intermediary_name }}
+          - variableMessageSuspendProcessorLogicApp{{ app_name }}{{ intermediary_name }}
+          - variableServiceBusSubscribeApiConnection{{ app_name }}{{ intermediary_name }}
+          - variableServiceBusPublishApiConnection{{ app_name }}{{ intermediary_name }}
+          - channelServiceBusTopicTrigger{{ app_name }}{{ intermediary_name }}
+          - channelServiceBusTopicSend{{ app_name }}{{ intermediary_name }}
+          - variablePlaceHolder{{ app_name }}{{ intermediary_name }}
+          - variableInitializeConfiguration{{ app_name }}{{ intermediary_name }}
+          - variableInitializeErrorMessage{{ app_name }}{{ intermediary_name }}
+          - variableInitializeFaultMessage{{ app_name }}{{ intermediary_name }}
+          - variableInitializeMessageType{{ app_name }}{{ intermediary_name }}
+          - variableInitializeStatusCode{{ app_name }}{{ intermediary_name }}
+          - messagePlaceHolder{{ app_name }}{{ intermediary_name }}
+          - activityContainerPlaceHolder{{ app_name }}{{ intermediary_name }}
+          - activityContainerWorkflow{{ app_name }}{{ intermediary_name }}
+          - activityContainerTask{{ app_name }}{{ intermediary_name }}
+          - activityContainerDecision{{ app_name }}{{ intermediary_name }}
+          - activityContainerDecisionBranch{{ app_name }}{{ intermediary_name }}
+          - activityPlaceHolder{{ app_name }}{{ intermediary_name }}
+          - activityCodeExpression{{ app_name }}{{ intermediary_name }}
+          - activityMessageTransform{{ app_name }}{{ intermediary_name }}
+          - activityMessageConstruction{{ app_name }}{{ intermediary_name }}
+          - activityInvokeWorkflow{{ app_name }}{{ intermediary_name }}
+          - actionDecodeServiceBusMessage{{ app_name }}{{ intermediary_name }}
+          - actionGetConfiguration{{ app_name }}{{ intermediary_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for intermediary in application.intermediaries %}
+    {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "ProcessManager" and intermediary.activator == false %}
+      {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - resource: invokableProcessManager{{ app_name }}{{ intermediary_name }}
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - deployProcessManagerApiConnection{{ app_name }}{{ intermediary_name }}
+          - deployProcessManagerLogicApp{{ app_name }}{{ intermediary_name }}
+          - invokableProcessManagerAzureApiConnection{{ app_name }}{{ intermediary_name }}
+          - invokableProcessManagerAzureLogicApp{{ app_name }}{{ intermediary_name }}
+        snippets:
+          - invokableWorkflowDefinition{{ app_name }}{{ intermediary_name }}
+          - invokableWorkflowParametersDefinition{{ app_name }}{{ intermediary_name }}
+          - parameterMessageBusResourceGroup{{ app_name }}{{ intermediary_name }}
+          - parameterApimService{{ app_name }}{{ intermediary_name }}
+          - parameterApimRetryPolicy{{ app_name }}{{ intermediary_name }}
+          - parameterApimSubscriptionKey{{ app_name }}{{ intermediary_name }}
+          - parameterRoutingSlipRouterLogicApp{{ app_name }}{{ intermediary_name }}
+          - parameterRoutingSlipRouterRetryPolicy{{ app_name }}{{ intermediary_name }}
+          - parameterIntegrationAccount{{ app_name }}{{ intermediary_name }}
+          - parameterServiceBusTopicPublishApiConnection{{ app_name }}{{ intermediary_name }}
+          - parameterScenario{{ app_name }}{{ intermediary_name }}
+          - parameterScenarioStep{{ app_name }}{{ intermediary_name }}
+          - parameterTags{{ app_name }}{{ intermediary_name }}
+          - propertyTags{{ app_name }}{{ intermediary_name }}
+          - propertyIntegrationAccount{{ app_name }}{{ intermediary_name }}
+          - variableApimService{{ app_name }}{{ intermediary_name }}
+          - variableConfigurationManager{{ app_name }}{{ intermediary_name }}
+          - variableIntegrationAccount{{ app_name }}{{ intermediary_name }}
+          - variableMessagingManager{{ app_name }}{{ intermediary_name }}
+          - variableRoutingManager{{ app_name }}{{ intermediary_name }}
+          - variableRoutingSlipRouterLogicApp{{ app_name }}{{ intermediary_name }}
+          - variableServiceBusPublishApiConnection{{ app_name }}{{ intermediary_name }}
+          - channelHttpTrigger{{ app_name }}{{ intermediary_name }}
+          - channelServiceBusTopicSend{{ app_name }}{{ intermediary_name }}
+          - variablePlaceHolder{{ app_name }}{{ intermediary_name }}
+          - variableInitializeConfiguration{{ app_name }}{{ intermediary_name }}
+          - variableInitializeErrorMessage{{ app_name }}{{ intermediary_name }}
+          - variableInitializeFaultMessage{{ app_name }}{{ intermediary_name }}
+          - variableInitializeMessageType{{ app_name }}{{ intermediary_name }}
+          - variableInitializeStatusCode{{ app_name }}{{ intermediary_name }}
+          - messagePlaceHolder{{ app_name }}{{ intermediary_name }}
+          - activityContainerPlaceHolder{{ app_name }}{{ intermediary_name }}
+          - activityContainerTask{{ app_name }}{{ intermediary_name }}
+          - activityContainerDecision{{ app_name }}{{ intermediary_name }}
+          - activityContainerDecisionBranch{{ app_name }}{{ intermediary_name }}
+          - activityPlaceHolder{{ app_name }}{{ intermediary_name }}
+          - activityCodeExpression{{ app_name }}{{ intermediary_name }}
+          - activityMessageTransform{{ app_name }}{{ intermediary_name }}
+          - activityMessageConstruction{{ app_name }}{{ intermediary_name }}
+          - activityInvokeWorkflow{{ app_name }}{{ intermediary_name }}
+          - actionGetConfiguration{{ app_name }}{{ intermediary_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+  # ------------------------------------------------------------------------------
+  # BizTalk specific resources
+  # ------------------------------------------------------------------------------
+
+  - resource: topicChannel
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - topicChannelAzureServiceBusStandard
+          - deployTopicChannel
+
+  - resource: topicResponseChannel
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - topicResponseChannelAzureServiceBusStandard
+          - deployTopicResponseChannel
+
+  - resource: suspendQueueChannel
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - suspendQueueChannelAzureServiceBusTopic
+          - deploySuspendQueueChannel
+
+  - resource: contentDemoter
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - contentDemoterAzureLogicAppConsumption
+          - deployContentDemoterConsumption
+
+  - resource: contentPromoter
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - contentPromoterAzureLogicAppConsumption
+          - deployContentPromoterConsumption
+
+  - resource: topicPublisherApiConnection
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - topicPublisherAzureApiConnectionConsumption
+          - deployTopicPublisherApiConnectionConsumption
+
+  - resource: topicPublisher
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - topicPublisherAzureLogicAppConsumption
+          - deployTopicPublisherConsumption
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for intermediary in application.intermediaries %}
+    {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "MessageSubscriber" %}
+      {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - resource: topicSubscriber{{ app_name }}{{ intermediary_name }}
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - topicSubscriberAzureApiConnection{{ app_name }}{{ intermediary_name }}
+          - topicSubscriberAzureLogicApp{{ app_name }}{{ intermediary_name }}
+          - sendRoutingSlipConfiguration{{ app_name }}{{ intermediary_name }}
+          - sendConfigurationEntry{{ app_name }}{{ intermediary_name }}
+          - sendRoutingPropertyConfiguration{{ app_name }}{{ intermediary_name }}
+          - deployTopicSubscriberApiConnection{{ app_name }}{{ intermediary_name }}
+          - deployTopicSubscriberLogicApp{{ app_name }}{{ intermediary_name }}
+          - deploySendRoutingSlipConfiguration{{ app_name }}{{ intermediary_name }}
+          - deploySendConfigurationEntry{{ app_name }}{{ intermediary_name }}
+          - deploySendRoutingPropertyConfiguration{{ app_name }}{{ intermediary_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- if deploy_data_gateway == true %}
+  - resource: dataGateway
+    targets:
+      - target: ['consumption', 'ise']
+        templates:
+          - onPremiseDataGateway
+          - deployOnPremiseDataGateway
+{%- endif %}

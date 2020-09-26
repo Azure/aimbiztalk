@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>biztalkmigrator</id>
+    <!-- Note This version will be overriden by the command line. -->
+    <version>0.0.1-beta</version>
+    <packageSourceUrl>https://github.com/azure/aimbiztalk</packageSourceUrl>
+    <title>BizTalk to Azure Integration Services Migration CLI</title>
+    <authors>Microsoft</authors>
+    <projectUrl>https://github.com/azure/aimbiztalk</projectUrl>
+    <licenseUrl>https://github.com/azure/aimbiztalk/blob/master/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <tags>biztalkmigrator BizTalk Azure AIS CLI</tags>
+    <description>Command Line Interface (CLI) to migrate BizTalk applications to Microsoft Azure Integration Services. This package includes the dependency on the Azure Integration Migration CLI and the Azure templates.</description>
+    <dependencies>
+      <dependency id="biztalkmigrator-cli"/>
+      <dependency id="biztalkmigrator-azure"/>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+    <file src="..\..\..\dist\choco-src\*" target="tools\bin"/>
+    <file src="..\..\..\templates\**" target="tools\templates"/>
+    <file src="..\..\..\config\**" target="tools\config"/>
+  </files>
+</package>

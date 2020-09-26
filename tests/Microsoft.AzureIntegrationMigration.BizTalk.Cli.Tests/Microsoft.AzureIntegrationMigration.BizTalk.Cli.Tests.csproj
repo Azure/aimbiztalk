@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AzureIntegrationMigration.ApplicationModel" Version="0.3.0-alpha.2020092250449" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="3.6.0-beta1-20111-10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.AzureIntegrationMigration.BizTalk.Analyze\Microsoft.AzureIntegrationMigration.BizTalk.Analyze.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.AzureIntegrationMigration.BizTalk.Discover\Microsoft.AzureIntegrationMigration.BizTalk.Discover.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.AzureIntegrationMigration.BizTalk.Parse\Microsoft.AzureIntegrationMigration.BizTalk.Parse.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.AzureIntegrationMigration.BizTalk.Report\Microsoft.AzureIntegrationMigration.BizTalk.Report.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.AzureIntegrationMigration.BizTalk.Types\Microsoft.AzureIntegrationMigration.BizTalk.Types.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\InformationMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>InformationMessages.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\InformationMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InformationMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Version>0.0.2</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+</Project>

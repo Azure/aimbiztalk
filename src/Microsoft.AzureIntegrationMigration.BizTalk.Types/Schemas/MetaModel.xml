@@ -1,0 +1,138 @@
+﻿<?xml version='1.0' encoding='utf-8' standalone='yes'?>
+<om:MetaModel MajorVersion='1' MinorVersion='3' Core='2b131234-7959-458d-834f-2dc0769ce683' ScheduleModel='66366196-361d-448d-976f-cab5e87496d2' xmlns:om='http://schemas.microsoft.com/BizTalk/2003/DesignerData'>
+  <om:Element Type='Module' OID='8f4ad763-2d73-4643-a0f8-513931f82f68' LowerBound='1.1' HigherBound='42.1'>
+    <om:Property Name='ReportToAnalyst' Value='True' />
+    <om:Property Name='Name' Value='OrchsToConvert' />
+    <om:Property Name='Signal' Value='False' />
+    <om:Element Type='PortType' OID='337407cb-0e0b-457f-955b-d4a3890ff91f' ParentLink='Module_PortType' LowerBound='4.1' HigherBound='11.1'>
+      <om:Property Name='Synchronous' Value='False' />
+      <om:Property Name='TypeModifier' Value='Internal' />
+      <om:Property Name='ReportToAnalyst' Value='True' />
+      <om:Property Name='Name' Value='PortType_6' />
+      <om:Property Name='Signal' Value='False' />
+      <om:Element Type='OperationDeclaration' OID='ac1f9416-4682-4ca6-bac6-0798ba23a68f' ParentLink='PortType_OperationDeclaration' LowerBound='6.1' HigherBound='10.1'>
+        <om:Property Name='OperationType' Value='OneWay' />
+        <om:Property Name='ReportToAnalyst' Value='True' />
+        <om:Property Name='Name' Value='Operation_1' />
+        <om:Property Name='Signal' Value='False' />
+        <om:Element Type='MessageRef' OID='339e8c59-8b0f-4b86-8dca-25ff9906f4bd' ParentLink='OperationDeclaration_RequestMessageRef' LowerBound='8.13' HigherBound='8.28'>
+          <om:Property Name='Ref' Value='OrchsToConvert.Schemas.OrderUS' />
+          <om:Property Name='ReportToAnalyst' Value='True' />
+          <om:Property Name='Name' Value='Request' />
+          <om:Property Name='Signal' Value='True' />
+        </om:Element>
+      </om:Element>
+    </om:Element>
+    <om:Element Type='PortType' OID='b32b17de-014d-47ec-a723-474ef40efa47' ParentLink='Module_PortType' LowerBound='11.1' HigherBound='18.1'>
+      <om:Property Name='Synchronous' Value='False' />
+      <om:Property Name='TypeModifier' Value='Internal' />
+      <om:Property Name='ReportToAnalyst' Value='True' />
+      <om:Property Name='Name' Value='PortType_7' />
+      <om:Property Name='Signal' Value='False' />
+      <om:Element Type='OperationDeclaration' OID='b4abf555-26fc-443d-b419-400405fd6530' ParentLink='PortType_OperationDeclaration' LowerBound='13.1' HigherBound='17.1'>
+        <om:Property Name='OperationType' Value='OneWay' />
+        <om:Property Name='ReportToAnalyst' Value='True' />
+        <om:Property Name='Name' Value='Operation_1' />
+        <om:Property Name='Signal' Value='False' />
+        <om:Element Type='MessageRef' OID='bf9bd2ff-0395-420a-bf24-042c0f96f43f' ParentLink='OperationDeclaration_RequestMessageRef' LowerBound='15.13' HigherBound='15.28'>
+          <om:Property Name='Ref' Value='OrchsToConvert.Schemas.OrderUS' />
+          <om:Property Name='ReportToAnalyst' Value='True' />
+          <om:Property Name='Name' Value='Request' />
+          <om:Property Name='Signal' Value='True' />
+        </om:Element>
+      </om:Element>
+    </om:Element>
+    <om:Element Type='ServiceDeclaration' OID='923d95dd-4a61-43ba-8dcc-383c776cd6b3' ParentLink='Module_ServiceDeclaration' LowerBound='18.1' HigherBound='41.1'>
+      <om:Property Name='InitializedTransactionType' Value='False' />
+      <om:Property Name='IsInvokable' Value='False' />
+      <om:Property Name='TypeModifier' Value='Internal' />
+      <om:Property Name='ReportToAnalyst' Value='True' />
+      <om:Property Name='Name' Value='SchemaTypedMessaging' />
+      <om:Property Name='Signal' Value='False' />
+      <om:Element Type='MessageDeclaration' OID='b088be96-5d9c-4906-9451-d040d675180c' ParentLink='ServiceDeclaration_MessageDeclaration' LowerBound='25.1' HigherBound='26.1'>
+        <om:Property Name='Type' Value='OrchsToConvert.Schemas.OrderUS' />
+        <om:Property Name='ParamDirection' Value='In' />
+        <om:Property Name='ReportToAnalyst' Value='True' />
+        <om:Property Name='Name' Value='Message_1' />
+        <om:Property Name='Signal' Value='True' />
+      </om:Element>
+      <om:Element Type='MessageDeclaration' OID='1bc42963-f2b1-41e0-8793-56db59a9db08' ParentLink='ServiceDeclaration_MessageDeclaration' LowerBound='26.1' HigherBound='27.1'>
+        <om:Property Name='Type' Value='OrchsToConvert.Schemas.OrderUS' />
+        <om:Property Name='ParamDirection' Value='In' />
+        <om:Property Name='ReportToAnalyst' Value='True' />
+        <om:Property Name='Name' Value='Message_2' />
+        <om:Property Name='Signal' Value='True' />
+      </om:Element>
+      <om:Element Type='ServiceBody' OID='d879d5cc-c4f9-4ccc-acf0-a372d726c824' ParentLink='ServiceDeclaration_ServiceBody'>
+        <om:Property Name='Signal' Value='False' />
+        <om:Element Type='Receive' OID='7ecfe96d-8fea-49da-a2b4-17ad867c0a1d' ParentLink='ServiceBody_Statement' LowerBound='29.1' HigherBound='31.1'>
+          <om:Property Name='Activate' Value='True' />
+          <om:Property Name='PortName' Value='Port_1' />
+          <om:Property Name='MessageName' Value='Message_1' />
+          <om:Property Name='OperationName' Value='Operation_1' />
+          <om:Property Name='OperationMessageName' Value='Request' />
+          <om:Property Name='ReportToAnalyst' Value='True' />
+          <om:Property Name='Name' Value='Receive_1' />
+          <om:Property Name='Signal' Value='True' />
+        </om:Element>
+        <om:Element Type='Construct' OID='156e3319-8b32-4fa6-a544-a9a64914beab' ParentLink='ServiceBody_Statement' LowerBound='31.1' HigherBound='37.1'>
+          <om:Property Name='ReportToAnalyst' Value='True' />
+          <om:Property Name='Name' Value='ConstructMessage_1' />
+          <om:Property Name='Signal' Value='True' />
+          <om:Element Type='MessageAssignment' OID='97339477-1c08-466e-b258-3eab608d8bb7' ParentLink='ComplexStatement_Statement' LowerBound='34.1' HigherBound='36.1'>
+            <om:Property Name='Expression' Value='Message_2 = Message_1;' />
+            <om:Property Name='ReportToAnalyst' Value='False' />
+            <om:Property Name='Name' Value='MessageAssignment_1' />
+            <om:Property Name='Signal' Value='True' />
+          </om:Element>
+          <om:Element Type='MessageRef' OID='cb885d66-2720-4682-afe5-df9a9b4e68f5' ParentLink='Construct_MessageRef' LowerBound='32.23' HigherBound='32.32'>
+            <om:Property Name='Ref' Value='Message_2' />
+            <om:Property Name='ReportToAnalyst' Value='True' />
+            <om:Property Name='Signal' Value='False' />
+          </om:Element>
+        </om:Element>
+        <om:Element Type='Send' OID='146960c5-64f5-46a1-97e7-390707bd2587' ParentLink='ServiceBody_Statement' LowerBound='37.1' HigherBound='39.1'>
+          <om:Property Name='PortName' Value='Port_2' />
+          <om:Property Name='MessageName' Value='Message_2' />
+          <om:Property Name='OperationName' Value='Operation_1' />
+          <om:Property Name='OperationMessageName' Value='Request' />
+          <om:Property Name='ReportToAnalyst' Value='True' />
+          <om:Property Name='Name' Value='Send_1' />
+          <om:Property Name='Signal' Value='True' />
+        </om:Element>
+      </om:Element>
+      <om:Element Type='PortDeclaration' OID='98ad9759-8407-4aff-bf18-c9ea972accc9' ParentLink='ServiceDeclaration_PortDeclaration' LowerBound='21.1' HigherBound='23.1'>
+        <om:Property Name='PortModifier' Value='Implements' />
+        <om:Property Name='Orientation' Value='Left' />
+        <om:Property Name='PortIndex' Value='-1' />
+        <om:Property Name='IsWebPort' Value='False' />
+        <om:Property Name='OrderedDelivery' Value='False' />
+        <om:Property Name='DeliveryNotification' Value='None' />
+        <om:Property Name='Type' Value='OrchsToConvert.PortType_6' />
+        <om:Property Name='ParamDirection' Value='In' />
+        <om:Property Name='ReportToAnalyst' Value='True' />
+        <om:Property Name='Name' Value='Port_1' />
+        <om:Property Name='Signal' Value='False' />
+        <om:Element Type='LogicalBindingAttribute' OID='c17f3a23-b4bf-41f5-b18a-9fcf4a0b57a0' ParentLink='PortDeclaration_CLRAttribute' LowerBound='21.1' HigherBound='22.1'>
+          <om:Property Name='Signal' Value='False' />
+        </om:Element>
+      </om:Element>
+      <om:Element Type='PortDeclaration' OID='ebacf978-2d99-400e-b11f-a4c69364abec' ParentLink='ServiceDeclaration_PortDeclaration' LowerBound='23.1' HigherBound='25.1'>
+        <om:Property Name='PortModifier' Value='Uses' />
+        <om:Property Name='Orientation' Value='Right' />
+        <om:Property Name='PortIndex' Value='-1' />
+        <om:Property Name='IsWebPort' Value='False' />
+        <om:Property Name='OrderedDelivery' Value='False' />
+        <om:Property Name='DeliveryNotification' Value='None' />
+        <om:Property Name='Type' Value='OrchsToConvert.PortType_7' />
+        <om:Property Name='ParamDirection' Value='In' />
+        <om:Property Name='ReportToAnalyst' Value='True' />
+        <om:Property Name='Name' Value='Port_2' />
+        <om:Property Name='Signal' Value='False' />
+        <om:Element Type='LogicalBindingAttribute' OID='22e26dc6-01a8-4eda-9a3d-ed0a2492c5f2' ParentLink='PortDeclaration_CLRAttribute' LowerBound='23.1' HigherBound='24.1'>
+          <om:Property Name='Signal' Value='False' />
+        </om:Element>
+      </om:Element>
+    </om:Element>
+  </om:Element>
+</om:MetaModel>

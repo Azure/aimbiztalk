@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="BizTalkServerPipeline" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="Document">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Description" type="xs:string" minOccurs="0" msdata:Ordinal="0" />
+        <xs:element name="FriendlyName" type="xs:string" minOccurs="0" />
+        <xs:element name="Stages" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Stage" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Components" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Component" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="Name" type="xs:string" minOccurs="0" />
+                                <xs:element name="ComponentName" type="xs:string" minOccurs="0" />
+                                <xs:element name="Description" type="xs:string" minOccurs="0" />
+                                <xs:element name="Version" type="xs:string" minOccurs="0" />
+                                <xs:element name="CachedDisplayName" type="xs:string" minOccurs="0" />
+                                <xs:element name="CachedIsManaged" type="xs:string" minOccurs="0" />
+                                <xs:element name="Properties" minOccurs="0" maxOccurs="unbounded">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="Property" minOccurs="0" maxOccurs="unbounded">
+                                        <xs:complexType>
+                                          <xs:sequence>
+                                            <xs:element name="Value" type="xs:string" minOccurs="0" msdata:Ordinal="0" />
+                                          </xs:sequence>
+                                          <xs:attribute name="Name" type="xs:string" />
+                                        </xs:complexType>
+                                      </xs:element>
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="CategoryId" type="xs:string" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="PolicyFilePath" type="xs:string" />
+      <xs:attribute name="MajorVersion" type="xs:string" />
+      <xs:attribute name="MinorVersion" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -1,0 +1,218 @@
+{%- assign deploy_data_gateway = false -%}
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- for endpoint in application.endpoints -%}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" %}      
+      {%- deploy_data_gateway = true -%}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+#
+# A target model is produced by analyzing the source model and adding logical messaging
+# objects that represent the source model artifacts.
+#
+# As part of the analysis stage, each logical messaging object is associated with a resource
+# map key.  This key is used to look up the resources in this configuration file and
+# associated template configuration files and the discovered resources are added to the target model.
+#
+# The configuration files themselves can also be rendered using the Liquid template language.
+#
+
+# A resource map defines a grouping of resources by logical messaging object.  The associated resources
+# are defined in the resources key in this configuration file.
+resourceMaps:
+
+  # ------------------------------------------------------------------------------
+  # AIS generic resources
+  # ------------------------------------------------------------------------------
+
+  - map: messageBus
+    resources:
+      - deployment
+      - configManager
+      - messageBusGroup
+      - messageBusOps
+      - messageBusService
+      - messagingManager
+      - routingManager
+      - routingSlipRouter
+      - routingStore
+      - artifactStore
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" %}
+  {% if application.name != 'System Application' %}
+  - map: application{{ app_name }}
+    resources:
+      - applicationGroup{{ app_name }}
+  {%- endif %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for message in application.messages %}
+    {% assign message_name = message.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - map: applicationMessage{{ app_name }}{{ message_name }}
+    resources:
+      - applicationMessage{{ app_name }}{{ message_name }}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints -%}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FTP" and endpoint.message_exchange_pattern == "Accept" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - map: ftpReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    resources:
+      - ftpReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints %}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FTP" and endpoint.message_exchange_pattern == "Send" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - map: ftpSendAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    resources:
+      - ftpSendAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints -%}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Accept" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - map: fileReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    resources:
+      - fileReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints %}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Send" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - map: fileSendAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    resources:
+      - fileSendAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints -%}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "HTTP" and ( endpoint.message_exchange_pattern == "ReceiveResponse" or endpoint.message_exchange_pattern == "Receive" ) %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - map: httpReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    resources:
+      - httpReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for intermediary in application.intermediaries %}
+    {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "ProcessManager" and intermediary.activator == true %}
+      {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - map: activatableProcessManager{{ app_name }}{{ intermediary_name }}
+    resources:
+      - activatableProcessManager{{ app_name }}{{ intermediary_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for intermediary in application.intermediaries %}
+    {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "ProcessManager" and intermediary.activator == false %}
+      {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - map: invokableProcessManager{{ app_name }}{{ intermediary_name }}
+    resources:
+      - invokableProcessManager{{ app_name }}{{ intermediary_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+  # ------------------------------------------------------------------------------
+  # BizTalk specific resources
+  # ------------------------------------------------------------------------------
+
+  - map: systemApplication
+    resources:
+      - systemApplicationGroup
+      - flatFileMessageProcessor
+      - jsonDecoder
+      - jsonEncoder
+      - xmlEnvelopeWrapper
+      - xmlMessageProcessor
+      - xmlMessageTranslator
+      - xmlMessageValidator
+      - messageConstructor
+      - messageResponseHandler
+      - messageSuspendProcessor
+      - contentDemoter
+    {%- if deploy_data_gateway == true %}
+      - dataGateway
+    {%- endif %}
+
+  - map: messageBox
+    resources:
+      - topicChannel
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for channel in application.channels -%}
+    {%- if channel.name == "Message Box" and channel.channel_type == "PublishSubscribe" -%}
+      {%- assign channel_name = channel.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" -%}
+      {%- for subscription in channel.subscriptions -%}
+        {% assign subscription_name = subscription.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+      - topicSubscription{{ app_name }}{{ channel_name }}{{ subscription_name }}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+  - map: messageAgent
+    resources:
+      - contentPromoter
+      - topicPublisherApiConnection
+      - topicPublisher
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for intermediary in application.intermediaries %}
+    {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "MessageSubscriber" %}
+      {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - map: topicSubscriber{{ app_name }}{{ intermediary_name }}
+    resources:
+      - topicSubscriber{{ app_name }}{{ intermediary_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+  - map: messageBoxResponse
+    resources:
+      - topicResponseChannel
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for channel in application.channels -%}
+    {%- if channel.name == "Message Box Response" and channel.channel_type == "PublishSubscribe" -%}
+      {%- assign channel_name = channel.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" -%}
+      {%- for subscription in channel.subscriptions -%}
+        {% assign subscription_name = subscription.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+      - topicSubscription{{ app_name }}{{ channel_name }}{{ subscription_name }}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+  - map: suspendQueue
+    resources:
+      - suspendQueueChannel

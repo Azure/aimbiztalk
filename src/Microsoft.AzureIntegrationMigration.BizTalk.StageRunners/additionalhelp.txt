@@ -1,0 +1,33 @@
+﻿
+================================================
+Additional Options for BizTalk Migration Package
+================================================
+
+Arguments:
+  microsoft.biztalk.msidiscoverer.msifiles
+    One or more paths to MSI files, separated by the argument delimiter (default '|' character).
+  
+  microsoft.biztalk.msidiscoverer.msidir
+    Path to a directory containing MSI files.
+  
+  microsoft.biztalk.msidiscoverer.unpackdir
+    Path to a directory where the MSI files will be unpacked.
+
+  microsoft.biztalk.htmlreporter.reportfile
+    Path to a file where the HTML report will be written.
+
+Examples:
+  Specify single MSI file:
+    aim assess -a "microsoft.biztalk.msidiscoverer.msifiles=C:\msi\app.msi"
+
+  Specify multiple MSI files:
+    aim assess -a "microsoft.biztalk.msidiscoverer.msifiles=C:\msi\app1.msi|C:\msi\app2.msi"
+
+  Specify directory containing MSI files:
+    aim assess -a "microsoft.biztalk.msidiscoverer.msidir=C:\msi"
+
+  Specify directory containing MSI files with unpack directory:
+    aim assess -a "microsoft.biztalk.msidiscoverer.msidir=C:\msi" -a "microsoft.biztalk.msidiscoverer.unpackdir=C:\temp"
+
+  Specify a custom report file name and location:
+    aim assess -a "microsoft.biztalk.htmlreporter.reportfile=C:\reportoutput\report.html"

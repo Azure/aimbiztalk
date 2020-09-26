@@ -1,0 +1,206 @@
+﻿#if __DESIGNER_DATA
+#error Do not define __DESIGNER_DATA.
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<om:MetaModel MajorVersion="1" MinorVersion="3" Core="2b131234-7959-458d-834f-2dc0769ce683" ScheduleModel="66366196-361d-448d-976f-cab5e87496d2" xmlns:om="http://schemas.microsoft.com/BizTalk/2003/DesignerData">
+    <om:Element Type="Module" OID="498a1ae9-c33c-461e-b826-9821a84988f6" LowerBound="1.1" HigherBound="42.1">
+        <om:Property Name="ReportToAnalyst" Value="True" />
+        <om:Property Name="Name" Value="Aim.SimpleOrchestration" />
+        <om:Property Name="Signal" Value="False" />
+        <om:Element Type="ServiceDeclaration" OID="ed6dc66e-0fee-4031-9d4e-ffba23778001" ParentLink="Module_ServiceDeclaration" LowerBound="18.1" HigherBound="41.1">
+            <om:Property Name="InitializedTransactionType" Value="False" />
+            <om:Property Name="IsInvokable" Value="False" />
+            <om:Property Name="TypeModifier" Value="Internal" />
+            <om:Property Name="ReportToAnalyst" Value="True" />
+            <om:Property Name="AnalystComments" Value="Oboards a customer using they registration request" />
+            <om:Property Name="Name" Value="OnboardCustomer" />
+            <om:Property Name="Signal" Value="True" />
+            <om:Element Type="MessageDeclaration" OID="11b1e269-8581-4061-b086-8cab81954a0d" ParentLink="ServiceDeclaration_MessageDeclaration" LowerBound="25.1" HigherBound="26.1">
+                <om:Property Name="Type" Value="Aim.SimpleOrchestration.OnboardingRequest" />
+                <om:Property Name="ParamDirection" Value="In" />
+                <om:Property Name="ReportToAnalyst" Value="True" />
+                <om:Property Name="Name" Value="OnboardingRequestMessage" />
+                <om:Property Name="Signal" Value="True" />
+            </om:Element>
+            <om:Element Type="MessageDeclaration" OID="a2bff747-c1cf-4c49-94a1-a2ba48d9703a" ParentLink="ServiceDeclaration_MessageDeclaration" LowerBound="26.1" HigherBound="27.1">
+                <om:Property Name="Type" Value="Aim.SimpleOrchestration.CustomerRegistration" />
+                <om:Property Name="ParamDirection" Value="In" />
+                <om:Property Name="ReportToAnalyst" Value="True" />
+                <om:Property Name="Name" Value="CustomerRegistrationMessage" />
+                <om:Property Name="Signal" Value="True" />
+            </om:Element>
+            <om:Element Type="ServiceBody" OID="94f36016-623b-47c3-b430-2d3b59502b52" ParentLink="ServiceDeclaration_ServiceBody">
+                <om:Property Name="Signal" Value="False" />
+                <om:Element Type="Receive" OID="58a41ff6-2677-4289-bd11-a6cd647d1960" ParentLink="ServiceBody_Statement" LowerBound="29.1" HigherBound="31.1">
+                    <om:Property Name="Activate" Value="True" />
+                    <om:Property Name="PortName" Value="OnboardingReceivePort" />
+                    <om:Property Name="MessageName" Value="OnboardingRequestMessage" />
+                    <om:Property Name="OperationName" Value="OnboardingOperationReceive" />
+                    <om:Property Name="OperationMessageName" Value="Request" />
+                    <om:Property Name="ReportToAnalyst" Value="True" />
+                    <om:Property Name="AnalystComments" Value="Onboarding receive shape" />
+                    <om:Property Name="Name" Value="OnboardReceivePort" />
+                    <om:Property Name="Signal" Value="True" />
+                </om:Element>
+                <om:Element Type="Construct" OID="46ce1c96-8cc3-4f12-b6d9-55d8721c2d78" ParentLink="ServiceBody_Statement" LowerBound="31.1" HigherBound="37.1">
+                    <om:Property Name="ReportToAnalyst" Value="True" />
+                    <om:Property Name="AnalystComments" Value="Construct the customer registration message" />
+                    <om:Property Name="Name" Value="ConstructCustomerRegistrationMessage" />
+                    <om:Property Name="Signal" Value="True" />
+                    <om:Element Type="Transform" OID="cf4e7e23-abb4-4a8b-af64-653b686acb7c" ParentLink="ComplexStatement_Statement" LowerBound="34.1" HigherBound="36.1">
+                        <om:Property Name="ClassName" Value="Aim.SimpleOrchestration.OnboardTransformMap" />
+                        <om:Property Name="ReportToAnalyst" Value="True" />
+                        <om:Property Name="AnalystComments" Value="Map the onboarding request to the customer registration" />
+                        <om:Property Name="Name" Value="MapOnboardingRequestToCustomerRegistration" />
+                        <om:Property Name="Signal" Value="True" />
+                        <om:Element Type="MessagePartRef" OID="aae06a7d-4a25-4f51-ac34-8e68eb23ea5a" ParentLink="Transform_InputMessagePartRef" LowerBound="35.104" HigherBound="35.128">
+                            <om:Property Name="MessageRef" Value="OnboardingRequestMessage" />
+                            <om:Property Name="ReportToAnalyst" Value="True" />
+                            <om:Property Name="Name" Value="MessagePartReference_1" />
+                            <om:Property Name="Signal" Value="False" />
+                        </om:Element>
+                        <om:Element Type="MessagePartRef" OID="1098e706-1a05-486c-b1bb-b48610886912" ParentLink="Transform_OutputMessagePartRef" LowerBound="35.28" HigherBound="35.55">
+                            <om:Property Name="MessageRef" Value="CustomerRegistrationMessage" />
+                            <om:Property Name="ReportToAnalyst" Value="True" />
+                            <om:Property Name="Name" Value="MessagePartReference_2" />
+                            <om:Property Name="Signal" Value="False" />
+                        </om:Element>
+                    </om:Element>
+                    <om:Element Type="MessageRef" OID="417a93fa-6ff0-42ab-bd4b-59ea80ee040a" ParentLink="Construct_MessageRef" LowerBound="32.23" HigherBound="32.50">
+                        <om:Property Name="Ref" Value="CustomerRegistrationMessage" />
+                        <om:Property Name="ReportToAnalyst" Value="True" />
+                        <om:Property Name="Signal" Value="False" />
+                    </om:Element>
+                </om:Element>
+                <om:Element Type="Send" OID="863740c5-f7b4-4fc6-9c7a-c37b00c796eb" ParentLink="ServiceBody_Statement" LowerBound="37.1" HigherBound="39.1">
+                    <om:Property Name="PortName" Value="CustomerRegistrationSendPort" />
+                    <om:Property Name="MessageName" Value="CustomerRegistrationMessage" />
+                    <om:Property Name="OperationName" Value="CustomerRegistrationSend" />
+                    <om:Property Name="OperationMessageName" Value="Request" />
+                    <om:Property Name="ReportToAnalyst" Value="True" />
+                    <om:Property Name="AnalystComments" Value="Send the Customer Registration Message" />
+                    <om:Property Name="Name" Value="CustomerRegistrationSendPort" />
+                    <om:Property Name="Signal" Value="True" />
+                </om:Element>
+            </om:Element>
+            <om:Element Type="PortDeclaration" OID="ffa9ce77-7ea6-4569-8bc6-667476c6a4d4" ParentLink="ServiceDeclaration_PortDeclaration" LowerBound="21.1" HigherBound="23.1">
+                <om:Property Name="PortModifier" Value="Implements" />
+                <om:Property Name="Orientation" Value="Left" />
+                <om:Property Name="PortIndex" Value="-1" />
+                <om:Property Name="IsWebPort" Value="False" />
+                <om:Property Name="OrderedDelivery" Value="False" />
+                <om:Property Name="DeliveryNotification" Value="None" />
+                <om:Property Name="Type" Value="Aim.SimpleOrchestration.OnboardReceivePortType" />
+                <om:Property Name="ParamDirection" Value="In" />
+                <om:Property Name="ReportToAnalyst" Value="True" />
+                <om:Property Name="AnalystComments" Value="Port for onboarding a customer" />
+                <om:Property Name="Name" Value="OnboardingReceivePort" />
+                <om:Property Name="Signal" Value="True" />
+                <om:Element Type="LogicalBindingAttribute" OID="f6189b21-e856-42c2-a8c6-9f53d022b07b" ParentLink="PortDeclaration_CLRAttribute" LowerBound="21.1" HigherBound="22.1">
+                    <om:Property Name="Signal" Value="False" />
+                </om:Element>
+            </om:Element>
+            <om:Element Type="PortDeclaration" OID="6f5e0c8e-7e7d-45a8-890f-d426a1ebf9fa" ParentLink="ServiceDeclaration_PortDeclaration" LowerBound="23.1" HigherBound="25.1">
+                <om:Property Name="PortModifier" Value="Uses" />
+                <om:Property Name="Orientation" Value="Right" />
+                <om:Property Name="PortIndex" Value="-1" />
+                <om:Property Name="IsWebPort" Value="False" />
+                <om:Property Name="OrderedDelivery" Value="False" />
+                <om:Property Name="DeliveryNotification" Value="None" />
+                <om:Property Name="Type" Value="Aim.SimpleOrchestration.CustomerRegistrationSendPortType" />
+                <om:Property Name="ParamDirection" Value="In" />
+                <om:Property Name="ReportToAnalyst" Value="True" />
+                <om:Property Name="AnalystComments" Value="Customer registration send port" />
+                <om:Property Name="Name" Value="CustomerRegistrationSendPort" />
+                <om:Property Name="Signal" Value="True" />
+                <om:Element Type="LogicalBindingAttribute" OID="04aec41f-829a-48a2-943a-80aca3da6010" ParentLink="PortDeclaration_CLRAttribute" LowerBound="23.1" HigherBound="24.1">
+                    <om:Property Name="Signal" Value="False" />
+                </om:Element>
+            </om:Element>
+        </om:Element>
+        <om:Element Type="PortType" OID="388efe8e-8d27-4d10-a838-05464c679fe1" ParentLink="Module_PortType" LowerBound="4.1" HigherBound="11.1">
+            <om:Property Name="Synchronous" Value="False" />
+            <om:Property Name="TypeModifier" Value="Internal" />
+            <om:Property Name="ReportToAnalyst" Value="True" />
+            <om:Property Name="Name" Value="OnboardReceivePortType" />
+            <om:Property Name="Signal" Value="True" />
+            <om:Element Type="OperationDeclaration" OID="f380ad62-c675-4936-83db-c8ce851284c4" ParentLink="PortType_OperationDeclaration" LowerBound="6.1" HigherBound="10.1">
+                <om:Property Name="OperationType" Value="OneWay" />
+                <om:Property Name="ReportToAnalyst" Value="True" />
+                <om:Property Name="AnalystComments" Value="Action for onboarding a user" />
+                <om:Property Name="Name" Value="OnboardingOperationReceive" />
+                <om:Property Name="Signal" Value="True" />
+                <om:Element Type="MessageRef" OID="98da789d-b0e8-400b-9c86-666742d34ea0" ParentLink="OperationDeclaration_RequestMessageRef" LowerBound="8.13" HigherBound="8.30">
+                    <om:Property Name="Ref" Value="Aim.SimpleOrchestration.OnboardingRequest" />
+                    <om:Property Name="ReportToAnalyst" Value="True" />
+                    <om:Property Name="AnalystComments" Value="Incoming onboarding request" />
+                    <om:Property Name="Name" Value="Request" />
+                    <om:Property Name="Signal" Value="True" />
+                </om:Element>
+            </om:Element>
+        </om:Element>
+        <om:Element Type="PortType" OID="f9b53d2f-2e24-4d5f-9fcb-20fed49c81cc" ParentLink="Module_PortType" LowerBound="11.1" HigherBound="18.1">
+            <om:Property Name="Synchronous" Value="False" />
+            <om:Property Name="TypeModifier" Value="Internal" />
+            <om:Property Name="ReportToAnalyst" Value="True" />
+            <om:Property Name="Name" Value="CustomerRegistrationSendPortType" />
+            <om:Property Name="Signal" Value="True" />
+            <om:Element Type="OperationDeclaration" OID="134e3216-8669-45d5-a3db-c759fdc084b8" ParentLink="PortType_OperationDeclaration" LowerBound="13.1" HigherBound="17.1">
+                <om:Property Name="OperationType" Value="OneWay" />
+                <om:Property Name="ReportToAnalyst" Value="True" />
+                <om:Property Name="AnalystComments" Value="Onboard operation compelte" />
+                <om:Property Name="Name" Value="CustomerRegistrationSend" />
+                <om:Property Name="Signal" Value="True" />
+                <om:Element Type="MessageRef" OID="181c366f-862d-436e-b354-b0f301ad0337" ParentLink="OperationDeclaration_RequestMessageRef" LowerBound="15.13" HigherBound="15.33">
+                    <om:Property Name="Ref" Value="Aim.SimpleOrchestration.CustomerRegistration" />
+                    <om:Property Name="ReportToAnalyst" Value="True" />
+                    <om:Property Name="AnalystComments" Value="Onboard request complete" />
+                    <om:Property Name="Name" Value="Request" />
+                    <om:Property Name="Signal" Value="True" />
+                </om:Element>
+            </om:Element>
+        </om:Element>
+    </om:Element>
+</om:MetaModel>
+#endif // __DESIGNER_DATA
+[Microsoft.XLANGs.BaseTypes.BPELExportable(false)]
+module Aim.SimpleOrchestration
+{
+    internal porttype OnboardReceivePortType
+    {
+        oneway OnboardingOperationReceive
+        {
+            OnboardingRequest
+        };
+    };
+    internal porttype CustomerRegistrationSendPortType
+    {
+        oneway CustomerRegistrationSend
+        {
+            CustomerRegistration
+        };
+    };
+    [Microsoft.XLANGs.BaseTypes.BPELExportable(false)]
+    internal service OnboardCustomer
+    {
+        [Microsoft.XLANGs.BaseTypes.LogicalBinding()]
+        port implements OnboardReceivePortType OnboardingReceivePort;
+        [Microsoft.XLANGs.BaseTypes.LogicalBinding()]
+        port uses CustomerRegistrationSendPortType CustomerRegistrationSendPort;
+        message OnboardingRequest OnboardingRequestMessage;
+        message CustomerRegistration CustomerRegistrationMessage;
+        body ()
+        {
+            [Microsoft.XLANGs.BaseTypes.DesignerPosition("58a41ff6-2677-4289-bd11-a6cd647d1960")]
+            activate receive (OnboardingReceivePort.OnboardingOperationReceive, OnboardingRequestMessage);
+            [Microsoft.XLANGs.BaseTypes.DesignerPosition("46ce1c96-8cc3-4f12-b6d9-55d8721c2d78")]
+            construct CustomerRegistrationMessage
+            {
+                [Microsoft.XLANGs.BaseTypes.DesignerPosition("cf4e7e23-abb4-4a8b-af64-653b686acb7c")]
+                transform (CustomerRegistrationMessage) = Aim.SimpleOrchestration.OnboardTransformMap (OnboardingRequestMessage);
+            }
+            [Microsoft.XLANGs.BaseTypes.DesignerPosition("863740c5-f7b4-4fc6-9c7a-c37b00c796eb")]
+            send (CustomerRegistrationSendPort.CustomerRegistrationSend, CustomerRegistrationMessage);
+        }
+    }
+}
+

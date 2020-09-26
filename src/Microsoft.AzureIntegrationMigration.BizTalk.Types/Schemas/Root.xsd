@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified">
+  <xsd:element name="Root">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Stages">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element maxOccurs="unbounded" name="Stage">
+                <xsd:complexType>
+                  <xsd:sequence>
+                    <xsd:element name="Components">
+                      <xsd:complexType>
+                        <xsd:sequence>
+                          <xsd:element name="Component">
+                            <xsd:complexType>
+                              <xsd:sequence>
+                                <xsd:element name="Properties">
+                                  <xsd:complexType>
+                                    <xsd:sequence minOccurs="0">
+                                      <xsd:element minOccurs="0" name="RemoveOuterEnvelope">
+                                        <xsd:complexType>
+                                          <xsd:simpleContent>
+                                            <xsd:extension base="xsd:byte">
+                                              <xsd:attribute name="vt" type="xsd:unsignedByte" use="required" />
+                                            </xsd:extension>
+                                          </xsd:simpleContent>
+                                        </xsd:complexType>
+                                      </xsd:element>
+                                      <xsd:element minOccurs="0" name="DocumentSpecNames">
+                                        <xsd:complexType>
+                                          <xsd:simpleContent>
+                                            <xsd:extension base="xsd:string">
+                                              <xsd:attribute name="vt" type="xsd:unsignedByte" use="required" />
+                                            </xsd:extension>
+                                          </xsd:simpleContent>
+                                        </xsd:complexType>
+                                      </xsd:element>
+                                      <xsd:element minOccurs="0" name="EnvelopeDocSpecNames">
+                                        <xsd:complexType>
+                                          <xsd:simpleContent>
+                                            <xsd:extension base="xsd:string">
+                                              <xsd:attribute name="vt" type="xsd:unsignedByte" use="required" />
+                                            </xsd:extension>
+                                          </xsd:simpleContent>
+                                        </xsd:complexType>
+                                      </xsd:element>
+                                      <xsd:element minOccurs="0" name="ProcessingInstructionsOptions">
+                                        <xsd:complexType>
+                                          <xsd:simpleContent>
+                                            <xsd:extension base="xsd:unsignedByte">
+                                              <xsd:attribute name="vt" type="xsd:unsignedByte" use="required" />
+                                            </xsd:extension>
+                                          </xsd:simpleContent>
+                                        </xsd:complexType>
+                                      </xsd:element>
+                                      <xsd:element minOccurs="0" name="ProcessingInstructionsScope">
+                                        <xsd:complexType>
+                                          <xsd:simpleContent>
+                                            <xsd:extension base="xsd:unsignedByte">
+                                              <xsd:attribute name="vt" type="xsd:unsignedByte" use="required" />
+                                            </xsd:extension>
+                                          </xsd:simpleContent>
+                                        </xsd:complexType>
+                                      </xsd:element>
+                                      <xsd:element minOccurs="0" name="TargetCharset">
+                                        <xsd:complexType>
+                                          <xsd:simpleContent>
+                                            <xsd:extension base="xsd:string">
+                                              <xsd:attribute name="vt" type="xsd:unsignedByte" use="required" />
+                                            </xsd:extension>
+                                          </xsd:simpleContent>
+                                        </xsd:complexType>
+                                      </xsd:element>
+                                    </xsd:sequence>
+                                  </xsd:complexType>
+                                </xsd:element>
+                              </xsd:sequence>
+                              <xsd:attribute name="Name" type="xsd:string" use="required" />
+                            </xsd:complexType>
+                          </xsd:element>
+                        </xsd:sequence>
+                      </xsd:complexType>
+                    </xsd:element>
+                  </xsd:sequence>
+                  <xsd:attribute name="CategoryId" type="xsd:string" use="required" />
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xs:schema>

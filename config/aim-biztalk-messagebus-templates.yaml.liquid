@@ -1,0 +1,847 @@
+{%- assign aim_user_prefix = get_environment_variable("AIM_USER_PREFIX") | downcase -%}
+{%- assign aim_unique_suffix = model.migration_target.unique_deployment_id | downcase -%}
+{%- if aim_unique_suffix != "" -%}
+  {%- assign aim_user_prefix = "" -%}
+{%- endif -%}
+{%- assign formatted_azure_primary_region = format_region(model.migration_target.azure_primary_region) | downcase -%}
+{%- capture message_bus_resource_group_name -%}
+{{ aim_user_prefix }}rg-aimmsgbus-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture app_config_name -%}
+{{ aim_user_prefix }}appcfg-aimrstore-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture key_vault_name -%}
+{{ aim_user_prefix }}kv-aimrstore-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture key_vault_apim_subscription_secret_name -%}
+aim-apim-subscriptionkey-unlimited
+{%- endcapture -%}
+{%- capture integration_account_name -%}
+{{ aim_user_prefix }}intacc-aimartifactstore-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture api_management_service_name -%}
+{{ aim_user_prefix }}apim-aimmsgbussvc-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture app_service_name -%}
+{{ aim_user_prefix }}plan-aimmsgbussvc-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture func_storage_account_name -%}
+{{ aim_user_prefix }}staimmsgbussvc{{ model.migration_target.deployment_environment | downcase }}01{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture func_routing_manager_name -%}
+{{ aim_user_prefix }}func-aimroutemgr-{{ model.migration_target.deployment_environment | downcase }}-001-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture func_messaging_manager_name -%}
+{{ aim_user_prefix }}func-aimmsgmgr-{{ model.migration_target.deployment_environment | downcase }}-001-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture app_insights_name -%}
+{{ aim_user_prefix }}appi-aimmsgbusops-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture routing_slip_router_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimroutingsliprouter-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture get_logic_app_callback_url_role_name -%}
+{{ aim_user_prefix | append: ' ' }}{{ 'Get Logic App Callback Url' | append: ' ' }}{{ aim_unique_suffix }}
+{%- endcapture -%}
+#
+# Templates are groups of files keyed with a template name.
+#
+# Each template file in a template is further keyed by the target deployment
+# environment to allow for different templates where target environments might
+# require a different shape or settings for the deployment of the resource.
+#
+# Templates also have different types such as Azure Resource Manager templates
+# and parameter files or can be PowerShell script files.
+#
+# The templates files are text files of any format, but can use the Liquid template
+# language during rendering that can use the target model to provide dynamic values
+# to the template.
+#
+# For Liquid information, see:
+# https://shopify.github.io/liquid/
+# https://www.shopify.co.uk/partners/shopify-cheat-sheet 
+#
+# The configuration files themselves can also be rendered using the Liquid template language.
+#
+# Resource names and tags are taken from the best practice guidance of the Cloud Adoption Framework:
+# https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/naming-and-tagging
+#
+
+# A resource template provides a set of files that are rendered as part of the
+# Convert stage of the AIM tool.
+resourceTemplates:
+
+  # ------------------------------------------------------------------------------
+  # Groups
+  # ------------------------------------------------------------------------------
+
+  - template: messageBusAzureResourceGroup
+    templateType: microsoft.template.arm
+    resourceName: {{ message_bus_resource_group_name }}
+    resourceType: microsoft.groups.azureresourcegroup
+    tags:
+      - ApplicationName: AIM-MessageBus
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+    outputPath: messagebus/messagebusgroup
+    files:
+      - env: ['dev']
+        paths:
+          - messagebus/messagebusgroup/messagebusgroup.dev.parameters.json.liquid
+          - messagebus/messagebusgroup/messagebusgroup.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/messagebusgroup/messagebusgroup.prod.parameters.json.liquid
+          - messagebus/messagebusgroup/messagebusgroup.json.liquid
+
+  # ------------------------------------------------------------------------------
+  # Operations
+  # ------------------------------------------------------------------------------
+
+  - template: messageBusOpsAzureAppInsights
+    templateType: microsoft.template.json
+    resourceName: {{ app_insights_name }}
+    resourceType: microsoft.services.azureappinsights
+    tags:
+      - ApplicationName: AIM-MessageBus
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+    outputPath: messagebus/messagebusops
+    files:
+      - env: ['dev']
+        paths:
+          - messagebus/messagebusops/messagebusops.appi.dev.psparameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/messagebusops/messagebusops.appi.prod.psparameters.json.liquid
+
+  # ------------------------------------------------------------------------------
+  # Stores
+  # ------------------------------------------------------------------------------
+
+  # Currently no prefix for App Configuration in CAF:
+  # https://github.com/MicrosoftDocs/cloud-adoption-framework/issues/182
+  - template: routingStoreAzureAppConfiguration
+    templateType: microsoft.template.arm
+    resourceName: {{ app_config_name }}
+    resourceType: microsoft.stores.azureappconfiguration
+    tags:
+      - ApplicationName: AIM-MessageBus
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_sku: Free
+    outputPath: messagebus/routingstore
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/routingstore/routingstore.appcfg.json
+      - env: ['dev']
+        paths:
+          - messagebus/routingstore/routingstore.appcfg.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/routingstore/routingstore.appcfg.prod.parameters.json.liquid
+
+  - template: routingStoreAzureKeyVault
+    templateType: microsoft.template.json
+    resourceName: {{ key_vault_name }}
+    resourceType: microsoft.stores.azurekeyvault
+    tags:
+      - ApplicationName: AIM-MessageBus
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_sku: Standard
+    outputPath: messagebus/routingstore
+    files:
+      - env: ['dev']
+        paths:
+          - messagebus/routingstore/routingstore.kv.dev.psparameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/routingstore/routingstore.kv.prod.psparameters.json.liquid
+
+  # Currently no prefix for Integration Accounts in CAF:
+  # https://github.com/MicrosoftDocs/cloud-adoption-framework/issues/196
+  - template: artifactStoreAzureIntegrationAccountBasic
+    templateType: microsoft.template.arm
+    resourceName: {{ integration_account_name }}
+    resourceType: microsoft.stores.azureintegrationaccount
+    tags:
+      - ApplicationName: AIM-MessageBus
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_sku : free
+    outputPath: messagebus/artifactstore
+    files:
+      - env: ['dev']
+        paths:
+          - messagebus/artifactstore/artifactstore.json.liquid
+          - messagebus/artifactstore/artifactstore.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/artifactstore/artifactstore.json.liquid
+          - messagebus/artifactstore/artifactstore.prod.parameters.json.liquid
+
+  # ------------------------------------------------------------------------------
+  # Security
+  # ------------------------------------------------------------------------------
+
+  - template: messageBusServiceAzureRole
+    templateType: microsoft.template.json
+    resourceName: {{ api_management_service_name }}
+    resourceType: microsoft.security.azurerole
+    outputPath: messagebus/messagebusservice
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/messagebusservice/messagebusservice.logicappsrole.json
+  
+  # ------------------------------------------------------------------------------
+  # Services
+  # ------------------------------------------------------------------------------
+
+  - template: messageBusServiceAzureApiManagement
+    templateType: microsoft.template.json
+    resourceName: {{ api_management_service_name }}
+    resourceType: microsoft.services.azureapimanagement
+    tags:
+      - ApplicationName: AIM-MessageBus
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - app_config_name: {{ app_config_name }}
+      - key_vault_name: {{ key_vault_name }}
+      - publisher_name: Microsoft
+      - publisher_email: person@constoso.com
+      - azure_sku: Developer
+      - azure_sku_capacity: 1
+    outputPath: messagebus/messagebusservice
+    files:
+      - env: ['dev']
+        paths:
+          - messagebus/messagebusservice/messagebusservice.apim.dev.psparameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/messagebusservice/messagebusservice.apim.prod.psparameters.json.liquid
+  
+  - template: routingStoreAzureApiManagement
+    templateType: microsoft.template.arm
+    resourceName: {{ api_management_service_name }}
+    resourceType: microsoft.services.azureapimanagement
+    tags:
+      - ApplicationName: AIM-MessageBus
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - api_name: aimroutingstore
+      - app_config_name: {{ app_config_name }}
+    outputPath: messagebus/routingstore
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/routingstore/routingstore.apim.json.liquid
+      - env: ['dev']
+        paths:
+          - messagebus/routingstore/routingstore.apim.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/routingstore/routingstore.apim.prod.parameters.json.liquid
+
+  - template: configManagerAzureApiManagement
+    templateType: microsoft.template.arm
+    resourceName: {{ api_management_service_name }}
+    resourceType: microsoft.services.azureapimanagement
+    tags:
+      - ApplicationName: AIM-MessageBus
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_integration_account_name: {{ integration_account_name }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - api_name: aimconfigurationmanager
+      - app_config_name: {{ app_config_name }}
+    outputPath: messagebus/configmanager
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/configmanager/configmanager.apim.json.liquid
+      - env: ['dev']
+        paths:
+          - messagebus/configmanager/configmanager.apim.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/configmanager/configmanager.apim.prod.parameters.json.liquid
+
+  - template: messageBusServiceAzureAppServiceConsumption
+    templateType: microsoft.template.arm
+    resourceName: {{ app_service_name }}
+    resourceType: microsoft.services.azureappservice
+    tags:
+      - ApplicationName: AIM-MessageBus
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_sku: Y1
+      - azure_sku_tier: Dynamic
+      - azure_sku_capacity: 1
+    outputPath: messagebus/messagebusservice
+    files:
+      - env: ['dev']
+        paths:
+          - messagebus/messagebusservice/messagebusservice.plan.json.liquid
+          - messagebus/messagebusservice/messagebusservice.plan.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/messagebusservice/messagebusservice.plan.json.liquid
+          - messagebus/messagebusservice/messagebusservice.plan.prod.parameters.json.liquid
+  
+  - template: messageBusServiceAzureStorageAccount
+    templateType: microsoft.template.json
+    resourceName: {{ func_storage_account_name }}
+    resourceType: microsoft.services.azurestorage
+    tags:
+      - ApplicationName: AIM-MessageBus
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_storage_kind: StorageV2
+      - azure_sku: Standard_LRS
+    outputPath: messagebus/messagebusservice
+    files:
+      - env: ['dev']
+        paths:
+          - messagebus/messagebusservice/messagebusservice.st.dev.psparameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/messagebusservice/messagebusservice.st.prod.psparameters.json.liquid
+  
+  - template: routingManagerAzureFunctionConsumption
+    templateType: microsoft.template.arm
+    resourceName: {{ func_routing_manager_name }}
+    resourceType: microsoft.services.azurefunction
+    tags:
+      - ApplicationName: AIM-MessageBus
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_storage_account_name: {{ func_storage_account_name }}
+      - azure_app_insights_name: {{ app_insights_name }}
+      - azure_app_service_plan_name: {{ app_service_name }}
+      - azure_api_management_service_name: {{ api_management_service_name }}
+    outputPath: messagebus/routingmanager
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/routingmanager/routingmanager.func.json
+      - env: ['dev']
+        paths:
+          - messagebus/routingmanager/routingmanager.func.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/routingmanager/routingmanager.func.prod.parameters.json.liquid
+  
+  - template: routingManagerAzureApiManagement
+    templateType: microsoft.template.arm
+    resourceName: {{ api_management_service_name }}
+    resourceType: microsoft.services.azureapimanagement
+    tags:
+      - ApplicationName: AIM-MessageBus
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - api_name: aimroutingmanager
+      - routing_manager_func_name: {{ func_routing_manager_name }}
+    outputPath: messagebus/routingmanager
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/routingmanager/routingmanager.apim.json.liquid
+      - env: ['dev']
+        paths:
+          - messagebus/routingmanager/routingmanager.apim.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/routingmanager/routingmanager.apim.prod.parameters.json.liquid
+
+  - template: messagingManagerAzureFunctionConsumption
+    templateType: microsoft.template.arm
+    resourceName: {{ func_messaging_manager_name }}
+    resourceType: microsoft.services.azurefunction
+    tags:
+      - ApplicationName: AIM-MessageBus
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_storage_account_name: {{ func_storage_account_name }}
+      - azure_app_insights_name: {{ app_insights_name }}
+      - azure_app_service_plan_name: {{ app_service_name }}
+      - azure_api_management_service_name: {{ api_management_service_name }}
+    outputPath: messagebus/messagingmanager
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/messagingmanager/messagingmanager.func.json
+      - env: ['dev']
+        paths:
+          - messagebus/messagingmanager/messagingmanager.func.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/messagingmanager/messagingmanager.func.prod.parameters.json.liquid
+  
+  - template: messagingManagerAzureApiManagement
+    templateType: microsoft.template.arm
+    resourceName: {{ api_management_service_name }}
+    resourceType: microsoft.services.azureapimanagement
+    tags:
+      - ApplicationName: AIM-MessageBus
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - api_name: aimmessagingmanager
+      - messaging_manager_func_name: {{ func_messaging_manager_name }}
+    outputPath: messagebus/messagingmanager
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/messagingmanager/messagingmanager.apim.json
+      - env: ['dev']
+        paths:
+          - messagebus/messagingmanager/messagingmanager.apim.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/messagingmanager/messagingmanager.apim.prod.parameters.json.liquid
+
+  # ------------------------------------------------------------------------------
+  # Workflows
+  # ------------------------------------------------------------------------------
+
+  - template: routingSlipRouterAzureLogicAppConsumption
+    templateType: microsoft.template.arm
+    resourceName: {{ routing_slip_router_logicapp_name }}
+    resourceType: microsoft.workflows.azurelogicapp
+    tags:
+      - ApplicationName: AIM-MessageBus
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - apim_service_name: {{ api_management_service_name }}  
+    outputPath: messagebus/workflows/routingsliprouter
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/workflows/routingsliprouter/routingsliprouter.logicapp.json
+      - env: ['dev']
+        paths:
+          - messagebus/workflows/routingsliprouter/routingsliprouter.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/workflows/routingsliprouter/routingsliprouter.logicapp.prod.parameters.json.liquid
+
+  # ------------------------------------------------------------------------------
+  # Scripts
+  # ------------------------------------------------------------------------------
+
+  - template: deployResources
+    templateType: microsoft.template.powershell
+    resourceName: deploy-resources
+    resourceType: microsoft.scripts.powershell
+    outputPath: 
+    parameters: 
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+    files:
+      - env: ['dev']
+        paths:
+          - Deploy-All.ps1.liquid
+          - TearDown-All.ps1.liquid
+      - env: ['prod']
+        paths:
+          - Deploy-All.ps1.liquid
+          - TearDown-All.ps1.liquid
+
+  - template: deployMessageBusGroup
+    templateType: microsoft.template.powershell
+    resourceName: {{ message_bus_resource_group_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+    outputPath: messagebus/messagebusgroup
+    files:
+      - env: ['dev']
+        paths:
+          - messagebus/messagebusgroup/Deploy-10-MessageBusGroup.ps1.liquid
+          - messagebus/messagebusgroup/New-MessageBusGroup.ps1.liquid
+          - messagebus/messagebusgroup/TearDown-10-MessageBusGroup.ps1.liquid
+          - messagebus/messagebusgroup/Remove-MessageBusGroup.ps1.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/messagebusgroup/Deploy-10-MessageBusGroup.ps1.liquid
+          - messagebus/messagebusgroup/New-MessageBusGroup.ps1.liquid
+          - messagebus/messagebusgroup/TearDown-10-MessageBusGroup.ps1.liquid
+          - messagebus/messagebusgroup/Remove-MessageBusGroup.ps1.liquid
+
+  - template: deployMessageBusOpsAppInsights
+    templateType: microsoft.template.powershell
+    resourceName: {{ app_insights_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+    outputPath: messagebus/messagebusops
+    files:
+      - env: ['dev']
+        paths:
+          - messagebus/messagebusops/Deploy-20-MessageBusOps-AppInsights.ps1.liquid
+          - messagebus/messagebusops/New-MessageBusOps-AppInsights.ps1.liquid
+          - messagebus/messagebusops/TearDown-20-MessageBusOps-AppInsights.ps1.liquid
+          - messagebus/messagebusops/Remove-MessageBusOps-AppInsights.ps1.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/messagebusops/Deploy-20-MessageBusOps-AppInsights.ps1.liquid
+          - messagebus/messagebusops/New-MessageBusOps-AppInsights.ps1.liquid
+          - messagebus/messagebusops/TearDown-20-MessageBusOps-AppInsights.ps1.liquid
+          - messagebus/messagebusops/Remove-MessageBusOps-AppInsights.ps1.liquid
+
+  - template: deployMessageBusServiceRole
+    templateType: microsoft.template.powershell
+    resourceName: {{ api_management_service_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - role_name: {{ get_logic_app_callback_url_role_name }}
+    outputPath: messagebus/messagebusservice
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/messagebusservice/Deploy-5-MessageBusService-Role.ps1.liquid
+          - messagebus/messagebusservice/New-MessageBusService-Role.ps1
+          - messagebus/messagebusservice/TearDown-5-MessageBusService-Role.ps1.liquid
+          - messagebus/messagebusservice/Remove-MessageBusService-Role.ps1
+
+  - template: deployMessageBusGroupApimRoleAssignment
+    templateType: microsoft.template.powershell
+    resourceName: {{ api_management_service_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - role_name: Reader
+    outputPath: messagebus/messagebusservice
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/messagebusservice/Deploy-35-MessageBusService-ApiManagement-RoleAssignment.ps1.liquid
+          - messagebus/messagebusservice/New-MessageBusService-ApiManagement-RoleAssignment.ps1
+          - messagebus/messagebusservice/TearDown-35-MessageBusService-ApiManagement-RoleAssignment.ps1.liquid
+          - messagebus/messagebusservice/Remove-MessageBusService-ApiManagement-RoleAssignment.ps1          
+
+  - template: deployMessageBusServiceApiManagement
+    templateType: microsoft.template.powershell
+    resourceName: {{ api_management_service_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+    outputPath: messagebus/messagebusservice
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/messagebusservice/Deploy-30-MessageBusService-ApiManagement.ps1.liquid
+          - messagebus/messagebusservice/New-MessageBusService-ApiManagement.ps1
+          - messagebus/messagebusservice/TearDown-30-MessageBusService-ApiManagement.ps1.liquid
+          - messagebus/messagebusservice/Remove-MessageBusService-ApiManagement.ps1
+
+  - template: deployMessageBusServiceAppService
+    templateType: microsoft.template.powershell
+    resourceName: {{ app_service_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+    outputPath: messagebus/messagebusservice
+    files:
+      - env: ['dev']
+        paths:
+          - messagebus/messagebusservice/Deploy-30-MessageBusService-AppService.ps1.liquid
+          - messagebus/messagebusservice/New-MessageBusService-AppService.ps1.liquid
+          - messagebus/messagebusservice/TearDown-30-MessageBusService-AppService.ps1.liquid
+          - messagebus/messagebusservice/Remove-MessageBusService-AppService.ps1.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/messagebusservice/Deploy-30-MessageBusService-AppService.ps1.liquid
+          - messagebus/messagebusservice/New-MessageBusService-AppService.ps1.liquid
+          - messagebus/messagebusservice/TearDown-30-MessageBusService-AppService.ps1.liquid
+          - messagebus/messagebusservice/Remove-MessageBusService-AppService.ps1.liquid
+
+  - template: deployMessageBusServiceStorage
+    templateType: microsoft.template.powershell
+    resourceName: {{ func_storage_account_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+    outputPath: messagebus/messagebusservice
+    files:
+      - env: ['dev']
+        paths:
+          - messagebus/messagebusservice/Deploy-20-MessageBusService-StorageAccount.ps1.liquid
+          - messagebus/messagebusservice/New-MessageBusService-StorageAccount.ps1.liquid
+          - messagebus/messagebusservice/TearDown-20-MessageBusService-StorageAccount.ps1.liquid
+          - messagebus/messagebusservice/Remove-MessageBusService-StorageAccount.ps1.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/messagebusservice/Deploy-20-MessageBusService-StorageAccount.ps1.liquid
+          - messagebus/messagebusservice/New-MessageBusService-StorageAccount.ps1.liquid
+          - messagebus/messagebusservice/TearDown-20-MessageBusService-StorageAccount.ps1.liquid
+          - messagebus/messagebusservice/Remove-MessageBusService-StorageAccount.ps1.liquid
+
+  - template: deployRoutingStoreConfig
+    templateType: microsoft.template.powershell
+    resourceName: {{ app_config_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - key_vault_name: {{ key_vault_name }}
+    outputPath: messagebus/routingstore
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/routingstore/Deploy-20-RoutingStore-AppConfig.ps1.liquid
+          - messagebus/routingstore/New-RoutingStore-AppConfig.ps1
+          - messagebus/routingstore/TearDown-20-RoutingStore-AppConfig.ps1.liquid
+          - messagebus/routingstore/Remove-RoutingStore-AppConfig.ps1
+
+  - template: deployRoutingStoreVault
+    templateType: microsoft.template.powershell
+    resourceName: {{ key_vault_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+    outputPath: messagebus/routingstore
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/routingstore/Deploy-15-RoutingStore-KeyVault.ps1.liquid
+          - messagebus/routingstore/New-RoutingStore-KeyVault.ps1
+          - messagebus/routingstore/TearDown-15-RoutingStore-KeyVault.ps1.liquid
+          - messagebus/routingstore/Remove-RoutingStore-KeyVault.ps1
+
+  - template: deployArtifactStore
+    templateType: microsoft.template.powershell
+    resourceName: {{ integration_account_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+    outputPath: messagebus/artifactstore
+    files:
+      - env: ['dev']
+        paths:
+          - messagebus/artifactstore/Deploy-20-ArtifactStore.ps1.liquid
+          - messagebus/artifactstore/New-ArtifactStore.ps1.liquid
+          - messagebus/artifactstore/TearDown-20-ArtifactStore.ps1.liquid
+          - messagebus/artifactstore/Remove-ArtifactStore.ps1.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/artifactstore/Deploy-20-ArtifactStore.ps1.liquid
+          - messagebus/artifactstore/New-ArtifactStore.ps1.liquid
+          - messagebus/artifactstore/TearDown-20-ArtifactStore.ps1.liquid
+          - messagebus/artifactstore/Remove-ArtifactStore.ps1.liquid
+
+  - template: deployRoutingStoreApi
+    templateType: microsoft.template.powershell
+    resourceName: {{ api_management_service_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - api_name: aimroutingstore
+    outputPath: messagebus/routingstore
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/routingstore/Deploy-40-RoutingStore-ApiManagement.ps1.liquid
+          - messagebus/routingstore/New-RoutingStore-ApiManagement.ps1
+          - messagebus/routingstore/TearDown-40-RoutingStore-ApiManagement.ps1.liquid
+          - messagebus/routingstore/Remove-RoutingStore-ApiManagement.ps1
+
+  - template: deployConfigManagerApi
+    templateType: microsoft.template.powershell
+    resourceName: {{ api_management_service_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - api_name: aimconfigurationmanager
+    outputPath: messagebus/configmanager
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/configManager/Deploy-40-ConfigManager-ApiManagement.ps1.liquid
+          - messagebus/configManager/New-ConfigManager-ApiManagement.ps1
+          - messagebus/configManager/TearDown-40-ConfigManager-ApiManagement.ps1.liquid
+          - messagebus/configManager/Remove-ConfigManager-ApiManagement.ps1
+
+  - template: deployRoutingManagerFunc
+    templateType: microsoft.template.powershell
+    resourceName: {{ func_routing_manager_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+    outputPath: messagebus/routingmanager
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/routingmanager/Deploy-50-RoutingManager-Function.ps1.liquid
+          - messagebus/routingmanager/New-RoutingManager-Function.ps1
+          - messagebus/routingmanager/TearDown-50-RoutingManager-Function.ps1.liquid
+          - messagebus/routingmanager/Remove-RoutingManager-Function.ps1
+          - messagebus/routingmanager/Microsoft.AzureIntegrationMigration.FunctionApp.RoutingManager.zip
+
+  - template: deployRoutingManagerApi
+    templateType: microsoft.template.powershell
+    resourceName: {{ api_management_service_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - api_name: aimroutingmanager
+    outputPath: messagebus/routingmanager
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/routingmanager/Deploy-60-RoutingManager-ApiManagement.ps1.liquid
+          - messagebus/routingmanager/New-RoutingManager-ApiManagement.ps1
+          - messagebus/routingmanager/TearDown-60-RoutingManager-ApiManagement.ps1.liquid
+          - messagebus/routingmanager/Remove-RoutingManager-ApiManagement.ps1
+
+  - template: deployMessagingManagerFunc
+    templateType: microsoft.template.powershell
+    resourceName: {{ func_messaging_manager_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+    outputPath: messagebus/messagingmanager
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/messagingmanager/Deploy-50-MessagingManager-Function.ps1.liquid
+          - messagebus/messagingmanager/New-MessagingManager-Function.ps1
+          - messagebus/messagingmanager/TearDown-50-MessagingManager-Function.ps1.liquid
+          - messagebus/messagingmanager/Remove-MessagingManager-Function.ps1
+          - messagebus/messagingmanager/Microsoft.AzureIntegrationMigration.FunctionApp.MessagingManager.zip
+  
+  - template: deployMessagingManagerApi
+    templateType: microsoft.template.powershell
+    resourceName: {{ api_management_service_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - api_name: aimmessagingmanager
+    outputPath: messagebus/messagingmanager
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/messagingmanager/Deploy-60-MessagingManager-ApiManagement.ps1.liquid
+          - messagebus/messagingmanager/New-MessagingManager-ApiManagement.ps1
+          - messagebus/messagingmanager/TearDown-60-MessagingManager-ApiManagement.ps1.liquid
+          - messagebus/messagingmanager/Remove-MessagingManager-ApiManagement.ps1
+
+  - template: deployRoutingSlipRouterConsumption
+    templateType: microsoft.template.powershell
+    resourceName: {{ routing_slip_router_logicapp_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath: messagebus/workflows/routingsliprouter
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/workflows/routingsliprouter/Deploy-80-RoutingSlipRouter-LogicApp.ps1.liquid
+          - messagebus/workflows/routingsliprouter/New-RoutingSlipRouter-LogicApp.ps1
+          - messagebus/workflows/routingsliprouter/TearDown-80-RoutingSlipRouter-LogicApp.ps1.liquid
+          - messagebus/workflows/routingsliprouter/Remove-RoutingSlipRouter-LogicApp.ps1  

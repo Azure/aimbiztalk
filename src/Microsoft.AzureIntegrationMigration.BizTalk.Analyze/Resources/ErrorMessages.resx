@@ -1,0 +1,201 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CorrelationTypeMustHaveProperties" xml:space="preserve">
+    <value>The correlation type '{0}' must have properties to be valid, but the metamodel definition doesn't contain any.</value>
+  </data>
+  <data name="MapHasTooManySourceSchemas" xml:space="preserve">
+    <value>The map resource with the key '{0}' has multiple source schemas.  Multi-source schemas are not supported for the message translator intermediary.</value>
+  </data>
+  <data name="MultipartMessageTypeMustHaveParts" xml:space="preserve">
+    <value>The multipart message type '{0}' must have parts to be valid, but the metamodel definition doesn't contain any.</value>
+  </data>
+  <data name="NoApplicationDefinition" xml:space="preserve">
+    <value>The ApplicationDefinition was not set for '{0}'</value>
+  </data>
+  <data name="PipelineHasNoStages" xml:space="preserve">
+    <value>Pipeline '{0}' has no stages which is unexpected.</value>
+  </data>
+  <data name="PortTypeMustHaveOperations" xml:space="preserve">
+    <value>The port type '{0}' must have operations to be valid, but the metamodel definition doesn't contain any.</value>
+  </data>
+  <data name="PortTypeOperationMustHaveMatchingMessage" xml:space="preserve">
+    <value>The port type '{0}' and operation '{1}' must have a message that matches '{2}' from the activity '{3}', but the metamodel definition doesn't contain a matching message.</value>
+  </data>
+  <data name="PortTypeOperationMustHaveMessageReferences" xml:space="preserve">
+    <value>The port type '{0}' with operation '{1}' must have message references to be valid, but the metamodel definition doesn't contain any.</value>
+  </data>
+  <data name="ReceivePipelineNotSetInReceiveLocation" xml:space="preserve">
+    <value>The receive pipeline does not exist in receive location '{0}'.</value>
+  </data>
+  <data name="SendRouteStartNotAnActivator" xml:space="preserve">
+    <value>The intermediary '{0}' at the start of the route is not configured as an activator intermediary.</value>
+  </data>
+  <data name="ServiceLinkTypeMustHaveRoles" xml:space="preserve">
+    <value>The service link type '{0}' must have roles to be valid, but the metamodel definition doesn't contain any.</value>
+  </data>
+  <data name="ServiceLinkTypeRoleMustHavePortTypeReference" xml:space="preserve">
+    <value>The service link type '{0}' with role '{1}' must have a port reference to be valid, but the metamodel definition doesn't contain one.</value>
+  </data>
+  <data name="ServiceMissingInBindingFile" xml:space="preserve">
+    <value>The service '{0}' is missing in the application binding file.</value>
+  </data>
+  <data name="SourceObjectNotFound" xml:space="preserve">
+    <value>The source object associated with resource '{0}' of type '{1}' was not found.</value>
+  </data>
+  <data name="SubscriptionFilterOperatorNotSupported" xml:space="preserve">
+    <value>The subscription filter statement operator '{0}' is not supported.</value>
+  </data>
+  <data name="TransformMessageSchemaMissing" xml:space="preserve">
+    <value>{RuleId}: Message Schema is missing for {MessageName} for {TransformType}.</value>
+  </data>
+  <data name="TransmitPipelineNotSetInSendPort" xml:space="preserve">
+    <value>The transmit pipeline does not exist in send port '{0}'.</value>
+  </data>
+  <data name="UnableToFindAssociatedResource" xml:space="preserve">
+    <value>The resource associated with object type '{0}', name '{1}', key '{2}' could not be found.</value>
+  </data>
+  <data name="UnableToFindFindRelatedResourceByType" xml:space="preserve">
+    <value>Unable to find any related resources of type '{0}' with relationship '{1}' for the resource with key '{2}'.</value>
+  </data>
+  <data name="UnableToFindMessagingObjectWithKeyInTargetModel" xml:space="preserve">
+    <value>Unable to find the messaging object of type '{0}' with the key '{1}' in the target model.</value>
+  </data>
+  <data name="UnableToFindMessagingObjectWithNameInTargetModel" xml:space="preserve">
+    <value>Unable to find the messaging object of type '{0}' with the name '{1}' in the target model.</value>
+  </data>
+  <data name="UnableToFindRelatedResourceByTypeAndName" xml:space="preserve">
+    <value>Unable to find any related resources of type '{0}' with name '{1}' and relationship '{2}' for the resource with key '{3}'.</value>
+  </data>
+  <data name="UnableToFindResource" xml:space="preserve">
+    <value>Unable to find a resource of type '{0}' in resource definition '{1}'.</value>
+  </data>
+  <data name="UnableToFindResourceDefinition" xml:space="preserve">
+    <value>An expected resource definition of type '{0}' with key '{1}' could not be found.</value>
+  </data>
+  <data name="UnableToFindResourceReference" xml:space="preserve">
+    <value>The resource associated with object type '{0}', keyRef '{1}' could not be found.</value>
+  </data>
+  <data name="UnableToFindWorkflow" xml:space="preserve">
+    <value>The workflow '{0}' which is called by '{1}' could not be found in any target application.</value>
+  </data>
+  <data name="UnableToFindWorkflowChannel" xml:space="preserve">
+    <value>The workflow channel '{0}' associated with activity '{1}' could not be found in the workflow model.</value>
+  </data>
+</root>

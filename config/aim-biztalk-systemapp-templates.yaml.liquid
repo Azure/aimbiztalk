@@ -1,0 +1,1157 @@
+{%- assign aim_user_prefix = get_environment_variable("AIM_USER_PREFIX") | downcase -%}
+{%- assign aim_unique_suffix = model.migration_target.unique_deployment_id | downcase -%}
+{%- if aim_unique_suffix != "" -%}
+  {%- assign aim_user_prefix = "" -%}
+{%- endif -%}
+{%- assign formatted_azure_primary_region = format_region(model.migration_target.azure_primary_region) | downcase -%}
+{%- capture system_application -%}
+systemapplication
+{%- endcapture -%}
+{%- capture system_application_group -%}
+{{ aim_user_prefix }}rg-aimapp-{{ system_application }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture system_application_name -%}
+AIM-System
+{%- endcapture -%}
+{%- capture message_bus_resource_group_name -%}
+{{ aim_user_prefix }}rg-aimmsgbus-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture service_bus_namespace_name -%}
+{{ aim_user_prefix }}sb-aimmsgbox-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture key_vault_name -%}
+{{ aim_user_prefix }}kv-aimrstore-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture key_vault_apim_subscription_secret_name -%}
+aim-apim-subscriptionkey-unlimited
+{%- endcapture -%}
+{%- capture integration_account_name -%}
+{{ aim_user_prefix }}intacc-aimartifactstore-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture api_management_service_name -%}
+{{ aim_user_prefix }}apim-aimmsgbussvc-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture routing_slip_router_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimroutingsliprouter-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture content_demoter_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimcontentdemoter-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture content_promoter_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimcontentpromoter-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture message_constructor_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimmessageconstructor-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture message_response_handler_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimmessageresponsehandler-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture message_suspend_processor_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimmessagesuspendprocessor-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture topic_publisher_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimtopicpublisher-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture topic_publisher_api_connection_name -%}
+{{ aim_user_prefix }}apic-topicpublisherconnector-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture xml_envelope_wrapper_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimxmlenvelopewrapper-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture xml_message_processor_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimxmlmessageprocessor-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture xml_message_translator_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimxmlmessagetranslator-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture xml_message_validator_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimxmlmessagevalidator-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture json_encoder_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimjsonencoder-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture json_decoder_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimjsondecoder-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture flat_file_message_processor_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimflatfilemessageprocessor-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture get_logic_app_callback_url_role_name -%}
+{{ aim_user_prefix | append: ' ' }}{{ 'Get Logic App Callback Url' | append: ' ' }}{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- for endpoint in application.endpoints -%}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" %}      
+      {%- deploy_data_gateway = true -%}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+#
+# Templates are groups of files keyed with a template name.
+#
+# Each template file in a template is further keyed by the target deployment
+# environment to allow for different templates where target environments might
+# require a different shape or settings for the deployment of the resource.
+#
+# Templates also have different types such as Azure Resource Manager templates
+# and parameter files or can be PowerShell script files.
+#
+# Templates are processed using the dotnet CLI template engine, invoked using
+# the 'new' command.
+
+# This template configuration file specifies all of the templates that comprise
+# the resources associated with a BizTalk Message Box implementation in AIS.
+resourceTemplates:
+
+  # ------------------------------------------------------------------------------
+  # Groups
+  # ------------------------------------------------------------------------------
+
+  - template: systemApplicationAzureResourceGroup
+    templateType: microsoft.template.arm
+    resourceName: {{ system_application_group }}
+    resourceType: microsoft.groups.azureresourcegroup
+    tags:
+      - Application: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/group
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/applicationgroup/applicationgroup.json.liquid
+      - env: ['dev']
+        paths:
+          - application/applicationgroup/applicationgroup.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - application/applicationgroup/applicationgroup.prod.parameters.json.liquid
+
+  # ------------------------------------------------------------------------------
+  # Messaging
+  # ------------------------------------------------------------------------------
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for channel in application.channels %}
+    {%- if channel.name == 'Message Box' %}
+      {% assign channel_name = channel.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - template: topicChannelAzureServiceBusStandard
+    templateType: microsoft.template.json
+    resourceName: {{ service_bus_namespace_name }}
+    resourceType: microsoft.messaging.azureservicebus
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - azure_sku : Standard
+      - topic_name: {{ channel.topic_name }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/channels/{{ channel.topic_name | replace: ":", "-" | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev']
+        paths:
+          - channels/topicchannel/topicchannel.sb.dev.psparameters.json.liquid
+      - env: ['prod']
+        paths:
+          - channels/topicchannel/topicchannel.sb.prod.psparameters.json.liquid
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for channel in application.channels %}
+    {%- if channel.name == 'Message Box Response' %}
+      {% assign channel_name = channel.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - template: topicResponseChannelAzureServiceBusStandard
+    templateType: microsoft.template.json
+    resourceName: {{ service_bus_namespace_name }}
+    resourceType: microsoft.messaging.azureservicebus
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - azure_sku : Standard
+      - topic_name: {{ channel.topic_name }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/channels/{{ channel.topic_name | replace: ":", "-" | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev']
+        paths:
+          - channels/topicchannel/topicchannel.sb.dev.psparameters.json.liquid
+      - env: ['prod']
+        paths:
+          - channels/topicchannel/topicchannel.sb.prod.psparameters.json.liquid
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for channel in application.channels %}
+    {%- if channel.name == "Suspend Queue" %}
+      {% assign channel_name = channel.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - template: suspendQueueChannelAzureServiceBusTopic
+    templateType: microsoft.template.json
+    resourceName: {{ service_bus_namespace_name }}
+    resourceType: microsoft.messaging.azureservicebustopic
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - azure_sku : Standard
+      - topic_name: {{ channel.topic_name }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/channels/{{ channel.topic_name | replace: ":", "-" | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev']
+        paths:
+          - channels/topicchannel/topicchannel.sb.dev.psparameters.json.liquid
+      - env: ['prod']
+        paths:
+          - channels/topicchannel/topicchannel.sb.prod.psparameters.json.liquid
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+  # ------------------------------------------------------------------------------
+  # API Connection
+  # ------------------------------------------------------------------------------
+
+  - template: messageResponseHandlerAzureServiceBusApiConnection
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-aimmessageresponsehandler-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_service_bus_resource_group_name: {{ system_application_group }}
+      - azure_service_bus_namespace : {{ service_bus_namespace_name }}      
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/workflows/messageresponsehandler
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/workflows/messageresponsehandler/messageresponsehandlerservicebus.apiconnection.json
+      - env: ['dev']
+        paths:
+          - application/workflows/messageresponsehandler/messageresponsehandlerservicebus.apiconnection.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - application/workflows/messageresponsehandler/messageresponsehandlerservicebus.apiconnection.prod.parameters.json.liquid
+
+  - template: messageSuspendProcessorAzureServiceBusApiConnection
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-aimmessagesuspendprocessor-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_service_bus_resource_group_name: {{ system_application_group }}
+      - azure_service_bus_namespace : {{ service_bus_namespace_name }}      
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/workflows/messagesuspendprocessor
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/workflows/messagesuspendprocessor/messagesuspendprocessorservicebus.apiconnection.json
+      - env: ['dev']
+        paths:
+          - application/workflows/messagesuspendprocessor/messagesuspendprocessorservicebus.apiconnection.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - application/workflows/messagesuspendprocessor/messagesuspendprocessorservicebus.apiconnection.prod.parameters.json.liquid
+
+  - template: topicPublisherAzureApiConnectionConsumption
+    templateType: microsoft.template.arm
+    resourceName: {{ topic_publisher_api_connection_name }}
+    resourceType: microsoft.web.connections
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_service_bus_resource_group_name: {{ system_application_group }}
+      - azure_routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
+      - azure_service_bus_namespace : {{ service_bus_namespace_name }}      
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/topicpublisher
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/topicpublisher/topicpublisher.apiconnection.json
+      - env: ['dev']
+        paths:
+          - intermediaries/topicpublisher/topicpublisher.apiconnection.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - intermediaries/topicpublisher/topicpublisher.apiconnection.prod.parameters.json.liquid  
+
+  # ------------------------------------------------------------------------------
+  # Workflows
+  # ------------------------------------------------------------------------------
+
+  - template: contentDemoterAzureLogicAppConsumption
+    templateType: microsoft.template.arm
+    resourceName: {{ content_demoter_logicapp_name }}
+    resourceType: microsoft.workflows.azurelogicapp
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - apim_service_name: {{ api_management_service_name }}
+      - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
+      - scenario_step_name: contentDemoter
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/contentdemoter
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/contentdemoter/contentdemoter.logicapp.json
+      - env: ['dev']
+        paths:
+          - intermediaries/contentdemoter/contentdemoter.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - intermediaries/contentdemoter/contentdemoter.logicapp.prod.parameters.json.liquid  
+
+  - template: contentPromoterAzureLogicAppConsumption
+    templateType: microsoft.template.arm
+    resourceName: {{ content_promoter_logicapp_name }}
+    resourceType: microsoft.workflows.azurelogicapp
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - apim_service_name: {{ api_management_service_name }}
+      - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
+      - scenario_step_name: contentPromoter
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/contentpromoter
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/contentpromoter/contentpromoter.logicapp.json
+      - env: ['dev']
+        paths:
+          - intermediaries/contentpromoter/contentpromoter.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - intermediaries/contentpromoter/contentpromoter.logicapp.prod.parameters.json.liquid  
+
+  - template: messageConstructorAzureLogicAppConsumption
+    templateType: microsoft.template.arm
+    resourceName: {{ message_constructor_logicapp_name }}
+    resourceType: microsoft.workflows.azurelogicapp
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - apim_service_name: {{ api_management_service_name }}
+      - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/endpoints/messageconstructor
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/messageconstructor/messageconstructor.logicapp.json
+      - env: ['dev']
+        paths:
+          - endpoints/messageconstructor/messageconstructor.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/messageconstructor/messageconstructor.logicapp.prod.parameters.json.liquid
+
+  - template: messageResponseHandlerAzureLogicApp
+    templateType: microsoft.template.arm
+    resourceName: {{ message_response_handler_logicapp_name }}
+    resourceType: microsoft.workflows.azurelogicapp
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - service_bus_api_connector_name: {{ aim_user_prefix }}apic-aimmessageresponsehandler-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - apim_service_name: {{ api_management_service_name }}      
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/workflows/messageresponsehandler
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/workflows/messageresponsehandler/messageresponsehandler.logicapp.json
+      - env: ['dev']
+        paths:
+          - application/workflows/messageresponsehandler/messageresponsehandler.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - application/workflows/messageresponsehandler/messageresponsehandler.logicapp.prod.parameters.json.liquid
+
+  - template: messageSuspendProcessorAzureLogicApp
+    templateType: microsoft.template.arm
+    resourceName: {{ message_suspend_processor_logicapp_name }}
+    resourceType: microsoft.workflows.azurelogicapp
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
+      - service_bus_api_connector_name: {{ aim_user_prefix }}apic-aimmessagesuspendprocessor-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - apim_service_name: {{ api_management_service_name }}      
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/workflows/messagesuspendprocessor
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/workflows/messagesuspendprocessor/messagesuspendprocessor.logicapp.json
+      - env: ['dev']
+        paths:
+          - application/workflows/messagesuspendprocessor/messagesuspendprocessor.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - application/workflows/messagesuspendprocessor/messagesuspendprocessor.logicapp.prod.parameters.json.liquid
+
+  - template: topicPublisherAzureLogicAppConsumption
+    templateType: microsoft.workflows.azurelogicapp
+    resourceName: {{ topic_publisher_logicapp_name }}
+    resourceType: microsoft.workflows.azurelogicapp
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - apim_service_name: {{ api_management_service_name }}
+      - azure_topic_publisher_api_connection_name: {{ topic_publisher_api_connection_name }}
+      - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}      
+      - scenario_step_name: topicPublisher
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/topicpublisher
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/topicpublisher/topicpublisher.logicapp.json
+      - env: ['dev']
+        paths:
+          - intermediaries/topicpublisher/topicpublisher.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - intermediaries/topicpublisher/topicpublisher.logicapp.prod.parameters.json.liquid  
+
+  - template: xmlEnvelopeWrapperAzureLogicAppConsumption
+    templateType: microsoft.template.arm
+    resourceName: {{ xml_envelope_wrapper_logicapp_name }}
+    resourceType: microsoft.workflows.azurelogicapp
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_integration_account_name: {{ integration_account_name }}
+      - apim_service_name: {{ api_management_service_name }}
+      - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
+      - scenario_step_name: xmlEnvelopeWrapper
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/xmlenvelopewrapper
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/xmlenvelopewrapper/xmlenvelopewrapper.logicapp.json
+      - env: ['dev']
+        paths:
+          - intermediaries/xmlenvelopewrapper/xmlenvelopewrapper.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - intermediaries/xmlenvelopewrapper/xmlenvelopewrapper.logicapp.prod.parameters.json.liquid
+
+  - template: xmlMessageProcessorAzureLogicAppConsumption
+    templateType: microsoft.template.arm
+    resourceName: {{ xml_message_processor_logicapp_name }}
+    resourceType: microsoft.workflows.azurelogicapp
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_integration_account_name: {{ integration_account_name }}
+      - apim_service_name: {{ api_management_service_name }}
+      - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
+      - scenario_step_name: xmlMessageProcessor
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/xmlmessageprocessor
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/xmlmessageprocessor/xmlmessageprocessor.logicapp.json
+      - env: ['dev']
+        paths:
+          - intermediaries/xmlmessageprocessor/xmlmessageprocessor.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - intermediaries/xmlmessageprocessor/xmlmessageprocessor.logicapp.prod.parameters.json.liquid
+
+  - template: xmlMessageTranslatorAzureLogicAppConsumption
+    templateType: microsoft.template.arm
+    resourceName: {{ xml_message_translator_logicapp_name }}
+    resourceType: microsoft.workflows.azurelogicapp
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_integration_account_name: {{ integration_account_name }}
+      - apim_service_name: {{ api_management_service_name }}
+      - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
+      - scenario_step_name: xmlMessageTranslator
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/xmlmessagetranslator
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/xmlmessagetranslator/xmlmessagetranslator.logicapp.json
+      - env: ['dev']
+        paths:
+          - intermediaries/xmlmessagetranslator/xmlmessagetranslator.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - intermediaries/xmlmessagetranslator/xmlmessagetranslator.logicapp.prod.parameters.json.liquid
+
+  - template: xmlMessageValidatorAzureLogicAppConsumption
+    templateType: microsoft.template.arm
+    resourceName: {{ xml_message_validator_logicapp_name }}
+    resourceType: microsoft.workflows.azurelogicapp
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_integration_account_name: {{ integration_account_name }}
+      - apim_service_name: {{ api_management_service_name }}
+      - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
+      - scenario_step_name: xmlValidator
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/xmlmessagevalidator
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/xmlmessagevalidator/xmlmessagevalidator.logicapp.json
+      - env: ['dev']
+        paths:
+          - intermediaries/xmlmessagevalidator/xmlmessagevalidator.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - intermediaries/xmlmessagevalidator/xmlmessagevalidator.logicapp.prod.parameters.json.liquid
+
+  - template: flatFileMessageProcessorAzureLogicApp
+    templateType: microsoft.template.arm
+    resourceName: {{ flat_file_message_processor_logicapp_name }}
+    resourceType: microsoft.workflows.azurelogicapp
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_integration_account_name: {{ integration_account_name }}
+      - apim_service_name: {{ api_management_service_name }}      
+      - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
+      - scenario_step_name: flatFileMessageProcessor
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/flatfilemessageprocessor
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/flatfilemessageprocessor/flatfilemessageprocessor.logicapp.json
+      - env: ['dev']
+        paths:
+          - intermediaries/flatfilemessageprocessor/flatfilemessageprocessor.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - intermediaries/flatfilemessageprocessor/flatfilemessageprocessor.logicapp.prod.parameters.json.liquid
+
+  - template: jsonDecoderAzureLogicApp
+    templateType: microsoft.template.arm
+    resourceName: {{ json_decoder_logicapp_name }}
+    resourceType: microsoft.workflows.azurelogicapp
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_integration_account_name: {{ integration_account_name }}
+      - apim_service_name: {{ api_management_service_name }}      
+      - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
+      - scenario_step_name: jsonDecoder
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/jsondecoder
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/jsondecoder/jsondecoder.logicapp.json
+      - env: ['dev']
+        paths:
+          - intermediaries/jsondecoder/jsondecoder.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - intermediaries/jsondecoder/jsondecoder.logicapp.prod.parameters.json.liquid
+
+  - template: jsonEncoderAzureLogicApp
+    templateType: microsoft.template.arm
+    resourceName: {{ json_encoder_logicapp_name }}
+    resourceType: microsoft.workflows.azurelogicapp
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_integration_account_name: {{ integration_account_name }}
+      - apim_service_name: {{ api_management_service_name }}      
+      - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
+      - scenario_step_name: jsonEncoder
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/jsonencoder
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/jsonencoder/jsonencoder.logicapp.json
+      - env: ['dev']
+        paths:
+          - intermediaries/jsonencoder/jsonencoder.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - intermediaries/jsonencoder/jsonencoder.logicapp.prod.parameters.json.liquid
+
+  # ------------------------------------------------------------------------------
+  # Data Gateways
+  # ------------------------------------------------------------------------------
+
+{%- if deploy_data_gateway == true %}
+  - template: onPremiseDataGateway
+    templateType: microsoft.web.connectiongateway
+    resourceName: {{ aim_user_prefix }}cgw-aimmsgbus-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connectiongateway
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}      
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/endpoints/filedatagateway
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/file/datagateway/datagateway.onpremisedatagateway.json
+      - env: ['dev']
+        paths:
+          - endpoints/file/datagateway/datagateway.onpremisedatagateway.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/file/datagateway/datagateway.onpremisedatagateway.prod.parameters.json.liquid
+{%- endif %}
+
+  # ------------------------------------------------------------------------------
+  # Scripts - Application
+  # ------------------------------------------------------------------------------
+
+  - template: deploySystemApplicationGroup
+    templateType: microsoft.template.powershell
+    resourceName: {{ system_application_group }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase  }}/group
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/applicationgroup/Deploy-10-ApplicationGroup.ps1.liquid
+          - application/applicationgroup/New-ApplicationGroup.ps1.liquid
+          - application/applicationgroup/TearDown-10-ApplicationGroup.ps1.liquid
+          - application/applicationgroup/Remove-ApplicationGroup.ps1.liquid
+
+  # ------------------------------------------------------------------------------
+  # Scripts - Security
+  # ------------------------------------------------------------------------------
+
+  - template: deploySystemApplicationGroupApimRoleAssignment
+    templateType: microsoft.template.powershell
+    resourceName: {{ api_management_service_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - role_name: {{ get_logic_app_callback_url_role_name }}
+    outputPath: applications/{{ system_application | downcase }}/group
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/messagebusservice/Deploy-35-MessageBusService-ApiManagement-RoleAssignment.ps1.liquid
+          - messagebus/messagebusservice/New-MessageBusService-ApiManagement-RoleAssignment.ps1
+          - messagebus/messagebusservice/TearDown-35-MessageBusService-ApiManagement-RoleAssignment.ps1.liquid
+          - messagebus/messagebusservice/Remove-MessageBusService-ApiManagement-RoleAssignment.ps1
+
+  # ------------------------------------------------------------------------------
+  # Scripts
+  # ------------------------------------------------------------------------------
+
+  - template: deployTopicChannel
+    templateType: microsoft.template.powershell
+    resourceName: {{ service_bus_namespace_name }}
+    resourceType: microsoft.scripts.powershell
+    resourceGroup: 
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}            
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/channels/messagebox
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - channels/topicchannel/Deploy-20-TopicChannel-ServiceBus.ps1.liquid
+          - channels/topicchannel/New-TopicChannel-ServiceBus.ps1          
+          - channels/topicchannel/TearDown-20-TopicChannel-ServiceBus.ps1.liquid
+          - channels/topicchannel/Remove-TopicChannel-ServiceBus.ps1
+
+  - template: deployTopicResponseChannel
+    templateType: microsoft.template.powershell
+    resourceName: {{ service_bus_namespace_name }}
+    resourceType: microsoft.scripts.powershell
+    resourceGroup: 
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}            
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/channels/messageboxresponse
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - channels/topicchannel/Deploy-20-TopicChannel-ServiceBus.ps1.liquid
+          - channels/topicchannel/New-TopicChannel-ServiceBus.ps1          
+          - channels/topicchannel/TearDown-20-TopicChannel-ServiceBus.ps1.liquid
+          - channels/topicchannel/Remove-TopicChannel-ServiceBus.ps1
+
+  - template: deploySuspendQueueChannel
+    templateType: microsoft.template.powershell
+    resourceName: {{ service_bus_namespace_name }}
+    resourceType: microsoft.scripts.powershell
+    resourceGroup: 
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}            
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/channels/suspendqueue
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - channels/topicchannel/Deploy-20-TopicChannel-ServiceBus.ps1.liquid
+          - channels/topicchannel/New-TopicChannel-ServiceBus.ps1          
+          - channels/topicchannel/TearDown-20-TopicChannel-ServiceBus.ps1.liquid
+          - channels/topicchannel/Remove-TopicChannel-ServiceBus.ps1
+
+  - template: deployContentDemoterConsumption
+    templateType: microsoft.template.powershell
+    resourceName: {{ content_demoter_logicapp_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/contentdemoter
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/contentdemoter/Deploy-90-ContentDemoter-LogicApp.ps1.liquid
+          - intermediaries/contentdemoter/New-ContentDemoter-LogicApp.ps1
+          - intermediaries/contentdemoter/TearDown-90-ContentDemoter-LogicApp.ps1.liquid
+          - intermediaries/contentdemoter/Remove-ContentDemoter-LogicApp.ps1
+
+  - template: deployContentPromoterConsumption
+    templateType: microsoft.template.powershell
+    resourceName: {{ content_promoter_logicapp_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/contentpromoter
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/contentpromoter/Deploy-90-ContentPromoter-LogicApp.ps1.liquid
+          - intermediaries/contentpromoter/New-ContentPromoter-LogicApp.ps1
+          - intermediaries/contentpromoter/TearDown-90-ContentPromoter-LogicApp.ps1.liquid
+          - intermediaries/contentpromoter/Remove-ContentPromoter-LogicApp.ps1
+  
+  - template: deployMessageConstructorConsumption
+    templateType: microsoft.template.powershell
+    resourceName: {{ message_constructor_logicapp_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/endpoints/messageconstructor
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/messageconstructor/Deploy-85-MessageConstructor-LogicApp.ps1.liquid
+          - endpoints/messageconstructor/New-MessageConstructor-LogicApp.ps1
+          - endpoints/messageconstructor/TearDown-85-MessageConstructor-LogicApp.ps1.liquid
+          - endpoints/messageconstructor/Remove-MessageConstructor-LogicApp.ps1
+
+  - template: deployMessageResponseHandlerLogicApp
+    templateType: microsoft.template.powershell
+    resourceName: {{ message_response_handler_logicapp_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/workflows/messageresponsehandler
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/workflows/messageresponsehandler/Deploy-85-MessageResponseHandler-LogicApp.ps1.liquid
+          - application/workflows/messageresponsehandler/New-MessageResponseHandler-LogicApp.ps1
+          - application/workflows/messageresponsehandler/TearDown-85-MessageResponseHandler-LogicApp.ps1.liquid
+          - application/workflows/messageresponsehandler/Remove-MessageResponseHandler-LogicApp.ps1
+
+  - template: deployMessageResponseHandlerServiceBusApiConnection
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}apic-aimmessageresponsehandler-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}      
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/workflows/messageresponsehandler
+    files:
+      - env: ['dev', 'prod']
+        paths:                                       
+          - application/workflows/messageresponsehandler/Deploy-80-MessageResponseHandlerServiceBus-ApiConnection.ps1.liquid
+          - application/workflows/messageresponsehandler/New-MessageResponseHandlerServiceBus-ApiConnection.ps1
+          - application/workflows/messageresponsehandler/Remove-MessageResponseHandlerServiceBus-ApiConnection.ps1
+          - application/workflows/messageresponsehandler/TearDown-80-MessageResponseHandlerServiceBus-ApiConnection.ps1.liquid
+
+  - template: deployMessageSuspendProcessorLogicApp
+    templateType: microsoft.template.powershell
+    resourceName: {{ message_suspend_processor_logicapp_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/workflows/messagesuspendprocessor
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/workflows/messagesuspendprocessor/Deploy-85-MessageSuspendProcessor-LogicApp.ps1.liquid
+          - application/workflows/messagesuspendprocessor/New-MessageSuspendProcessor-LogicApp.ps1
+          - application/workflows/messagesuspendprocessor/TearDown-85-MessageSuspendProcessor-LogicApp.ps1.liquid
+          - application/workflows/messagesuspendprocessor/Remove-MessageSuspendProcessor-LogicApp.ps1
+
+  - template: deployMessageSuspendProcessorServiceBusApiConnection
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}apic-aimmessagesuspendprocessor-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}      
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/workflows/messagesuspendprocessor
+    files:
+      - env: ['dev', 'prod']
+        paths:                                       
+          - application/workflows/messagesuspendprocessor/Deploy-80-MessageSuspendProcessorServiceBus-ApiConnection.ps1.liquid
+          - application/workflows/messagesuspendprocessor/New-MessageSuspendProcessorServiceBus-ApiConnection.ps1
+          - application/workflows/messagesuspendprocessor/Remove-MessageSuspendProcessorServiceBus-ApiConnection.ps1
+          - application/workflows/messagesuspendprocessor/TearDown-80-MessageSuspendProcessorServiceBus-ApiConnection.ps1.liquid
+
+  - template: deployTopicPublisherApiConnectionConsumption
+    templateType: microsoft.template.powershell
+    resourceName: {{ topic_publisher_api_connection_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}      
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/topicpublisher
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/topicpublisher/Deploy-90-TopicPublisher-ApiConnection.ps1.liquid
+          - intermediaries/topicpublisher/New-TopicPublisher-ApiConnection.ps1
+          - intermediaries/topicpublisher/TearDown-90-TopicPublisher-ApiConnection.ps1.liquid
+          - intermediaries/topicpublisher/Remove-TopicPublisher-ApiConnection.ps1
+
+  - template: deployTopicPublisherConsumption
+    templateType: microsoft.template.powershell
+    resourceName: {{ topic_publisher_logicapp_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/topicpublisher
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/topicpublisher/Deploy-95-TopicPublisher-LogicApp.ps1.liquid
+          - intermediaries/topicpublisher/New-TopicPublisher-LogicApp.ps1
+          - intermediaries/topicpublisher/TearDown-95-TopicPublisher-LogicApp.ps1.liquid
+          - intermediaries/topicpublisher/Remove-TopicPublisher-LogicApp.ps1
+
+  - template: deployXmlEnvelopeWrapperConsumption
+    templateType: microsoft.template.powershell
+    resourceName: {{ xml_envelope_wrapper_logicapp_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/xmlenvelopewrapper
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/xmlenvelopewrapper/Deploy-85-XmlEnvelopeWrapper-LogicApp.ps1.liquid
+          - intermediaries/xmlenvelopewrapper/New-XmlEnvelopeWrapper-LogicApp.ps1
+          - intermediaries/xmlenvelopewrapper/TearDown-85-XmlEnvelopeWrapper-LogicApp.ps1.liquid
+          - intermediaries/xmlenvelopewrapper/Remove-XmlEnvelopeWrapper-LogicApp.ps1
+
+
+  - template: deployXmlMessageProcessorConsumption
+    templateType: microsoft.template.powershell
+    resourceName: {{ xml_message_processor_logicapp_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/xmlmessageprocessor
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/xmlmessageprocessor/Deploy-85-XmlMessageProcessor-LogicApp.ps1.liquid
+          - intermediaries/xmlmessageprocessor/New-XmlMessageProcessor-LogicApp.ps1
+          - intermediaries/xmlmessageprocessor/TearDown-85-XmlMessageProcessor-LogicApp.ps1.liquid
+          - intermediaries/xmlmessageprocessor/Remove-XmlMessageProcessor-LogicApp.ps1
+
+  - template: deployXmlMessageTranslatorConsumption
+    templateType: microsoft.template.powershell
+    resourceName: {{ xml_message_translator_logicapp_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/xmlmessagetranslator
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/xmlmessagetranslator/Deploy-85-XmlMessageTranslator-LogicApp.ps1.liquid
+          - intermediaries/xmlmessagetranslator/New-XmlMessageTranslator-LogicApp.ps1
+          - intermediaries/xmlmessagetranslator/TearDown-85-XmlMessageTranslator-LogicApp.ps1.liquid
+          - intermediaries/xmlmessagetranslator/Remove-XmlMessageTranslator-LogicApp.ps1
+
+  - template: deployXmlMessageValidatorConsumption
+    templateType: microsoft.template.powershell
+    resourceName: {{ xml_message_validator_logicapp_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/xmlmessagevalidator
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/xmlmessagevalidator/Deploy-85-XmlMessageValidator-LogicApp.ps1.liquid
+          - intermediaries/xmlmessagevalidator/New-XmlMessageValidator-LogicApp.ps1
+          - intermediaries/xmlmessagevalidator/TearDown-85-XmlMessageValidator-LogicApp.ps1.liquid
+          - intermediaries/xmlmessagevalidator/Remove-XmlMessageValidator-LogicApp.ps1
+
+  - template: deployFlatFileMessageProcessorLogicApp
+    templateType: microsoft.template.powershell
+    resourceName: {{ flat_file_message_processor_logicapp_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/flatfilemessageprocessor
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/flatfilemessageprocessor/Deploy-90-FlatFileMessageProcessor-LogicApp.ps1.liquid
+          - intermediaries/flatfilemessageprocessor/New-FlatFileMessageProcessor-LogicApp.ps1
+          - intermediaries/flatfilemessageprocessor/TearDown-90-FlatFileMessageProcessor-LogicApp.ps1.liquid
+          - intermediaries/flatfilemessageprocessor/Remove-FlatFileMessageProcessor-LogicApp.ps1
+
+  - template: deployJsonDecoderLogicApp
+    templateType: microsoft.template.powershell
+    resourceName: {{ json_decoder_logicapp_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/jsondecoder
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/jsondecoder/Deploy-90-JsonDecoder-LogicApp.ps1.liquid
+          - intermediaries/jsondecoder/New-JsonDecoder-LogicApp.ps1
+          - intermediaries/jsondecoder/TearDown-90-JsonDecoder-LogicApp.ps1.liquid
+          - intermediaries/jsondecoder/Remove-JsonDecoder-LogicApp.ps1
+
+  - template: deployJsonEncoderLogicApp
+    templateType: microsoft.template.powershell
+    resourceName: {{ json_encoder_logicapp_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/jsonencoder
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/jsonencoder/Deploy-90-JsonEncoder-LogicApp.ps1.liquid
+          - intermediaries/jsonencoder/New-JsonEncoder-LogicApp.ps1
+          - intermediaries/jsonencoder/TearDown-90-JsonEncoder-LogicApp.ps1.liquid
+          - intermediaries/jsonencoder/Remove-JsonEncoder-LogicApp.ps1
+
+{% if deploy_data_gateway == true %}
+  - template: deployOnPremiseDataGateway
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}cgw-aimmsgbus-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - gateway_installation_display_name: {{ aim_user_prefix }}gtw-msgbus-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/endpoints/filedatagateway
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/file/datagateway/Deploy-30-DataGateway.ps1.liquid
+          - endpoints/file/datagateway/New-DataGateway.ps1
+          - endpoints/file/datagateway/TearDown-30-DataGateway.ps1.liquid
+          - endpoints/file/datagateway/Remove-DataGateway.ps1
+      - env: ['dev']
+        paths:
+          - endpoints/file/datagateway/datagateway.onpremisedatagateway.dev.psparameters.json.liquid                                   
+      - env: ['prod']
+        paths:
+          - endpoints/file/datagateway/datagateway.onpremisedatagateway.prod.psparameters.json.liquid
+{% endif %}

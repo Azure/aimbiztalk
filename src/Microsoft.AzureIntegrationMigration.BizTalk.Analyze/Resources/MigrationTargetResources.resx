@@ -1,0 +1,318 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ApplicationDescription" xml:space="preserve">
+    <value>Azure Integration Application</value>
+  </data>
+  <data name="ApplicationName" xml:space="preserve">
+    <value>Application</value>
+  </data>
+  <data name="BizTalkFrameworkAssemblerDescription" xml:space="preserve">
+    <value>BizTalk Framework assembler component.</value>
+  </data>
+  <data name="BizTalkFrameworkAssemblerName" xml:space="preserve">
+    <value>BizTalk Framework assembler</value>
+  </data>
+  <data name="BizTalkFrameworkDisassemblerDescription" xml:space="preserve">
+    <value>BizTalk Framework disassembler component.</value>
+  </data>
+  <data name="BizTalkFrameworkDisassemblerName" xml:space="preserve">
+    <value>BizTalk Framework disassembler</value>
+  </data>
+  <data name="ContentBasedRouterDescription" xml:space="preserve">
+    <value>The content based router decides which channel to route to based on the message content.</value>
+  </data>
+  <data name="ContentBasedRouterName" xml:space="preserve">
+    <value>Content Based Router</value>
+  </data>
+  <data name="ContentDemoterDescription" xml:space="preserve">
+    <value>The content demoter demotes properties of the message bus envelope message into the output envelope or document business message.</value>
+  </data>
+  <data name="ContentDemoterName" xml:space="preserve">
+    <value>Content Demoter</value>
+  </data>
+  <data name="ContentPromoterDescription" xml:space="preserve">
+    <value>The content promoter adds routing properties to the header of the message from routing property configuration.</value>
+  </data>
+  <data name="ContentPromoterName" xml:space="preserve">
+    <value>Content Promoter</value>
+  </data>
+  <data name="DynamicSendPortDefaultProtocol" xml:space="preserve">
+    <value>DYNAMIC</value>
+  </data>
+  <data name="EndRoute" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="FlatFileAssemblerDescription" xml:space="preserve">
+    <value>Flat file assembler component.</value>
+  </data>
+  <data name="FlatFileAssemblerName" xml:space="preserve">
+    <value>Flat file assembler</value>
+  </data>
+  <data name="FlatFileDisassemblerDescription" xml:space="preserve">
+    <value>Streaming flat file disassembler component.</value>
+  </data>
+  <data name="FlatFileDisassemblerName" xml:space="preserve">
+    <value>Flat file disassembler</value>
+  </data>
+  <data name="InterchangeAggregatorDescription" xml:space="preserve">
+    <value>The interchange aggregator collects all of the individual messages for an interchange to determine whether the interchange succeeded or failed as a single atomic unit.</value>
+  </data>
+  <data name="InterchangeAggregatorName" xml:space="preserve">
+    <value>Interchange Aggregator</value>
+  </data>
+  <data name="InterchangeQueueDescription" xml:space="preserve">
+    <value>The interchange queue is represented by a correlating queue channel.</value>
+  </data>
+  <data name="InterchangeQueueName" xml:space="preserve">
+    <value>Interchange Queue</value>
+  </data>
+  <data name="InterchangeSplitterDescription" xml:space="preserve">
+    <value>The interchange splitter splits the successful interchange back into individual messages to be published to the message box topic.</value>
+  </data>
+  <data name="InterchangeSplitterName" xml:space="preserve">
+    <value>Interchange Splitter</value>
+  </data>
+  <data name="JsonDecoderDescription" xml:space="preserve">
+    <value>JSON decoder component.</value>
+  </data>
+  <data name="JsonDecoderName" xml:space="preserve">
+    <value>JSON decoder</value>
+  </data>
+  <data name="JsonEncoderDescription" xml:space="preserve">
+    <value>JSON encoder component.</value>
+  </data>
+  <data name="JsonEncoderName" xml:space="preserve">
+    <value>JSON encoder</value>
+  </data>
+  <data name="MessageBoxDescription" xml:space="preserve">
+    <value>The message box is represented by a publish-subscribe channel.</value>
+  </data>
+  <data name="MessageBoxName" xml:space="preserve">
+    <value>Message Box</value>
+  </data>
+  <data name="MessageBoxResponseDescription" xml:space="preserve">
+    <value>The message box response is represented by a publish-subscribe channel.</value>
+  </data>
+  <data name="MessageBoxResponseName" xml:space="preserve">
+    <value>Message Box Response</value>
+  </data>
+  <data name="MessageBusDescription" xml:space="preserve">
+    <value>The message bus defines all of the core resources needed to support an enterprise application integration solution in Azure.</value>
+  </data>
+  <data name="MessageBusName" xml:space="preserve">
+    <value>Message Bus</value>
+  </data>
+  <data name="MessagePublisherDescription" xml:space="preserve">
+    <value>The message publisher sends the message to a publish-subscribe channel.</value>
+  </data>
+  <data name="MessagePublisherName" xml:space="preserve">
+    <value>Message Publisher</value>
+  </data>
+  <data name="MessageSubscriberDescription" xml:space="preserve">
+    <value>The message subscriber receives a message from a publish-subscribe channel using a subscription filter.</value>
+  </data>
+  <data name="MessageSubscriberName" xml:space="preserve">
+    <value>Message Subscriber</value>
+  </data>
+  <data name="MimeDecoderDescription" xml:space="preserve">
+    <value>MIME/SMIME decoder component.</value>
+  </data>
+  <data name="MimeDecoderName" xml:space="preserve">
+    <value>MIME/SMIME decoder</value>
+  </data>
+  <data name="MimeEncoderDescription" xml:space="preserve">
+    <value>MIME/SMIME encoder component.</value>
+  </data>
+  <data name="MimeEncoderName" xml:space="preserve">
+    <value>MIME/SMIME encoder</value>
+  </data>
+  <data name="PartyResolverDescription" xml:space="preserve">
+    <value>Party resolution component.</value>
+  </data>
+  <data name="PartyResolverName" xml:space="preserve">
+    <value>Party resolution</value>
+  </data>
+  <data name="RouteFromChannelLabel" xml:space="preserve">
+    <value>RouteFrom</value>
+  </data>
+  <data name="RouteToChannelLabel" xml:space="preserve">
+    <value>RouteTo</value>
+  </data>
+  <data name="RoutingSlipRouterDescription" xml:space="preserve">
+    <value>The routing slip router calls the next step in the route which is {0}.</value>
+  </data>
+  <data name="RoutingSlipRouterName" xml:space="preserve">
+    <value>Routing Slip Router</value>
+  </data>
+  <data name="SchemaDescription" xml:space="preserve">
+    <value>Azure Integration Application Schema</value>
+  </data>
+  <data name="SchemaName" xml:space="preserve">
+    <value>Schema</value>
+  </data>
+  <data name="SuspendQueueDescription" xml:space="preserve">
+    <value>The suspend queue is represented by a publish-subscribe channel.</value>
+  </data>
+  <data name="SuspendQueueName" xml:space="preserve">
+    <value>Suspend Queue</value>
+  </data>
+  <data name="SystemApplicationDescription" xml:space="preserve">
+    <value>Azure Integration System Application</value>
+  </data>
+  <data name="SystemApplicationName" xml:space="preserve">
+    <value>System Application</value>
+  </data>
+  <data name="TriggerChannelDescription" xml:space="preserve">
+    <value>The trigger channel sends a message to a URL endpoint which triggers the {0} intermediary.</value>
+  </data>
+  <data name="TriggerChannelName" xml:space="preserve">
+    <value>Trigger Channel</value>
+  </data>
+  <data name="XmlAssemblerDescription" xml:space="preserve">
+    <value>XML assembler component.</value>
+  </data>
+  <data name="XmlAssemblerName" xml:space="preserve">
+    <value>XML assembler</value>
+  </data>
+  <data name="XmlDisassemblerDescription" xml:space="preserve">
+    <value>Streaming XML disassembler.</value>
+  </data>
+  <data name="XmlDisassemblerName" xml:space="preserve">
+    <value>XML disassembler</value>
+  </data>
+  <data name="XmlMessageFilterDescription" xml:space="preserve">
+    <value>The XML message filter is used to filter XML messages that do not have a body or body data or have no associated schema.</value>
+  </data>
+  <data name="XmlMessageFilterName" xml:space="preserve">
+    <value>XML Message Filter</value>
+  </data>
+  <data name="XmlMessageTranslatorDescription" xml:space="preserve">
+    <value>The XML message translator uses a XSLT map to translate a received message into a new structure for output as a new message.</value>
+  </data>
+  <data name="XmlMessageTranslatorName" xml:space="preserve">
+    <value>XML Message Translator</value>
+  </data>
+  <data name="XmlValidatorDescription" xml:space="preserve">
+    <value>XML validator component.</value>
+  </data>
+  <data name="XmlValidatorName" xml:space="preserve">
+    <value>XML validator</value>
+  </data>
+</root>

@@ -1,0 +1,483 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AnalyzingOrchestrationScenarios" xml:space="preserve">
+    <value>{RuleId}: Analyzing orchestration scenarios for application {ApplicationName} to create routes.</value>
+  </data>
+  <data name="AnalyzingReceivePortScenarios" xml:space="preserve">
+    <value>{RuleId}: Analyzing receive port scenarios for application {ApplicationName} to create routes.</value>
+  </data>
+  <data name="AnalyzingSchemaDependencies" xml:space="preserve">
+    <value>{RuleId}: Analyzing dependencies for schema {name}.</value>
+  </data>
+  <data name="AnalyzingSendPortScenarios" xml:space="preserve">
+    <value>{RuleId}: Analyzing send port scenarios for application {ApplicationName} to create routes.</value>
+  </data>
+  <data name="BindingChannelsForReceivePort" xml:space="preserve">
+    <value>{RuleId}: Binding channels for receive port {ReceivePortName}.</value>
+  </data>
+  <data name="BindingChannelsForReceivePortResponse" xml:space="preserve">
+    <value>{RuleId}: Binding channels for receive port response {ReceivePortName}.</value>
+  </data>
+  <data name="BindingChannelsForSendPort" xml:space="preserve">
+    <value>{RuleId}: Binding channels for send port {SendPortName}.</value>
+  </data>
+  <data name="BindingCorrelationVariable" xml:space="preserve">
+    <value>{RuleId}: Binding correlation variable {VariableName} for orchestration {OrchestrationName}.</value>
+  </data>
+  <data name="BindingInvokedWorkflow" xml:space="preserve">
+    <value>{RuleId}: Binding invoked child workflow {InvokedWorkflowName} to the workflow {WorkflowName}.</value>
+  </data>
+  <data name="BindingInvokeWorkflowActivity" xml:space="preserve">
+    <value>{RuleId}: Binding workflow channel {WorkflowChannelName} for invoke workflow activity {ActivityName}.</value>
+  </data>
+  <data name="BindingReceiveActivity" xml:space="preserve">
+    <value>{RuleId}: Binding workflow channel {WorkflowChannelName} for receive activity {ActivityName}.</value>
+  </data>
+  <data name="BindingRouteForReceivePort" xml:space="preserve">
+    <value>{RuleId}: Binding route with routing slip routers for receive port {ReceivePortName}.</value>
+  </data>
+  <data name="BindingRouteForSendPort" xml:space="preserve">
+    <value>{RuleId}: Binding route with routing slip routers for send port {SendPortName}.</value>
+  </data>
+  <data name="BindingRouteForSendPortResponse" xml:space="preserve">
+    <value>{RuleId}: Binding route with routing slip routers for response from send port {SendPortName}.</value>
+  </data>
+  <data name="BindingSendActivity" xml:space="preserve">
+    <value>{RuleId}: Binding workflow channel {WorkflowChannelName} for send activity {ActivityName}.</value>
+  </data>
+  <data name="BindingSuspendActivity" xml:space="preserve">
+    <value>{RuleId}: Binding workflow channel {WorkflowChannelName} for suspend activity {ActivityName}.</value>
+  </data>
+  <data name="BindingTerminateActivity" xml:space="preserve">
+    <value>{RuleId}: Binding workflow channel {WorkflowChannelName} for terminate activity {ActivityName}.</value>
+  </data>
+  <data name="BindingWorkflowChannels" xml:space="preserve">
+    <value>{RuleId}: Binding workflow channels in model {WorkflowModelName} for orchestration {OrchestrationName} and activity container {ActivityContainerName}.</value>
+  </data>
+  <data name="BindingWorkflowModel" xml:space="preserve">
+    <value>{RuleId}: Binding workflow model for orchestration {OrchestrationName}.</value>
+  </data>
+  <data name="BizTalkFileReceiveAdapterBindingPropertyFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk File receive adapter property {PropertyName} was found in the receive location {ReceiveLocationName}, using value {PropertyValue}.</value>
+  </data>
+  <data name="BizTalkFileReceiveAdapterBindingPropertyNotFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk File receive adapter property {PropertyName} was not found in the receive location {ReceiveLocationName}, defaulting value to {PropertyDefaultValue}.</value>
+  </data>
+  <data name="BizTalkFileReceiveAdapterBindingPropertySensitive" xml:space="preserve">
+    <value>{RuleId}: The BizTalk File receive adapter sensitive property {PropertyName} in the receive location {ReceiveLocationName} is being defaulted to an empty value.</value>
+  </data>
+  <data name="BizTalkFileSendAdapterBindingPropertyFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk File send adapter property {PropertyName} was found in the send port {SendPortName}, using value {PropertyValue}.</value>
+  </data>
+  <data name="BizTalkFileSendAdapterBindingPropertySensitive" xml:space="preserve">
+    <value>{RuleId}: The BizTalk File send adapter sensitive property {PropertyName} in the send port {SendPortName} is being defaulted to an empty value.</value>
+  </data>
+  <data name="BizTalkFtpReceiveAdapterBindingPropertyFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk FTP receive adapter property {PropertyName} was found in the receive location {ReceiveLocationName}, using value {PropertyValue}.</value>
+  </data>
+  <data name="BizTalkFtpReceiveAdapterBindingPropertyNotFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk FTP receive adapter property {PropertyName} was not found in the receive location {ReceiveLocationName}, defaulting value to {PropertyDefaultValue}.</value>
+  </data>
+  <data name="BizTalkFtpReceiveAdapterBindingPropertySensitive" xml:space="preserve">
+    <value>{RuleId}: The BizTalk FTP receive adapter sensitive property {PropertyName} in the receive location {ReceiveLocationName} is being defaulted to an empty value.</value>
+  </data>
+  <data name="BizTalkFtpSendAdapterBindingPropertyFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk FTP send adapter property {PropertyName} was found in the send port {SendPortName}, using value {PropertyValue}.</value>
+  </data>
+  <data name="BizTalkFtpSendAdapterBindingPropertyNotFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk FTP send adapter property {PropertyName} was not found in the send port {SendPortName}, defaulting value to {PropertyDefaultValue}.</value>
+  </data>
+  <data name="BizTalkFtpSendAdapterBindingPropertySensitive" xml:space="preserve">
+    <value>{RuleId}: The BizTalk FTP send adapter sensitive property {PropertyName} in the send port {SendPortName} is being defaulted to an empty value.</value>
+  </data>
+  <data name="BoundWorkflowChannel" xml:space="preserve">
+    <value>{RuleId}: Channel {ChannelName} of type {ChannelType} in workflow {WorkflowName} has been bound to messaging channel {MessagingChannelName}.</value>
+  </data>
+  <data name="BuildingNewRouteForInterchangeBatching" xml:space="preserve">
+    <value>{RuleId}: Building a new route to handle interchange batching.</value>
+  </data>
+  <data name="BuildingNewRouteForInterchangeHandling" xml:space="preserve">
+    <value>{RuleId}: Building a new route to handle interchange batch completion.</value>
+  </data>
+  <data name="BuildingWorkflowModel" xml:space="preserve">
+    <value>{RuleId}: Building workflow model from metamodel for orchestration {OrchestrationName}.</value>
+  </data>
+  <data name="BuildingWorkflowRoute" xml:space="preserve">
+    <value>{RuleId}: Building route for process manager {IntermediaryName} in application {ApplicationName}.</value>
+  </data>
+  <data name="CheckingForDefaultPipeline" xml:space="preserve">
+    <value>{RuleId}: Checking for default pipeline.</value>
+  </data>
+  <data name="CorrelationVariableNotBound" xml:space="preserve">
+    <value>{RuleId}: Correlation variable {VariableName} is not bound to any receive or send activity, ignoring.</value>
+  </data>
+  <data name="CreatedDefaultSubscriptionFilterGroupForSendPort" xml:space="preserve">
+    <value>{RuleId}: Created subscription filter {PredicateGroup} group for send port {SendPortName} for the default subscription.</value>
+  </data>
+  <data name="CreatedDocumentMessage" xml:space="preserve">
+    <value>{RuleId}: Created document message for schema {SchemaName}.</value>
+  </data>
+  <data name="CreatedEnvelopeMessage" xml:space="preserve">
+    <value>{RuleId}: Created envelope message for schema {SchemaName}.</value>
+  </data>
+  <data name="CreatedInvokedWorkflowChannel" xml:space="preserve">
+    <value>{RuleId}: Created a workflow channel {ChannelName} of type {ChannelType} in invoked workflow {InvokedWorkflowName}.</value>
+  </data>
+  <data name="CreatedSubscriptionFilterGroupForReceivePort" xml:space="preserve">
+    <value>{RuleId}: Created subscription filter {PredicateGroup} group for receive port {ReceivePortName} for all filter statement sub-groups.</value>
+  </data>
+  <data name="CreatedSubscriptionFilterGroupForSendPort" xml:space="preserve">
+    <value>{RuleId}: Created subscription filter {PredicateGroup} group for send port {SendPortName} for all filter statement sub-groups.</value>
+  </data>
+  <data name="CreatedSubscriptionFilterStatement" xml:space="preserve">
+    <value>{RuleId}: Created subscription filter statement {Statement}.</value>
+  </data>
+  <data name="CreatedSubscriptionFilterSubGroup" xml:space="preserve">
+    <value>{RuleId}: Created subscription filter {PredicateGroup} group for {FilterStatementCount} filter statements.</value>
+  </data>
+  <data name="CreatedWorkflowChannel" xml:space="preserve">
+    <value>{RuleId}: Created a workflow channel {ChannelName} of type {ChannelType}.</value>
+  </data>
+  <data name="CreatedWorkflowCompositeMessage" xml:space="preserve">
+    <value>{RuleId}: Created a workflow composite message {MessageName} of type {MessageType}.</value>
+  </data>
+  <data name="CreatedWorkflowCompositeMessagePart" xml:space="preserve">
+    <value>{RuleId}: Created a workflow message part {PartName} of type {PartType}.</value>
+  </data>
+  <data name="CreatedWorkflowCorrelationVariable" xml:space="preserve">
+    <value>{RuleId}: Created a workflow correlation variable {VariableName} of type {VariableType}.</value>
+  </data>
+  <data name="CreatedWorkflowMessage" xml:space="preserve">
+    <value>{RuleId}: Created a workflow message {MessageName} of type {MessageType}.</value>
+  </data>
+  <data name="CreatedWorkflowVariable" xml:space="preserve">
+    <value>{RuleId}: Created a workflow variable {VariableName} of type {VariableType}.</value>
+  </data>
+  <data name="CreatingContentBasedRouterIntermediary" xml:space="preserve">
+    <value>{RuleId}: Creating content based router intermediary {IntermediaryName}.</value>
+  </data>
+  <data name="CreatingContentDemoterIntermediary" xml:space="preserve">
+    <value>{RuleId}: Creating content demoter intermediary {IntermediaryName}.</value>
+  </data>
+  <data name="CreatingContentPromoterIntermediary" xml:space="preserve">
+    <value>{RuleId}: Creating content promoter intermediary {IntermediaryName}.</value>
+  </data>
+  <data name="CreatingDefaultPipelineComponentIntermediaries" xml:space="preserve">
+    <value>{RuleId}: Creating intermediaries for the default pipeline {PipelineName}.</value>
+  </data>
+  <data name="CreatingDefaultSendPortSubscription" xml:space="preserve">
+    <value>{RuleId}: Creating default subscription for send port {SendPortName}.</value>
+  </data>
+  <data name="CreatingDynamicSendEndpointAdapter" xml:space="preserve">
+    <value>{RuleId}: Creating an endpoint adapter for dynamic send port {SendPortName}.</value>
+  </data>
+  <data name="CreatingInterchangeAggregatorIntermediary" xml:space="preserve">
+    <value>{RuleId}: Creating interchange aggregator intermediary {IntermediaryName}.</value>
+  </data>
+  <data name="CreatingInterchangeSplitterIntermediary" xml:space="preserve">
+    <value>{RuleId}: Creating interchange splitter intermediary {IntermediaryName}.</value>
+  </data>
+  <data name="CreatingJsonDecoderIntermediary" xml:space="preserve">
+    <value>{RuleId}: Creating JSON decoder intermediary {IntermediaryName}.</value>
+  </data>
+  <data name="CreatingJsonEncoderIntermediary" xml:space="preserve">
+    <value>{RuleId}: Creating JSON encoder intermediary {IntermediaryName}.</value>
+  </data>
+  <data name="CreatingMapIntermediary" xml:space="preserve">
+    <value>{RuleId}: Creating message translator intermediary containing {MapCount} maps.</value>
+  </data>
+  <data name="CreatingMessagePublisherIntermediary" xml:space="preserve">
+    <value>{RuleId}: Creating message publisher intermediary {IntermediaryName}.</value>
+  </data>
+  <data name="CreatingMessageSubscriberIntermediary" xml:space="preserve">
+    <value>{RuleId}: Creating message subscriber intermediary {IntermediaryName} for send port {SendPortName}.</value>
+  </data>
+  <data name="CreatingMessageSubscriberIntermediaryReceivePort" xml:space="preserve">
+    <value>{RuleId}: Creating message subscriber intermediary {IntermediaryName} for receive port {ReceivePortName}.</value>
+  </data>
+  <data name="CreatingPipelineComponentIntermediaries" xml:space="preserve">
+    <value>{RuleId}: Creating intermediaries for pipeline {PipelineName}.</value>
+  </data>
+  <data name="CreatingPipelineComponentIntermediary" xml:space="preserve">
+    <value>{RuleId}: Creating an intermediary for pipeline component {ComponentName} for pipeline {PipelineName}.</value>
+  </data>
+  <data name="CreatingQueueChannel" xml:space="preserve">
+    <value>{RuleId}: Creating queue channel {ChannelName}.</value>
+  </data>
+  <data name="CreatingReceiveEndpointAdapter" xml:space="preserve">
+    <value>{RuleId}: Creating an endpoint adapter for protocol {ProtocolName} for receive location {ReceiveLocationName}.</value>
+  </data>
+  <data name="CreatingReceivePortResponseSubscription" xml:space="preserve">
+    <value>{RuleId}: Creating subscription for response path of receive port {ReceivePortName}.</value>
+  </data>
+  <data name="CreatingReceivePortSubscription" xml:space="preserve">
+    <value>{RuleId}: Creating subscription for receive port {ReceivePortName}.</value>
+  </data>
+  <data name="CreatingRoutingSlipRouterIntermediary" xml:space="preserve">
+    <value>{RuleId}: Creating routing slip router intermediary from step {FromStep} to step {ToStep}.</value>
+  </data>
+  <data name="CreatingSendEndpointAdapter" xml:space="preserve">
+    <value>{RuleId}: Creating an endpoint adapter for protocol {ProtocolName} for send port {SendPortName}.</value>
+  </data>
+  <data name="CreatingSendPortSubscription" xml:space="preserve">
+    <value>{RuleId}: Creating subscription for send port {SendPortName}.</value>
+  </data>
+  <data name="CreatingTopicChannel" xml:space="preserve">
+    <value>{RuleId}: Creating topic channel {ChannelName}.</value>
+  </data>
+  <data name="CreatingXmlEnvelopeWrapperIntermediary" xml:space="preserve">
+    <value>{RuleId}: Creating XML envelope wrapper intermediary {IntermediaryName}.</value>
+  </data>
+  <data name="CreatingXmlMessageFilterIntermediary" xml:space="preserve">
+    <value>{RuleId}: Creating XML message filter intermediary {IntermediaryName}.</value>
+  </data>
+  <data name="CreatingXmlMessageProcessorIntermediary" xml:space="preserve">
+    <value>{RuleId}: Creating XML message processor intermediary {IntermediaryName}.</value>
+  </data>
+  <data name="CreatingXmlMessageValidatorIntermediary" xml:space="preserve">
+    <value>{RuleId}: Creating XML message validator intermediary {IntermediaryName}.</value>
+  </data>
+  <data name="FoundOrchestrationScenariosInApplication" xml:space="preserve">
+    <value>{RuleId}: Found {ScenarioCount} orchestration scenarios for application {ApplicationName}.</value>
+  </data>
+  <data name="FoundPipelineComponentsInPipeline" xml:space="preserve">
+    <value>{RuleId}: Found {PipelineComponentCount} pipeline components in pipeline {PipelineName}.</value>
+  </data>
+  <data name="FoundPortForReceiveActivityLogicalBinding" xml:space="preserve">
+    <value>{RuleId}: Found messaging port {PortName} in bindings for channel {ChannelName} bound to receive activity {ReceiveActivityName} in workflow {WorkflowName}.</value>
+  </data>
+  <data name="FoundPortForSendActivityLogicalBinding" xml:space="preserve">
+    <value>{RuleId}: Found messaging port {PortName} in bindings for channel {ChannelName} bound to send activity {SendActivityName} in workflow {WorkflowName}.</value>
+  </data>
+  <data name="FoundReceivePortScenariosInApplication" xml:space="preserve">
+    <value>{RuleId}: Found {ScenarioCount} receive port scenarios for application {ApplicationName}.</value>
+  </data>
+  <data name="FoundSendPortScenariosInApplication" xml:space="preserve">
+    <value>{RuleId}: Found {ScenarioCount} send port scenarios for application {ApplicationName}.</value>
+  </data>
+  <data name="GeneratingResourcesInTargetModel" xml:space="preserve">
+    <value>Generating resources from configuration in target model.</value>
+  </data>
+  <data name="MapNotUsedByReceivePorts" xml:space="preserve">
+    <value>{RuleId}: Transform {TransformName} not used by any receive ports.</value>
+  </data>
+  <data name="MapNotUsedBySendPorts" xml:space="preserve">
+    <value>{RuleId}: Transform {TransformName} not used by any send ports.</value>
+  </data>
+  <data name="MappedSubscriptionFilterPropertyName" xml:space="preserve">
+    <value>{RuleId}: Mapped subscription filter property {FilterPropertyName} to {MappedFilterPropertyName}.</value>
+  </data>
+  <data name="MigrationSourceCreated" xml:space="preserve">
+    <value>Created migration source report Ref '{RefId}'.</value>
+  </data>
+  <data name="NoActivatableProcessManagersInApplication" xml:space="preserve">
+    <value>{RuleId}: No activatable process managers found in the application {ApplicationName}.</value>
+  </data>
+  <data name="NoOrchestrationsFoundInApplication" xml:space="preserve">
+    <value>{RuleId}: No orchestrations found for application {ApplicationName}.</value>
+  </data>
+  <data name="NoReceiveMapSpecifiedOnReceivePort" xml:space="preserve">
+    <value>{RuleId}: No map specified on receive port {ReceivePortName}, skipping for receive location {ReceiveLocationName}.</value>
+  </data>
+  <data name="NoReceiveMapSpecifiedOnSendPort" xml:space="preserve">
+    <value>{RuleId}: No map specified on send port {SendPortName}, skipping.</value>
+  </data>
+  <data name="NoReceivePortsFoundInApplication" xml:space="preserve">
+    <value>{RuleId}: No receive ports found for application {ApplicationName}.</value>
+  </data>
+  <data name="NoSendMapSpecifiedOnSendPort" xml:space="preserve">
+    <value>{RuleId}: No map specified on send port {SendPortName}, skipping.</value>
+  </data>
+  <data name="NoSendPortsFoundInApplication" xml:space="preserve">
+    <value>{RuleId}: No send ports found for application {ApplicationName}.</value>
+  </data>
+  <data name="PassthruPipelineDoesNotRequireIntermediaries" xml:space="preserve">
+    <value>{RuleId}: The {PipelineName} does not require intermediaries.</value>
+  </data>
+  <data name="PipelineComponentNotRecognisedAsDefaultComponent" xml:space="preserve">
+    <value>{RuleId}: The pipeline component {PipelineComponentName} is not recognised as a default component, creating a custom filter intermediary for the custom component.</value>
+  </data>
+  <data name="ProcessManagerRouteBound" xml:space="preserve">
+    <value>{RuleId}: Route for process manager {ProcessManagerName} has been bound with {MessagingObjectCount} messaging objects in the route.</value>
+  </data>
+  <data name="ReceivePortIsTwoWay" xml:space="preserve">
+    <value>{RuleId}: Receive port {ReceivePort} is two way, analyzing response path.</value>
+  </data>
+  <data name="RelationshipCreated" xml:space="preserve">
+    <value>{RuleId}: Created relationship from resource '{0}' to resource '{1}' using relationship '{2}'.</value>
+  </data>
+  <data name="RenderingTemplateConfigInTempPath" xml:space="preserve">
+    <value>Rendering template configuration in temp path {TempPath}.</value>
+  </data>
+  <data name="ReportContainerCreated" xml:space="preserve">
+    <value>Created report resource container '{RefId}' Key '{Key}' Name '{Name}' Type '{Type}' in the container '{ParentRefId}'.</value>
+  </data>
+  <data name="ReportResourceCreated" xml:space="preserve">
+    <value>{RuleId}: Created resource '{RefId}' Name '{Name}' Type '{Type}' in the resource '{ParentRefId}'.</value>
+  </data>
+  <data name="ResolvingPortsForMap" xml:space="preserve">
+    <value>{RuleId}: Resolving receive and send ports for transform {TransformName}.</value>
+  </data>
+  <data name="ResolvingSourceSchemasForMap" xml:space="preserve">
+    <value>{RuleId}: Resolving source schemas for transform {TransformName}.</value>
+  </data>
+  <data name="ResolvingTargetSchemasForMap" xml:space="preserve">
+    <value>{RuleId}: Resolving target schemas for transform {TransformName}.</value>
+  </data>
+  <data name="ResourceCreated" xml:space="preserve">
+    <value>Created resource '{RefId}' Key '{Key}' Name '{Name}' Type '{Type}' in the resource '{ParentKey}' Type '{ParentType}'.</value>
+  </data>
+  <data name="ResourceDefinitionCreated" xml:space="preserve">
+    <value>Created resource definition '{RefId}' Key '{Key}' Name '{Name}' Type '{Type}' in the container '{ContainerKey}' Type '{ContainerType}'.</value>
+  </data>
+  <data name="RetrievingConfigurationFromTempPath" xml:space="preserve">
+    <value>Retrieving rendered template configuration from {TempPath}.</value>
+  </data>
+  <data name="RuleCompleted" xml:space="preserve">
+    <value>{RuleId}: Completed running rule {RuleName}.</value>
+  </data>
+  <data name="RunningBizTalkAnalyzer" xml:space="preserve">
+    <value>Running BizTalk analyzer {AnalyzerName}.</value>
+  </data>
+  <data name="RunningInitializerAnalyzer" xml:space="preserve">
+    <value>Running initializer {InitializorName}.</value>
+  </data>
+  <data name="RunningRule" xml:space="preserve">
+    <value>{RuleId}: Running rule {RuleName}.</value>
+  </data>
+  <data name="SchemaDependencyNotResolved" xml:space="preserve">
+    <value>{RuleId}: Schema dependency has not been resolved for schema {SchemaType}.</value>
+  </data>
+  <data name="SendPortIsTwoWay" xml:space="preserve">
+    <value>{RuleId}: Send port {SendPort} is two way, analyzing response path.</value>
+  </data>
+  <data name="SkippingRuleAsSourceModelMissing" xml:space="preserve">
+    <value>{RuleId}: Skipping the rule {RuleName} as there is no source model.</value>
+  </data>
+  <data name="TransformDependencyNotResolved" xml:space="preserve">
+    <value>{RuleId}: Transform dependency has not been resolved for schema {TransformType}.</value>
+  </data>
+  <data name="UsingDefaultPropertyValueForPipelineComponent" xml:space="preserve">
+    <value>{RuleId}: Using default property value {PropertyValue} for {PropertyName} in pipeline component {ComponentName}.</value>
+  </data>
+  <data name="UsingOverriddenPropertyValueForPipelineComponent" xml:space="preserve">
+    <value>{RuleId}: Using overridden property value {PropertyValue} for {PropertyName} in pipeline component {ComponentName}.</value>
+  </data>
+</root>

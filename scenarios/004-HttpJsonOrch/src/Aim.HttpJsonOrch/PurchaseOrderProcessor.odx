@@ -1,0 +1,161 @@
+﻿#if __DESIGNER_DATA
+#error Do not define __DESIGNER_DATA.
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<om:MetaModel MajorVersion="1" MinorVersion="3" Core="2b131234-7959-458d-834f-2dc0769ce683" ScheduleModel="66366196-361d-448d-976f-cab5e87496d2" xmlns:om="http://schemas.microsoft.com/BizTalk/2003/DesignerData">
+    <om:Element Type="Module" OID="e273e4bb-4467-46bd-9853-a344ca291ec7" LowerBound="1.1" HigherBound="33.1">
+        <om:Property Name="ReportToAnalyst" Value="True" />
+        <om:Property Name="Name" Value="Aim.HttpJsonOrch" />
+        <om:Property Name="Signal" Value="False" />
+        <om:Element Type="PortType" OID="5e061f34-0d65-4ad1-bd10-d99fc020b685" ParentLink="Module_PortType" LowerBound="4.1" HigherBound="11.1">
+            <om:Property Name="Synchronous" Value="True" />
+            <om:Property Name="TypeModifier" Value="Internal" />
+            <om:Property Name="ReportToAnalyst" Value="True" />
+            <om:Property Name="Name" Value="PurchaseOrderPortType" />
+            <om:Property Name="Signal" Value="True" />
+            <om:Element Type="OperationDeclaration" OID="1aa85f3b-9ab7-439e-bc56-df52e13fe26c" ParentLink="PortType_OperationDeclaration" LowerBound="6.1" HigherBound="10.1">
+                <om:Property Name="OperationType" Value="RequestResponse" />
+                <om:Property Name="ReportToAnalyst" Value="True" />
+                <om:Property Name="Name" Value="PurchaseOrderRequestResponsePortType" />
+                <om:Property Name="Signal" Value="True" />
+                <om:Element Type="MessageRef" OID="ad4bb932-573f-49dd-9cd8-2c70acdbdc14" ParentLink="OperationDeclaration_RequestMessageRef" LowerBound="8.13" HigherBound="8.33">
+                    <om:Property Name="Ref" Value="Aim.HttpJsonOrch.PurchaseOrderRequest" />
+                    <om:Property Name="ReportToAnalyst" Value="True" />
+                    <om:Property Name="Name" Value="RequestOperation" />
+                    <om:Property Name="Signal" Value="True" />
+                </om:Element>
+                <om:Element Type="MessageRef" OID="17a927b0-8133-46cf-b031-cb5e2cdbfe8c" ParentLink="OperationDeclaration_ResponseMessageRef" LowerBound="8.35" HigherBound="8.56">
+                    <om:Property Name="Ref" Value="Aim.HttpJsonOrch.PurchaseOrderResponse" />
+                    <om:Property Name="ReportToAnalyst" Value="True" />
+                    <om:Property Name="Name" Value="ResponseOperation" />
+                    <om:Property Name="Signal" Value="True" />
+                </om:Element>
+            </om:Element>
+        </om:Element>
+        <om:Element Type="ServiceDeclaration" OID="b3197856-4f46-4a39-91f4-036023a7c9ec" ParentLink="Module_ServiceDeclaration" LowerBound="11.1" HigherBound="32.1">
+            <om:Property Name="InitializedTransactionType" Value="False" />
+            <om:Property Name="IsInvokable" Value="False" />
+            <om:Property Name="TypeModifier" Value="Public" />
+            <om:Property Name="ReportToAnalyst" Value="True" />
+            <om:Property Name="Name" Value="PurchaseOrderProcessor" />
+            <om:Property Name="Signal" Value="True" />
+            <om:Element Type="ServiceBody" OID="b2b9d297-a6dd-4502-a3cd-d5c1cebb01f3" ParentLink="ServiceDeclaration_ServiceBody">
+                <om:Property Name="Signal" Value="False" />
+                <om:Element Type="Receive" OID="6385a8ac-9d82-46bb-8903-35a692c49b34" ParentLink="ServiceBody_Statement" LowerBound="20.1" HigherBound="22.1">
+                    <om:Property Name="Activate" Value="True" />
+                    <om:Property Name="PortName" Value="PurchaseOrderRequestResponsePort" />
+                    <om:Property Name="MessageName" Value="PurchaseOrderRequestMessage" />
+                    <om:Property Name="OperationName" Value="PurchaseOrderRequestResponsePortType" />
+                    <om:Property Name="OperationMessageName" Value="RequestOperation" />
+                    <om:Property Name="ReportToAnalyst" Value="True" />
+                    <om:Property Name="AnalystComments" Value="Receive the purchase order request" />
+                    <om:Property Name="Name" Value="ReceivePurchaseOrderRequest" />
+                    <om:Property Name="Signal" Value="True" />
+                </om:Element>
+                <om:Element Type="Construct" OID="da1f4357-13ed-40f3-8cb9-9884c9a3edfe" ParentLink="ServiceBody_Statement" LowerBound="22.1" HigherBound="28.1">
+                    <om:Property Name="ReportToAnalyst" Value="True" />
+                    <om:Property Name="AnalystComments" Value="Construct the purchase order response" />
+                    <om:Property Name="Name" Value="ConstructPurchaseOrderResponse" />
+                    <om:Property Name="Signal" Value="True" />
+                    <om:Element Type="MessageRef" OID="84d6a462-5c41-4e95-93df-19b8bffb57f2" ParentLink="Construct_MessageRef" LowerBound="23.23" HigherBound="23.51">
+                        <om:Property Name="Ref" Value="PurchaseOrderResponseMessage" />
+                        <om:Property Name="ReportToAnalyst" Value="True" />
+                        <om:Property Name="Signal" Value="False" />
+                    </om:Element>
+                    <om:Element Type="Transform" OID="2664030c-e9e2-4cbc-bad5-aa0028277e7e" ParentLink="ComplexStatement_Statement" LowerBound="25.1" HigherBound="27.1">
+                        <om:Property Name="ClassName" Value="Aim.HttpJsonOrch.PurchaseOrderRequestToPurchaseOrderResponseMap" />
+                        <om:Property Name="ReportToAnalyst" Value="True" />
+                        <om:Property Name="AnalystComments" Value="Map the purchase order request to a purchase order response" />
+                        <om:Property Name="Name" Value="TransformPurchaseOrderRequestToPurchaseOrderResponse" />
+                        <om:Property Name="Signal" Value="True" />
+                        <om:Element Type="MessagePartRef" OID="e516f965-12b1-44cf-8a8e-09518a93c9e7" ParentLink="Transform_InputMessagePartRef" LowerBound="26.125" HigherBound="26.152">
+                            <om:Property Name="MessageRef" Value="PurchaseOrderRequestMessage" />
+                            <om:Property Name="ReportToAnalyst" Value="True" />
+                            <om:Property Name="Name" Value="MessagePartReference_1" />
+                            <om:Property Name="Signal" Value="False" />
+                        </om:Element>
+                        <om:Element Type="MessagePartRef" OID="8ba560d7-6750-47dc-af30-8ad272a2ceb1" ParentLink="Transform_OutputMessagePartRef" LowerBound="26.28" HigherBound="26.56">
+                            <om:Property Name="MessageRef" Value="PurchaseOrderResponseMessage" />
+                            <om:Property Name="ReportToAnalyst" Value="True" />
+                            <om:Property Name="Name" Value="MessagePartReference_2" />
+                            <om:Property Name="Signal" Value="False" />
+                        </om:Element>
+                    </om:Element>
+                </om:Element>
+                <om:Element Type="Send" OID="d1a329cc-9078-4454-8bab-15f9829a92a5" ParentLink="ServiceBody_Statement" LowerBound="28.1" HigherBound="30.1">
+                    <om:Property Name="PortName" Value="PurchaseOrderRequestResponsePort" />
+                    <om:Property Name="MessageName" Value="PurchaseOrderResponseMessage" />
+                    <om:Property Name="OperationName" Value="PurchaseOrderRequestResponsePortType" />
+                    <om:Property Name="OperationMessageName" Value="ResponseOperation" />
+                    <om:Property Name="ReportToAnalyst" Value="True" />
+                    <om:Property Name="AnalystComments" Value="Send the purchase order response" />
+                    <om:Property Name="Name" Value="SendPurchaseOrderResponse" />
+                    <om:Property Name="Signal" Value="True" />
+                </om:Element>
+            </om:Element>
+            <om:Element Type="PortDeclaration" OID="2cd04346-7f39-4282-abe9-2b5b7c536cfd" ParentLink="ServiceDeclaration_PortDeclaration" LowerBound="14.1" HigherBound="16.1">
+                <om:Property Name="PortModifier" Value="Implements" />
+                <om:Property Name="Orientation" Value="Left" />
+                <om:Property Name="PortIndex" Value="-1" />
+                <om:Property Name="IsWebPort" Value="False" />
+                <om:Property Name="OrderedDelivery" Value="False" />
+                <om:Property Name="DeliveryNotification" Value="None" />
+                <om:Property Name="Type" Value="Aim.HttpJsonOrch.PurchaseOrderPortType" />
+                <om:Property Name="ParamDirection" Value="In" />
+                <om:Property Name="ReportToAnalyst" Value="True" />
+                <om:Property Name="Name" Value="PurchaseOrderRequestResponsePort" />
+                <om:Property Name="Signal" Value="True" />
+                <om:Element Type="LogicalBindingAttribute" OID="611a4240-237d-4a69-9ee8-d56c91a29940" ParentLink="PortDeclaration_CLRAttribute" LowerBound="14.1" HigherBound="15.1">
+                    <om:Property Name="Signal" Value="False" />
+                </om:Element>
+            </om:Element>
+            <om:Element Type="MessageDeclaration" OID="5127a13f-f7f7-4f5e-95b2-5efa8ba2925d" ParentLink="ServiceDeclaration_MessageDeclaration" LowerBound="16.1" HigherBound="17.1">
+                <om:Property Name="Type" Value="Aim.HttpJsonOrch.PurchaseOrderRequest" />
+                <om:Property Name="ParamDirection" Value="In" />
+                <om:Property Name="ReportToAnalyst" Value="True" />
+                <om:Property Name="Name" Value="PurchaseOrderRequestMessage" />
+                <om:Property Name="Signal" Value="True" />
+            </om:Element>
+            <om:Element Type="MessageDeclaration" OID="3a812cdd-70f3-498c-8df6-011148bf9c1d" ParentLink="ServiceDeclaration_MessageDeclaration" LowerBound="17.1" HigherBound="18.1">
+                <om:Property Name="Type" Value="Aim.HttpJsonOrch.PurchaseOrderResponse" />
+                <om:Property Name="ParamDirection" Value="In" />
+                <om:Property Name="ReportToAnalyst" Value="True" />
+                <om:Property Name="Name" Value="PurchaseOrderResponseMessage" />
+                <om:Property Name="Signal" Value="True" />
+            </om:Element>
+        </om:Element>
+    </om:Element>
+</om:MetaModel>
+#endif // __DESIGNER_DATA
+[Microsoft.XLANGs.BaseTypes.BPELExportable(false)]
+module Aim.HttpJsonOrch
+{
+    internal porttype PurchaseOrderPortType
+    {
+        requestresponse PurchaseOrderRequestResponsePortType
+        {
+            PurchaseOrderRequest, PurchaseOrderResponse
+        };
+    };
+    [Microsoft.XLANGs.BaseTypes.BPELExportable(false)]
+    public service PurchaseOrderProcessor
+    {
+        [Microsoft.XLANGs.BaseTypes.LogicalBinding()]
+        port implements PurchaseOrderPortType PurchaseOrderRequestResponsePort;
+        message PurchaseOrderRequest PurchaseOrderRequestMessage;
+        message PurchaseOrderResponse PurchaseOrderResponseMessage;
+        body ()
+        {
+            [Microsoft.XLANGs.BaseTypes.DesignerPosition("6385a8ac-9d82-46bb-8903-35a692c49b34")]
+            activate receive (PurchaseOrderRequestResponsePort.PurchaseOrderRequestResponsePortType, PurchaseOrderRequestMessage);
+            [Microsoft.XLANGs.BaseTypes.DesignerPosition("da1f4357-13ed-40f3-8cb9-9884c9a3edfe")]
+            construct PurchaseOrderResponseMessage
+            {
+                [Microsoft.XLANGs.BaseTypes.DesignerPosition("2664030c-e9e2-4cbc-bad5-aa0028277e7e")]
+                transform (PurchaseOrderResponseMessage) = Aim.HttpJsonOrch.PurchaseOrderRequestToPurchaseOrderResponseMap (PurchaseOrderRequestMessage);
+            }
+            [Microsoft.XLANGs.BaseTypes.DesignerPosition("d1a329cc-9078-4454-8bab-15f9829a92a5")]
+            send (PurchaseOrderRequestResponsePort.PurchaseOrderRequestResponsePortType, PurchaseOrderResponseMessage);
+        }
+    }
+}
+

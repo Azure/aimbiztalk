@@ -1,0 +1,92 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Authors>Microsoft Corporation</Authors>
+    <Product>Microsoft Azure Integration Migration Tool</Product>
+    <Description>Library that provides the BizTalk stage runners.</Description>
+    <Copyright>Copyright © Microsoft Corporation 2020</Copyright>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)\..\..\dist\packages</PackageOutputPath>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <PackageId>Microsoft.AzureIntegrationMigration.BizTalk.StageRunners</PackageId>
+    <RepositoryUrl>https://github.com/azure/aimbiztalk</RepositoryUrl>
+    <Version>0.0.1-alpha</Version>
+    <NoWarn>NU5105</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AzureIntegrationMigration.ApplicationModel" Version="0.3.0-alpha.2020092250449" />
+    <PackageReference Include="Microsoft.AzureIntegrationMigration.Runner" Version="0.2.0-alpha.2020091858963" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="3.6.0-beta1-20111-10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Microsoft.AzureIntegrationMigration.BizTalk.Analyze\Microsoft.AzureIntegrationMigration.BizTalk.Analyze.csproj" />
+    <ProjectReference Include="..\Microsoft.AzureIntegrationMigration.BizTalk.Convert\Microsoft.AzureIntegrationMigration.BizTalk.Convert.csproj" />
+    <ProjectReference Include="..\Microsoft.AzureIntegrationMigration.BizTalk.Discover\Microsoft.AzureIntegrationMigration.BizTalk.Discover.csproj" />
+    <ProjectReference Include="..\Microsoft.AzureIntegrationMigration.BizTalk.Parse\Microsoft.AzureIntegrationMigration.BizTalk.Parse.csproj" />
+    <ProjectReference Include="..\Microsoft.AzureIntegrationMigration.BizTalk.Report\Microsoft.AzureIntegrationMigration.BizTalk.Report.csproj" />
+    <ProjectReference Include="..\Microsoft.AzureIntegrationMigration.BizTalk.Types\Microsoft.AzureIntegrationMigration.BizTalk.Types.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\ErrorMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ErrorMessages.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\InformationMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>InformationMessages.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\TraceMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TraceMessages.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\ErrorMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ErrorMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\InformationMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>InformationMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\TraceMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TraceMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="additionalhelp.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

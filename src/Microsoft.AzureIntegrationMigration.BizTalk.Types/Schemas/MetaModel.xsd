@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="NewDataSet" targetNamespace="http://schemas.microsoft.com/BizTalk/2003/DesignerData" xmlns:mstns="http://schemas.microsoft.com/BizTalk/2003/DesignerData" xmlns="http://schemas.microsoft.com/BizTalk/2003/DesignerData" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:element name="Element" msdata:Prefix="om">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Property" msdata:Prefix="om" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="Name" form="unqualified" type="xs:string" />
+            <xs:attribute name="Value" form="unqualified" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element ref="Element" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="Type" form="unqualified" type="xs:string" />
+      <xs:attribute name="OID" form="unqualified" type="xs:string" />
+      <xs:attribute name="ParentLink" form="unqualified" type="xs:string" />
+      <xs:attribute name="LowerBound" form="unqualified" type="xs:string" />
+      <xs:attribute name="HigherBound" form="unqualified" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MetaModel" msdata:Prefix="om">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Element" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="MajorVersion" form="unqualified" type="xs:string" />
+      <xs:attribute name="MinorVersion" form="unqualified" type="xs:string" />
+      <xs:attribute name="Core" form="unqualified" type="xs:string" />
+      <xs:attribute name="ScheduleModel" form="unqualified" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msdata:Prefix="om">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="Element" />
+        <xs:element ref="MetaModel" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

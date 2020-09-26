@@ -1,0 +1,591 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BindingInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Assembly="Microsoft.BizTalk.Deployment, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" Version="3.5.1.0" BindingStatus="PartiallyBound" BoundEndpoints="2" TotalEndpoints="12">
+    <Timestamp>2020-03-28T15:26:12.7248467+00:00</Timestamp>
+    <ModuleRefCollection>
+        <ModuleRef Name="[Application:Thunderstorm.Test]" Version="" Culture="" PublicKeyToken="" FullName="[Application:Thunderstorm.Test], Version=, Culture=, PublicKeyToken=">
+            <Services />
+            <TrackedSchemas>
+                <Schema FullName="OrchsToConvert.PropertySchema.PropertySchema" AssemblyQualifiedName="OrchsToConvert.PropertySchema.PropertySchema,OrchsToConvert, Version=1.0.0.0, Culture=neutral, PublicKeyToken=63a3d0af71fe5e2a" AlwaysTrackAllProperties="false" Description="">
+                    <TrackedPropertyNames />
+                </Schema>
+                <Schema FullName="OrchsToConvert.Schemas.USOrderPropertySchema" AssemblyQualifiedName="OrchsToConvert.Schemas.USOrderPropertySchema,OrchsToConvert, Version=1.0.0.0, Culture=neutral, PublicKeyToken=63a3d0af71fe5e2a" AlwaysTrackAllProperties="false" Description="">
+                    <TrackedPropertyNames />
+                </Schema>
+                <Schema FullName="OrchsToConvert.Schemas.PropertySchema1" AssemblyQualifiedName="OrchsToConvert.Schemas.PropertySchema1,OrchsToConvert, Version=1.0.0.0, Culture=neutral, PublicKeyToken=63a3d0af71fe5e2a" AlwaysTrackAllProperties="false" Description="">
+                    <TrackedPropertyNames />
+                </Schema>
+                <Schema FullName="OrchsToConvert.Schemas.PO" RootName="PurchaseOrder" AssemblyQualifiedName="OrchsToConvert.Schemas.PO,OrchsToConvert, Version=1.0.0.0, Culture=neutral, PublicKeyToken=63a3d0af71fe5e2a" AlwaysTrackAllProperties="false">
+                    <TrackedPropertyNames />
+                </Schema>
+                <Schema FullName="OrchsToConvert.Schema1" RootName="Root" AssemblyQualifiedName="OrchsToConvert.Schema1,OrchsToConvert, Version=1.0.0.0, Culture=neutral, PublicKeyToken=63a3d0af71fe5e2a" AlwaysTrackAllProperties="false" Description="">
+                    <TrackedPropertyNames />
+                </Schema>
+                <Schema FullName="OrchsToConvert.Schemas.Schema2" RootName="Root" AssemblyQualifiedName="OrchsToConvert.Schemas.Schema2,OrchsToConvert, Version=1.0.0.0, Culture=neutral, PublicKeyToken=63a3d0af71fe5e2a" AlwaysTrackAllProperties="false" Description="">
+                    <TrackedPropertyNames />
+                </Schema>
+                <Schema FullName="OrchsToConvert.Schemas.OrderUS" RootName="USOrder" AssemblyQualifiedName="OrchsToConvert.Schemas.OrderUS,OrchsToConvert, Version=1.0.0.0, Culture=neutral, PublicKeyToken=63a3d0af71fe5e2a" AlwaysTrackAllProperties="false" Description="">
+                    <TrackedPropertyNames />
+                </Schema>
+                <Schema FullName="OrchsToConvert.GenericSchema" RootName="Root" AssemblyQualifiedName="OrchsToConvert.GenericSchema,OrchsToConvert, Version=1.0.0.0, Culture=neutral, PublicKeyToken=63a3d0af71fe5e2a" AlwaysTrackAllProperties="false" Description="">
+                    <TrackedPropertyNames />
+                </Schema>
+                <Schema FullName="OrchsToConvert.RequestMsg" RootName="UpgradeRequest" AssemblyQualifiedName="OrchsToConvert.RequestMsg,OrchsToConvert, Version=1.0.0.0, Culture=neutral, PublicKeyToken=63a3d0af71fe5e2a" AlwaysTrackAllProperties="false" Description="">
+                    <TrackedPropertyNames />
+                </Schema>
+                <Schema FullName="OrchsToConvert.Schemas.OrderFF" RootName="Order" AssemblyQualifiedName="OrchsToConvert.Schemas.OrderFF,OrchsToConvert, Version=1.0.0.0, Culture=neutral, PublicKeyToken=63a3d0af71fe5e2a" AlwaysTrackAllProperties="false" Description="">
+                    <TrackedPropertyNames />
+                </Schema>
+                <Schema FullName="OrchsToConvert.MessageTypes.PurchaseOrder" RootName="Root" AssemblyQualifiedName="OrchsToConvert.MessageTypes.PurchaseOrder,OrchsToConvert, Version=1.0.0.0, Culture=neutral, PublicKeyToken=63a3d0af71fe5e2a" AlwaysTrackAllProperties="false" Description="">
+                    <TrackedPropertyNames />
+                </Schema>
+            </TrackedSchemas>
+        </ModuleRef>
+        <ModuleRef Name="Outbound.Orchestrations" Version="4.0.0.0" Culture="neutral" PublicKeyToken="fb2f49117c105d89" FullName="Outbound.Orchestrations, Version=4.0.0.0, Culture=neutral, PublicKeyToken=fb2f49117c105d89">
+            <Services>
+                <Service Name="Outbound.Orchestrations.Transmitter" State="Started" TrackingOption="$(OrchestrationTrackingOptions)">
+                    <Ports>
+                        <Port Name="SolicitResponsePort" Modifier="1" BindingOption="1">
+                            <SendPortRef Name="WcfSend" />
+                            <DistributionListRef xsi:nil="true" />
+                            <ReceivePortRef xsi:nil="true" />
+                        </Port>
+                    </Ports>
+                    <Roles />
+                    <Host Name="$(ProcessingHostName)" NTGroupName="$(Domain)\$(BizTalkApplicationUsersGroup)" Type="1" Trusted="false" />
+                </Service>
+                <Service Name="Orchestrations.SystemHoldingCheckHandler" State="Started" TrackingOption="ServiceStartEnd MessageSendReceive OrchestrationEvents" Description="">
+                    <Ports>
+                        <Port Name="SystemHoldingCheckReceivePort" Modifier="2" BindingOption="1">
+                            <SendPortRef xsi:nil="true" />
+                            <DistributionListRef xsi:nil="true" />
+                            <ReceivePortRef Name="HoldingStoreReceivePort" />
+                        </Port>
+                    </Ports>
+                    <Roles />
+                    <Host Name="$(ProcessingHostName)" NTGroupName="$(Domain)\$(BizTalkApplicationUsersGroup)" Type="1" Trusted="false" />
+                </Service>
+            </Services>
+            <TrackedSchemas />
+        </ModuleRef>
+        <ModuleRef Name="OrchsToConvert" Version="1.0.0.0" Culture="neutral" PublicKeyToken="63a3d0af71fe5e2a" FullName="OrchsToConvert, Version=1.0.0.0, Culture=neutral, PublicKeyToken=63a3d0af71fe5e2a">
+            <Services>
+                <Service Name="BizTalkServerProject.SimpleOrch" State="Unenlisted" TrackingOption="ServiceStartEnd MessageSendReceive OrchestrationEvents" AnalyticsEnabled="false" Description="">
+                    <Ports>
+                        <Port Name="ReceiveSendPort" Modifier="2" BindingOption="1">
+                            <SendPortRef xsi:nil="true" />
+                            <DistributionListRef xsi:nil="true" />
+                            <ReceivePortRef Name="RequestReplyHttpReceive" />
+                        </Port>
+                    </Ports>
+                    <Roles />
+                    <Host Name="BizTalkServerApplication" NTGroupName="BizTalk Application Users" Type="1" Trusted="false" />
+                </Service>
+                <Service Name="OrchsToConvert.SchemaTypedMessaging" State="Unenlisted" TrackingOption="ServiceStartEnd MessageSendReceive OrchestrationEvents" AnalyticsEnabled="false" Description="">
+                    <Ports>
+                        <Port Name="Port_1" Modifier="2" BindingOption="1">
+                            <SendPortRef xsi:nil="true" />
+                            <DistributionListRef xsi:nil="true" />
+                            <ReceivePortRef xsi:nil="true" />
+                        </Port>
+                        <Port Name="Port_2" Modifier="1" BindingOption="1">
+                            <SendPortRef xsi:nil="true" />
+                            <DistributionListRef xsi:nil="true" />
+                            <ReceivePortRef xsi:nil="true" />
+                        </Port>
+                    </Ports>
+                    <Roles />
+                    <Host Name="BizTalkServerApplication" NTGroupName="BizTalk Application Users" Type="1" Trusted="false" />
+                </Service>
+                <Service Name="OrchsToConvert.RequestReply" State="Unenlisted" TrackingOption="ServiceStartEnd MessageSendReceive OrchestrationEvents" AnalyticsEnabled="false" Description="">
+                    <Ports>
+                        <Port Name="ReceiveResponse" Modifier="2" BindingOption="1">
+                            <SendPortRef xsi:nil="true" />
+                            <DistributionListRef xsi:nil="true" />
+                            <ReceivePortRef Name="RequestReplyHttpReceive" />
+                        </Port>
+                    </Ports>
+                    <Roles />
+                    <Host Name="BizTalkServerApplication" NTGroupName="BizTalk Application Users" Type="1" Trusted="false" />
+                </Service>
+                <Service Name="OrchsToConvert.CallOrch" State="Unenlisted" TrackingOption="ServiceStartEnd MessageSendReceive OrchestrationEvents" AnalyticsEnabled="false" Description="">
+                    <Ports>
+                        <Port Name="Port_1" Modifier="2" BindingOption="1">
+                            <SendPortRef xsi:nil="true" />
+                            <DistributionListRef xsi:nil="true" />
+                            <ReceivePortRef xsi:nil="true" />
+                        </Port>
+                        <Port Name="Port_2" Modifier="1" BindingOption="1">
+                            <SendPortRef xsi:nil="true" />
+                            <DistributionListRef xsi:nil="true" />
+                            <ReceivePortRef xsi:nil="true" />
+                        </Port>
+                    </Ports>
+                    <Roles />
+                    <Host xsi:nil="true" />
+                </Service>
+                <Service Name="OrchsToConvert.StartOrch" State="Unenlisted" TrackingOption="ServiceStartEnd MessageSendReceive OrchestrationEvents" AnalyticsEnabled="false" Description="">
+                    <Ports />
+                    <Roles />
+                    <Host xsi:nil="true" />
+                </Service>
+                <Service Name="OrchsToConvert.CalleeOrchodx" State="Unenlisted" TrackingOption="ServiceStartEnd MessageSendReceive OrchestrationEvents" AnalyticsEnabled="false" Description="">
+                    <Ports />
+                    <Roles />
+                    <Host xsi:nil="true" />
+                </Service>
+                <Service Name="OrchsToConvert.EmptyOrch" State="Unenlisted" TrackingOption="ServiceStartEnd MessageSendReceive OrchestrationEvents" AnalyticsEnabled="false" Description="">
+                    <Ports />
+                    <Roles />
+                    <Host xsi:nil="true" />
+                </Service>
+                <Service Name="OrchsToConvert.PartnerBound" State="Unenlisted" TrackingOption="ServiceStartEnd MessageSendReceive OrchestrationEvents" AnalyticsEnabled="false" Description="">
+                    <Ports />
+                    <Roles />
+                    <Host xsi:nil="true" />
+                </Service>
+                <Service Name="OrchsToConvert.NackOrch" State="Unenlisted" TrackingOption="ServiceStartEnd MessageSendReceive OrchestrationEvents" AnalyticsEnabled="false" Description="">
+                    <Ports />
+                    <Roles />
+                    <Host xsi:nil="true" />
+                </Service>
+                <Service Name="OrchsToConvert.CorrelationSet" State="Unenlisted" TrackingOption="ServiceStartEnd MessageSendReceive OrchestrationEvents" AnalyticsEnabled="false" Description="">
+                    <Ports />
+                    <Roles />
+                    <Host xsi:nil="true" />
+                </Service>
+                <Service Name="OrchsToConvert.RoleLInk" State="Unenlisted" TrackingOption="ServiceStartEnd MessageSendReceive OrchestrationEvents" AnalyticsEnabled="false" Description="">
+                    <Ports>
+                        <Port Name="Port_1" Modifier="2" BindingOption="1">
+                            <SendPortRef xsi:nil="true" />
+                            <DistributionListRef xsi:nil="true" />
+                            <ReceivePortRef xsi:nil="true" />
+                        </Port>
+                        <Port Name="__RoleLink_1_PortType_11" Modifier="2" BindingOption="5">
+                            <SendPortRef xsi:nil="true" />
+                            <DistributionListRef xsi:nil="true" />
+                            <ReceivePortRef xsi:nil="true" />
+                        </Port>
+                    </Ports>
+                    <Roles>
+                        <Role Name="Provider" RoleLinkTypeName="OrchsToConvert.RoleLinkType_1" RoleType="Uses">
+                            <EnlistedParties />
+                        </Role>
+                        <Role Name="Consumer" RoleLinkTypeName="OrchsToConvert.RoleLinkType_1" RoleType="Implements">
+                            <EnlistedParties />
+                        </Role>
+                    </Roles>
+                    <Host xsi:nil="true" />
+                </Service>
+                <Service Name="OrchsToConvert.ScatterGather" State="Unenlisted" TrackingOption="ServiceStartEnd MessageSendReceive OrchestrationEvents" AnalyticsEnabled="false" Description="">
+                    <Ports />
+                    <Roles />
+                    <Host xsi:nil="true" />
+                </Service>
+                <Service Name="OrchsToConvert.ComplexCorrelation" State="Unenlisted" TrackingOption="ServiceStartEnd MessageSendReceive OrchestrationEvents" AnalyticsEnabled="false" Description="">
+                    <Ports>
+                        <Port Name="Orders" Modifier="2" BindingOption="1">
+                            <SendPortRef xsi:nil="true" />
+                            <DistributionListRef xsi:nil="true" />
+                            <ReceivePortRef xsi:nil="true" />
+                        </Port>
+                    </Ports>
+                    <Roles />
+                    <Host xsi:nil="true" />
+                </Service>
+                <Service Name="OrchsToConvert.SequentialCorrelationMultiType" State="Unenlisted" TrackingOption="ServiceStartEnd MessageSendReceive OrchestrationEvents" AnalyticsEnabled="false" Description="">
+                    <Ports>
+                        <Port Name="Port_1" Modifier="2" BindingOption="1">
+                            <SendPortRef xsi:nil="true" />
+                            <DistributionListRef xsi:nil="true" />
+                            <ReceivePortRef xsi:nil="true" />
+                        </Port>
+                    </Ports>
+                    <Roles />
+                    <Host xsi:nil="true" />
+                </Service>
+                <Service Name="OrchsToConvert.FilterExpression" State="Unenlisted" TrackingOption="ServiceStartEnd MessageSendReceive OrchestrationEvents" AnalyticsEnabled="false" Description="">
+                    <Ports>
+                        <Port Name="Port_1" Modifier="2" BindingOption="1">
+                            <SendPortRef xsi:nil="true" />
+                            <DistributionListRef xsi:nil="true" />
+                            <ReceivePortRef xsi:nil="true" />
+                        </Port>
+                    </Ports>
+                    <Roles />
+                    <Host xsi:nil="true" />
+                </Service>
+                <Service Name="OrchsToConvert.ComplexlSequentialCorrelationOneTypeType" State="Unenlisted" TrackingOption="ServiceStartEnd MessageSendReceive OrchestrationEvents" AnalyticsEnabled="false" Description="">
+                    <Ports>
+                        <Port Name="Port_1" Modifier="2" BindingOption="1">
+                            <SendPortRef xsi:nil="true" />
+                            <DistributionListRef xsi:nil="true" />
+                            <ReceivePortRef xsi:nil="true" />
+                        </Port>
+                    </Ports>
+                    <Roles />
+                    <Host xsi:nil="true" />
+                </Service>
+            </Services>
+            <TrackedSchemas />
+        </ModuleRef>
+        <ModuleRef Name="#" Version="0.0" Culture="neutral" PublicKeyToken="" FullName="#, Version=0.0, Culture=neutral, PublicKeyToken=">
+            <Services />
+            <TrackedSchemas />
+        </ModuleRef>
+    </ModuleRefCollection>
+    <SendPortCollection>
+        <SendPort Name="WcfSend" IsStatic="true" IsTwoWay="true" BindingOption="0">
+            <Description xsi:nil="true" />
+            <TransmitPipeline Name="Outbound.SendPipeline" FullyQualifiedName="Outbound.SendPipeline, Connectors.Pipelines, Version=4.0.0.0, Culture=neutral, PublicKeyToken=fb2f49117c105d89" Type="2" TrackingOption="ServiceStartEnd MessageSendReceive PipelineEvents" Description="" />
+            <PrimaryTransport>
+                <Address>$(WcfServiceUrl)</Address>
+                <TransportType Name="WCF-Custom" Capabilities="907" ConfigurationClsid="af081f69-38ca-4d5b-87df-f0344b12557a" />
+                <TransportTypeData>
+                    &lt;CustomProps&gt;&lt;BindingConfiguration vt="8"&gt;&amp;lt;binding name="basicHttpBinding"&amp;gt;&amp;lt;security mode="TransportCredentialOnly"&amp;gt;&amp;lt;transport clientCredentialType="Windows" /&amp;gt;&amp;lt;/security&amp;gt;&amp;lt;/binding&amp;gt;&lt;/BindingConfiguration&gt;&lt;InboundBodyPathExpression vt="8" /&gt;&lt;OutboundBodyLocation vt="8"&gt;UseBodyElement&lt;/OutboundBodyLocation&gt;&lt;AffiliateApplicationName vt="8" /&gt;&lt;EnableTransaction vt="11"&gt;-1&lt;/EnableTransaction&gt;&lt;StaticAction vt="8"&gt;&amp;lt;BtsActionMapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&amp;gt;
+                    &amp;lt;Operation Name="SubmitMessage" Action="http://MyServices/SubmitMessage" /&amp;gt;
+                    &amp;lt;/BtsActionMapping&amp;gt;&lt;/StaticAction&gt;&lt;BindingType vt="8"&gt;basicHttpBinding&lt;/BindingType&gt;&lt;ProxyAddress vt="8" /&gt;&lt;UserName vt="8" /&gt;&lt;InboundBodyLocation vt="8"&gt;UseBodyElement&lt;/InboundBodyLocation&gt;&lt;EndpointBehaviorConfiguration vt="8"&gt;&amp;lt;behavior name="EndpointBehavior"&amp;gt;&amp;lt;clientCredentials&amp;gt;&amp;lt;windows allowedImpersonationLevel="Impersonation" /&amp;gt;&amp;lt;/clientCredentials&amp;gt;&amp;lt;/behavior&amp;gt;&lt;/EndpointBehaviorConfiguration&gt;&lt;OutboundXmlTemplate vt="8"&gt;&amp;lt;bts-msg-body xmlns="http://www.microsoft.com/schemas/bts2007" encoding="xml"/&amp;gt;&lt;/OutboundXmlTemplate&gt;&lt;PropagateFaultMessage vt="11"&gt;-1&lt;/PropagateFaultMessage&gt;&lt;InboundNodeEncoding vt="8"&gt;Xml&lt;/InboundNodeEncoding&gt;&lt;ProxyUserName vt="8" /&gt;&lt;IsolationLevel vt="8"&gt;Serializable&lt;/IsolationLevel&gt;&lt;UseSSO vt="11"&gt;0&lt;/UseSSO&gt;&lt;/CustomProps&gt;
+                </TransportTypeData>
+                <RetryCount>0</RetryCount>
+                <RetryInterval>0</RetryInterval>
+                <ServiceWindowEnabled>false</ServiceWindowEnabled>
+                <FromTime>2000-01-01T00:00:00</FromTime>
+                <ToTime>2000-01-01T23:59:59</ToTime>
+                <Primary>true</Primary>
+                <OrderedDelivery>false</OrderedDelivery>
+                <DeliveryNotification>1</DeliveryNotification>
+                <SendHandler Name="$(ProcessingHostName)" HostTrusted="false">
+                    <TransportType Name="WCF-Custom" Capabilities="907" ConfigurationClsid="af081f69-38ca-4d5b-87df-f0344b12557a" />
+                </SendHandler>
+            </PrimaryTransport>
+            <SecondaryTransport>
+                <Address />
+                <RetryCount>0</RetryCount>
+                <RetryInterval>0</RetryInterval>
+                <ServiceWindowEnabled>false</ServiceWindowEnabled>
+                <FromTime>2000-01-01T00:00:00</FromTime>
+                <ToTime>2000-01-01T23:59:59</ToTime>
+                <Primary>false</Primary>
+                <OrderedDelivery>false</OrderedDelivery>
+                <DeliveryNotification>1</DeliveryNotification>
+                <SendHandler xsi:nil="true" />
+            </SecondaryTransport>
+            <ReceivePipeline Name="Outbound.ResponseReceivePipeline" FullyQualifiedName="Outbound.ResponseReceivePipeline, Connectors.Pipelines, Version=4.0.0.0, Culture=neutral, PublicKeyToken=fb2f49117c105d89" Type="1" TrackingOption="ServiceStartEnd MessageSendReceive PipelineEvents" Description="" />
+            <ReceivePipelineData xsi:nil="true" />
+            <Tracking>0</Tracking>
+            <Filter />
+            <Transforms />
+            <InboundTransforms />
+            <OrderedDelivery>false</OrderedDelivery>
+            <Priority>5</Priority>
+            <StopSendingOnFailure>false</StopSendingOnFailure>
+            <RouteFailedMessage>false</RouteFailedMessage>
+            <ApplicationName>$(BizTalkApplication)</ApplicationName>
+        </SendPort>
+        <SendPort Name="MQSeries - $(QueueManager1)" IsStatic="true" IsTwoWay="false" BindingOption="0">
+            <Description xsi:nil="true" />
+            <TransmitPipeline Name="Inbound.InboundSendPipeline" FullyQualifiedName="Inbound.InboundSendPipeline, ConnectorsPipelines, Version=4.0.0.0, Culture=neutral, PublicKeyToken=fb2f49117c105d89" Type="2" TrackingOption="$(PipelineTrackingOptions)" Description="" />
+            <PrimaryTransport>
+                <Address>mqsc:///tcp//$(QueueManager1)/BIZ.REQ.A</Address>
+                <TransportType Name="MQSC" Capabilities="15627" ConfigurationClsid="8a8ca722-047c-4574-9850-8bd63e6e9089" />
+                <TransportTypeData>&lt;CustomProps&gt;&lt;AdapterConfig vt="8"&gt;&amp;lt;Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&amp;gt;&amp;lt;uri&amp;gt;mqsc:///tcp//$(QueueManager1)/Q.REQ.A&amp;lt;/uri&amp;gt;&amp;lt;queueManager&amp;gt;$(QueueManager1)&amp;lt;/queueManager&amp;gt;&amp;lt;queue&amp;gt;BIZ.REQ.A&amp;lt;/queue&amp;gt;&amp;lt;heartBeat&amp;gt;300&amp;lt;/heartBeat&amp;gt;&amp;lt;transportType&amp;gt;tcp&amp;lt;/transportType&amp;gt;&amp;lt;transactionSupported&amp;gt;no&amp;lt;/transactionSupported&amp;gt;&amp;lt;segmentationAllowed&amp;gt;no&amp;lt;/segmentationAllowed&amp;gt;&amp;lt;/Config&amp;gt;&lt;/AdapterConfig&gt;&lt;/CustomProps&gt;</TransportTypeData>
+                <RetryCount>0</RetryCount>
+                <RetryInterval>0</RetryInterval>
+                <ServiceWindowEnabled>false</ServiceWindowEnabled>
+                <FromTime>2009-10-22T23:00:00</FromTime>
+                <ToTime>2009-10-23T22:59:59</ToTime>
+                <Primary>true</Primary>
+                <OrderedDelivery>false</OrderedDelivery>
+                <DeliveryNotification>1</DeliveryNotification>
+                <SendHandler Name="$(ProcessingHostName)" HostTrusted="false">
+                    <TransportType Name="MQSC" Capabilities="15627" ConfigurationClsid="8a8ca722-047c-4574-9850-8bd63e6e9089" />
+                </SendHandler>
+            </PrimaryTransport>
+            <ReceivePipelineData xsi:nil="true" />
+            <Tracking>0</Tracking>
+            <Filter>
+                &lt;?xml version="1.0" encoding="utf-16"?&gt;
+                &lt;Filter xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+                &lt;Group&gt;
+                &lt;Statement Property="BTS.Operation" Operator="0" Value="SendRequest" /&gt;
+                &lt;Statement Property="Schemas.PropertySchemas.QueueManager" Operator="0" Value="$(QueueManager1)" /&gt;
+                &lt;Statement Property="Schemas.PropertySchemas.Queue" Operator="0" Value="BIZ.REQ.A" /&gt;
+                &lt;Statement Property="Schemas.PropertySchemas.Platform" Operator="0" Value="CP-NRT" /&gt;
+                &lt;/Group&gt;
+                &lt;/Filter&gt;
+            </Filter>
+            <Transforms />
+            <OrderedDelivery>false</OrderedDelivery>
+            <Priority>5</Priority>
+            <StopSendingOnFailure>false</StopSendingOnFailure>
+            <RouteFailedMessage>true</RouteFailedMessage>
+            <ApplicationName>$(BizTalkApplication)</ApplicationName>
+        </SendPort>
+        <SendPort Name="WcfRequest" IsStatic="true" IsTwoWay="true" BindingOption="0">
+            <Description xsi:nil="true" />
+            <TransmitPipeline Name="Pipelines.InboundSendPipeline" FullyQualifiedName="Pipelines.InboundSendPipeline, Connectors.Pipelines, Version=4.0.0.0, Culture=neutral, PublicKeyToken=fb2f49117c105d89" Type="2" TrackingOption="ServiceStartEnd MessageSendReceive PipelineEvents" Description="" />
+            <PrimaryTransport>
+                <Address>$(SAPInboundServiceUrl)</Address>
+                <TransportType Name="WCF-Custom" Capabilities="907" ConfigurationClsid="af081f69-38ca-4d5b-87df-f0344b12557a" />
+                <TransportTypeData>
+                    &lt;CustomProps&gt;&lt;OutboundXmlTemplate vt="8"&gt;&amp;lt;bts-msg-body xmlns="http://www.microsoft.com/schemas/bts2007" encoding="xml"/&amp;gt;&lt;/OutboundXmlTemplate&gt;&lt;PropagateFaultMessage vt="11"&gt;-1&lt;/PropagateFaultMessage&gt;&lt;ProxyUserName vt="8" /&gt;&lt;EndpointBehaviorConfiguration vt="8"&gt;&amp;lt;behavior name="customBehaviorForCert"&amp;gt;&amp;lt;clientCredentials&amp;gt;&amp;lt;clientCertificate findValue="$(NWServiceHostingCert)" storeLocation="LocalMachine" x509FindType="FindBySubjectName" /&amp;gt;&amp;lt;serviceCertificate&amp;gt;&amp;lt;defaultCertificate findValue="$(HostingCert)" storeLocation="LocalMachine" storeName="TrustedPeople" x509FindType="FindBySubjectName" /&amp;gt;&amp;lt;authentication certificateValidationMode="PeerOrChainTrust" revocationMode="NoCheck" trustedStoreLocation="LocalMachine" /&amp;gt;&amp;lt;/serviceCertificate&amp;gt;&amp;lt;/clientCredentials&amp;gt;&amp;lt;/behavior&amp;gt;&lt;/EndpointBehaviorConfiguration&gt;&lt;OutboundBodyLocation vt="8"&gt;UseBodyElement&lt;/OutboundBodyLocation&gt;&lt;StaticAction vt="8"&gt;&amp;lt;BtsActionMapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&amp;gt;
+                    &amp;lt;/BtsActionMapping&amp;gt;&lt;/StaticAction&gt;&lt;BindingConfiguration vt="8"&gt;&amp;lt;binding name="BATCHBINDING" closeTimeout="$(InitialSendTimeout)" openTimeout="$(InitialSendTimeout)" receiveTimeout="$(InitialSendTimeout)" sendTimeout="$(InitialSendTimeout)" &amp;gt;&amp;lt;security defaultAlgorithmSuite="Basic128Rsa15" allowSerializedSigningTokenOnReply="true" authenticationMode="MutualCertificate" requireDerivedKeys="false" messageProtectionOrder="SignBeforeEncrypt" messageSecurityVersion="WSSecurity10WSTrust13WSSecureConversation13WSSecurityPolicy12BasicSecurityProfile10"&amp;gt;&amp;lt;secureConversationBootstrap /&amp;gt;&amp;lt;/security&amp;gt;&amp;lt;textMessageEncoding messageVersion="Soap11" /&amp;gt;&amp;lt;httpTransport authenticationScheme="Negotiate" keepAliveEnabled="false" /&amp;gt;&amp;lt;/binding&amp;gt;&lt;/BindingConfiguration&gt;&lt;InboundNodeEncoding vt="8"&gt;Xml&lt;/InboundNodeEncoding&gt;&lt;UseSSO vt="11"&gt;0&lt;/UseSSO&gt;&lt;ProxyAddress vt="8" /&gt;&lt;AffiliateApplicationName vt="8" /&gt;&lt;BindingType vt="8"&gt;customBinding&lt;/BindingType&gt;&lt;InboundBodyLocation vt="8"&gt;UseBodyElement&lt;/InboundBodyLocation&gt;&lt;UserName vt="8" /&gt;&lt;Identity vt="8"&gt;&amp;lt;identity&amp;gt;
+                    &amp;lt;dns value="$(HostingCert)" /&amp;gt;
+                    &amp;lt;/identity&amp;gt;&lt;/Identity&gt;&lt;InboundBodyPathExpression vt="8" /&gt;&lt;/CustomProps&gt;
+                </TransportTypeData>
+                <RetryCount>0</RetryCount>
+                <RetryInterval>0</RetryInterval>
+                <ServiceWindowEnabled>false</ServiceWindowEnabled>
+                <FromTime>2000-01-01T23:00:00</FromTime>
+                <ToTime>2000-01-01T22:59:59</ToTime>
+                <Primary>true</Primary>
+                <OrderedDelivery>false</OrderedDelivery>
+                <DeliveryNotification>1</DeliveryNotification>
+                <SendHandler Name="$(InboundSendHostName)" HostTrusted="false">
+                    <TransportType Name="WCF-Custom" Capabilities="907" ConfigurationClsid="af081f69-38ca-4d5b-87df-f0344b12557a" />
+                </SendHandler>
+            </PrimaryTransport>
+            <SecondaryTransport>
+                <Address />
+                <RetryCount>0</RetryCount>
+                <RetryInterval>0</RetryInterval>
+                <ServiceWindowEnabled>false</ServiceWindowEnabled>
+                <FromTime>2000-01-01T23:00:00</FromTime>
+                <ToTime>2000-01-01T22:59:59</ToTime>
+                <Primary>false</Primary>
+                <OrderedDelivery>false</OrderedDelivery>
+                <DeliveryNotification>1</DeliveryNotification>
+                <SendHandler xsi:nil="true" />
+            </SecondaryTransport>
+            <ReceivePipeline Name="Pipelines.InboundResponseRcvPipeline" FullyQualifiedName="Pipelines.InboundResponseRcvPipeline, Pipelines, Version=4.0.0.0, Culture=neutral, PublicKeyToken=fb2f49117c105d89" Type="1" TrackingOption="ServiceStartEnd MessageSendReceive PipelineEvents" Description="" />
+            <ReceivePipelineData xsi:nil="true" />
+            <Tracking>0</Tracking>
+            <Filter />
+            <Transforms />
+            <InboundTransforms />
+            <OrderedDelivery>false</OrderedDelivery>
+            <Priority>5</Priority>
+            <StopSendingOnFailure>false</StopSendingOnFailure>
+            <RouteFailedMessage>true</RouteFailedMessage>
+            <ApplicationName>$(BizTalkApplication)</ApplicationName>
+        </SendPort>
+        <SendPort Name="BinaryRequestPort - $(QueueManager2)" IsStatic="true" IsTwoWay="false" BindingOption="0">
+            <Description xsi:nil="true" />
+            <TransmitPipeline Name="Pipelines.Outbound.DifSend" FullyQualifiedName="Pipelines.Outbound.DifSend, Pipelines, Version=4.0.0.0, Culture=neutral, PublicKeyToken=fb2f49117c105d89" Type="2" TrackingOption="$(PipelineTrackingOptions)" Description="" />
+            <PrimaryTransport>
+                <Address>mqsc:///tcp//$(QueueManager2)/host.out</Address>
+                <TransportType Name="MQSC" Capabilities="15627" ConfigurationClsid="8a8ca722-047c-4574-9850-8bd63e6e9089" />
+                <TransportTypeData>&lt;CustomProps&gt;&lt;AdapterConfig vt="8"&gt;&amp;lt;Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&amp;gt;&amp;lt;uri&amp;gt;mqsc:///tcp//$(QueueManager2)/host.out.oth.h2s&amp;lt;/uri&amp;gt;&amp;lt;queueManager&amp;gt;$(QueueManager2)&amp;lt;/queueManager&amp;gt;&amp;lt;queue&amp;gt;host.out.oth.h2s&amp;lt;/queue&amp;gt;&amp;lt;heartBeat&amp;gt;300&amp;lt;/heartBeat&amp;gt;&amp;lt;transportType&amp;gt;tcp&amp;lt;/transportType&amp;gt;&amp;lt;transactionSupported&amp;gt;no&amp;lt;/transactionSupported&amp;gt;&amp;lt;segmentationAllowed&amp;gt;no&amp;lt;/segmentationAllowed&amp;gt;&amp;lt;/Config&amp;gt;&lt;/AdapterConfig&gt;&lt;/CustomProps&gt;</TransportTypeData>
+                <RetryCount>0</RetryCount>
+                <RetryInterval>0</RetryInterval>
+                <ServiceWindowEnabled>false</ServiceWindowEnabled>
+                <FromTime>2000-01-01T23:00:00</FromTime>
+                <ToTime>2000-01-01T22:59:59</ToTime>
+                <Primary>true</Primary>
+                <OrderedDelivery>false</OrderedDelivery>
+                <DeliveryNotification>1</DeliveryNotification>
+                <SendHandler Name="$(OutboundSendHostName)" HostTrusted="false">
+                    <TransportType Name="MQSC" Capabilities="15627" ConfigurationClsid="8a8ca722-047c-4574-9850-8bd63e6e9089" />
+                </SendHandler>
+            </PrimaryTransport>
+            <ReceivePipelineData xsi:nil="true" />
+            <Tracking>0</Tracking>
+            <Filter>
+                &lt;?xml version="1.0" encoding="utf-16"?&gt;
+                &lt;Filter xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+                &lt;Group&gt;
+                &lt;Statement Property="BTS.Operation" Operator="0" Value="SendRequest" /&gt;
+                &lt;Statement Property="Schemas.PropertySchemas.QueueManager" Operator="0" Value="$(QueueManager2)" /&gt;
+                &lt;Statement Property="Schemas.PropertySchemas.Queue" Operator="0" Value="host.out.oth.h2s" /&gt;
+                &lt;/Group&gt;
+                &lt;/Filter&gt;
+            </Filter>
+            <Transforms />
+            <OrderedDelivery>false</OrderedDelivery>
+            <Priority>5</Priority>
+            <StopSendingOnFailure>false</StopSendingOnFailure>
+            <RouteFailedMessage>true</RouteFailedMessage>
+            <ApplicationName>$(BizTalkApplication)</ApplicationName>
+        </SendPort>
+    </SendPortCollection>
+    <DistributionListCollection>
+        <DistributionList Name="TestSendPortGroup">
+            <SendPorts>
+                <SendPortRef Name="SendPortWithORPredicate" />
+                <SendPortRef Name="SimpleFileSendPort" />
+            </SendPorts>
+            <Filter>
+                &lt;?xml version="1.0" encoding="utf-16"?&gt;
+                &lt;Filter xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+                &lt;Group&gt;
+                &lt;Statement Property="AzureBlobStorage.BlobName" Operator="0" Value="Blobby" /&gt;
+                &lt;/Group&gt;
+                &lt;/Filter&gt;
+            </Filter>
+            <ApplicationName>SimpleMessagingApplication</ApplicationName>
+            <Description xsi:nil="true" />
+        </DistributionList>
+        <DistributionList Name="TestSendPortGroup2">
+            <SendPorts>
+                <SendPortRef Name="SendPortWithORPredicate" />
+                <SendPortRef Name="SimpleFileSendPort" />
+                <SendPortRef Name="AnotherSendPort" />
+            </SendPorts>
+            <Filter>
+                &lt;?xml version="1.0" encoding="utf-16"?&gt;
+                &lt;Filter xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+                &lt;Group&gt;
+                &lt;Statement Property="AzureBlobStorage.BlobName" Operator="0" Value="Blobby" /&gt;
+                &lt;/Group&gt;
+                &lt;/Filter&gt;
+            </Filter>
+            <ApplicationName>SimpleMessagingApplication</ApplicationName>
+            <Description xsi:nil="true" />
+        </DistributionList>
+    </DistributionListCollection>
+    <ReceivePortCollection>
+        <ReceivePort Name="RequestReplyHttpReceive" IsTwoWay="true" BindingOption="1" AnalyticsEnabled="false">
+            <Description xsi:nil="true" />
+            <ReceiveLocations>
+                <ReceiveLocation Name="RequestReplyHttpReceiveLocation">
+                    <Description xsi:nil="true" />
+                    <Address>/requestreply/service.svc</Address>
+                    <PublicAddress />
+                    <Primary>true</Primary>
+                    <ReceiveLocationServiceWindowEnabled>false</ReceiveLocationServiceWindowEnabled>
+                    <ReceiveLocationFromTime>2000-01-01T23:00:00</ReceiveLocationFromTime>
+                    <ReceiveLocationToTime>2000-01-01T22:59:59</ReceiveLocationToTime>
+                    <ReceiveLocationStartDateEnabled>false</ReceiveLocationStartDateEnabled>
+                    <ReceiveLocationStartDate>2014-10-06T00:00:00</ReceiveLocationStartDate>
+                    <ReceiveLocationEndDateEnabled>false</ReceiveLocationEndDateEnabled>
+                    <ReceiveLocationEndDate>2014-10-07T23:59:59</ReceiveLocationEndDate>
+                    <ReceiveLocationTransportType Name="WCF-BasicHttp" Capabilities="899" ConfigurationClsid="467c1a52-373f-4f09-9008-27af6b985f14" />
+                    <ReceiveLocationTransportTypeData>&lt;CustomProps&gt;&lt;InboundNodeEncoding vt="8"&gt;Xml&lt;/InboundNodeEncoding&gt;&lt;MessageEncoding vt="8"&gt;Text&lt;/MessageEncoding&gt;&lt;ServiceCertificate vt="8" /&gt;&lt;InboundBodyPathExpression vt="8" /&gt;&lt;OutboundBodyLocation vt="8"&gt;UseBodyElement&lt;/OutboundBodyLocation&gt;&lt;MaxReceivedMessageSize vt="3"&gt;65536&lt;/MaxReceivedMessageSize&gt;&lt;InboundBodyLocation vt="8"&gt;UseBodyElement&lt;/InboundBodyLocation&gt;&lt;AlgorithmSuite vt="8"&gt;Basic256&lt;/AlgorithmSuite&gt;&lt;OutboundXmlTemplate vt="8"&gt;&amp;lt;bts-msg-body xmlns="http://www.microsoft.com/schemas/bts2007" encoding="xml"/&amp;gt;&lt;/OutboundXmlTemplate&gt;&lt;TextEncoding vt="8"&gt;utf-8&lt;/TextEncoding&gt;&lt;SecurityMode vt="8"&gt;None&lt;/SecurityMode&gt;&lt;IncludeExceptionDetailInFaults vt="11"&gt;0&lt;/IncludeExceptionDetailInFaults&gt;&lt;TransportClientCredentialType vt="8"&gt;None&lt;/TransportClientCredentialType&gt;&lt;OpenTimeout vt="8"&gt;00:01:00&lt;/OpenTimeout&gt;&lt;MessageClientCredentialType vt="8"&gt;UserName&lt;/MessageClientCredentialType&gt;&lt;UseSSO vt="11"&gt;0&lt;/UseSSO&gt;&lt;SuspendMessageOnFailure vt="11"&gt;0&lt;/SuspendMessageOnFailure&gt;&lt;CloseTimeout vt="8"&gt;00:01:00&lt;/CloseTimeout&gt;&lt;SendTimeout vt="8"&gt;00:01:00&lt;/SendTimeout&gt;&lt;MaxConcurrentCalls vt="3"&gt;200&lt;/MaxConcurrentCalls&gt;&lt;/CustomProps&gt;</ReceiveLocationTransportTypeData>
+                    <ReceivePipeline Name="Microsoft.BizTalk.DefaultPipelines.PassThruReceive" FullyQualifiedName="Microsoft.BizTalk.DefaultPipelines.PassThruReceive, Microsoft.BizTalk.DefaultPipelines, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" Type="1" TrackingOption="ServiceStartEnd MessageSendReceive PipelineEvents" Description="" />
+                    <ReceivePipelineData xsi:nil="true" />
+                    <SendPipeline Name="Microsoft.BizTalk.DefaultPipelines.PassThruTransmit" FullyQualifiedName="Microsoft.BizTalk.DefaultPipelines.PassThruTransmit, Microsoft.BizTalk.DefaultPipelines, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" Type="2" TrackingOption="ServiceStartEnd MessageSendReceive PipelineEvents" Description="" />
+                    <SendPipelineData xsi:nil="true" />
+                    <Enable>false</Enable>
+                    <ReceiveHandler Name="BizTalkServerIsolatedHost" HostTrusted="false">
+                        <TransportType Name="WCF-BasicHttp" Capabilities="899" ConfigurationClsid="467c1a52-373f-4f09-9008-27af6b985f14" />
+                    </ReceiveHandler>
+                    <ScheduleRecurrenceType>None</ScheduleRecurrenceType>
+                    <ScheduleRecurenceFrom>2020-03-28T00:00:00</ScheduleRecurenceFrom>
+                    <ScheduleRecurrenceInterval>1</ScheduleRecurrenceInterval>
+                    <ScheduleDaysOfWeek>None</ScheduleDaysOfWeek>
+                    <ScheduleMonths>None</ScheduleMonths>
+                    <ScheduleMonthDays>None</ScheduleMonthDays>
+                    <ScheduleOrdinalDayOfWeek>None</ScheduleOrdinalDayOfWeek>
+                    <ScheduleOrdinalType>None</ScheduleOrdinalType>
+                    <ScheduleIsOrdinal>false</ScheduleIsOrdinal>
+                    <ScheduleLastDayOfMonth>false</ScheduleLastDayOfMonth>
+                    <ScheduleAutoAdjustToDaylightSaving>true</ScheduleAutoAdjustToDaylightSaving>
+                    <ScheduleTimeZone>UTC</ScheduleTimeZone>
+                </ReceiveLocation>
+            </ReceiveLocations>
+            <SendPipelineData xsi:nil="true" />
+            <Authentication>0</Authentication>
+            <Tracking>0</Tracking>
+            <Transforms />
+            <OutboundTransforms />
+            <RouteFailedMessage>false</RouteFailedMessage>
+            <ApplicationName>Thunderstorm.Test</ApplicationName>
+        </ReceivePort>
+        <ReceivePort Name="BatchUSMFromUnisysReceivePort" IsTwoWay="false" BindingOption="1">
+            <Description xsi:nil="true" />
+            <ReceiveLocations>
+                <ReceiveLocation Name="UGW1UNI.BIZ.BATCH.USM.REQ">
+                    <Description xsi:nil="true" />
+                    <Address>mqsc:///tcp//$(NRTUnisysPersistentQueueManager1)/UNI.BIZ.BATCH.USM.REQ</Address>
+                    <PublicAddress />
+                    <Primary>true</Primary>
+                    <ReceiveLocationServiceWindowEnabled>false</ReceiveLocationServiceWindowEnabled>
+                    <ReceiveLocationFromTime>2000-01-01T23:00:00</ReceiveLocationFromTime>
+                    <ReceiveLocationToTime>2000-01-01T22:59:59</ReceiveLocationToTime>
+                    <ReceiveLocationStartDateEnabled>false</ReceiveLocationStartDateEnabled>
+                    <ReceiveLocationStartDate>2009-03-31T00:00:00</ReceiveLocationStartDate>
+                    <ReceiveLocationEndDateEnabled>false</ReceiveLocationEndDateEnabled>
+                    <ReceiveLocationEndDate>2009-04-01T23:59:59</ReceiveLocationEndDate>
+                    <ReceiveLocationTransportType Name="MQSC" Capabilities="15627" ConfigurationClsid="8a8ca722-047c-4574-9850-8bd63e6e9089" />
+                    <ReceiveLocationTransportTypeData>&lt;CustomProps&gt;&lt;AdapterConfig vt="8"&gt;&amp;lt;Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&amp;gt;&amp;lt;uri&amp;gt;mqsc:///tcp//$(NRTUnisysPersistentQueueManager1)/UNI.BIZ.BATCH.USM.REQ&amp;lt;/uri&amp;gt;&amp;lt;queueManager&amp;gt;$(NRTUnisysPersistentQueueManager1)&amp;lt;/queueManager&amp;gt;&amp;lt;queue&amp;gt;UNI.BIZ.BATCH.USM.REQ&amp;lt;/queue&amp;gt;&amp;lt;heartBeat&amp;gt;300&amp;lt;/heartBeat&amp;gt;&amp;lt;transportType&amp;gt;tcp&amp;lt;/transportType&amp;gt;&amp;lt;waitInterval&amp;gt;3&amp;lt;/waitInterval&amp;gt;&amp;lt;pollingInterval&amp;gt;1&amp;lt;/pollingInterval&amp;gt;&amp;lt;transactionSupported&amp;gt;no&amp;lt;/transactionSupported&amp;gt;&amp;lt;suspendAsNonResumable&amp;gt;no&amp;lt;/suspendAsNonResumable&amp;gt;&amp;lt;dataOffsetForHeaders&amp;gt;yes&amp;lt;/dataOffsetForHeaders&amp;gt;&amp;lt;errorThreshold&amp;gt;10&amp;lt;/errorThreshold&amp;gt;&amp;lt;segmentation&amp;gt;no&amp;lt;/segmentation&amp;gt;&amp;lt;ordered&amp;gt;no&amp;lt;/ordered&amp;gt;&amp;lt;stopOnError&amp;gt;no&amp;lt;/stopOnError&amp;gt;&amp;lt;maximumBatchSize&amp;gt;100&amp;lt;/maximumBatchSize&amp;gt;&amp;lt;maximumNumberOfMessages&amp;gt;10&amp;lt;/maximumNumberOfMessages&amp;gt;&amp;lt;threadCount&amp;gt;2&amp;lt;/threadCount&amp;gt;&amp;lt;characterSet&amp;gt;none&amp;lt;/characterSet&amp;gt;&amp;lt;/Config&amp;gt;&lt;/AdapterConfig&gt;&lt;/CustomProps&gt;</ReceiveLocationTransportTypeData>
+                    <ReceivePipeline Name="NBS.Payments.BatchPayments.Connectors.Unisys.Pipelines.UnisysUsmRcvPipeline" FullyQualifiedName="NBS.Payments.BatchPayments.Connectors.Unisys.Pipelines.UnisysUsmRcvPipeline, NBS.Payments.BatchPayments.Connectors.Unisys.Pipelines, Version=4.0.0.0, Culture=neutral, PublicKeyToken=fb2f49117c105d89" Type="1" TrackingOption="$(PipelineTrackingOptions)" Description="" />
+                    <ReceivePipelineData xsi:nil="true" />
+                    <SendPipeline xsi:nil="true" />
+                    <SendPipelineData xsi:nil="true" />
+                    <Enable>true</Enable>
+                    <ReceiveHandler Name="$(BatchUSMHostName)" HostTrusted="false">
+                        <TransportType Name="MQSC" Capabilities="15627" ConfigurationClsid="8a8ca722-047c-4574-9850-8bd63e6e9089" />
+                    </ReceiveHandler>
+                </ReceiveLocation>
+                <ReceiveLocation Name="UGW2UNI.BIZ.BATCH.USM.REQ">
+                    <Description xsi:nil="true" />
+                    <Address>mqsc:///tcp//$(NRTUnisysPersistentQueueManager2)/UNI.BIZ.BATCH.USM.REQ</Address>
+                    <PublicAddress />
+                    <Primary>false</Primary>
+                    <ReceiveLocationServiceWindowEnabled>false</ReceiveLocationServiceWindowEnabled>
+                    <ReceiveLocationFromTime>2000-01-01T23:00:00</ReceiveLocationFromTime>
+                    <ReceiveLocationToTime>2000-01-01T22:59:59</ReceiveLocationToTime>
+                    <ReceiveLocationStartDateEnabled>false</ReceiveLocationStartDateEnabled>
+                    <ReceiveLocationStartDate>2009-05-11T00:00:00</ReceiveLocationStartDate>
+                    <ReceiveLocationEndDateEnabled>false</ReceiveLocationEndDateEnabled>
+                    <ReceiveLocationEndDate>2009-05-12T23:59:59</ReceiveLocationEndDate>
+                    <ReceiveLocationTransportType Name="MQSC" Capabilities="15627" ConfigurationClsid="8a8ca722-047c-4574-9850-8bd63e6e9089" />
+                    <ReceiveLocationTransportTypeData>&lt;CustomProps&gt;&lt;AdapterConfig vt="8"&gt;&amp;lt;Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&amp;gt;&amp;lt;uri&amp;gt;mqsc:///tcp//$(NRTUnisysPersistentQueueManager2)/UNI.BIZ.BATCH.USM.REQ&amp;lt;/uri&amp;gt;&amp;lt;queueManager&amp;gt;$(NRTUnisysPersistentQueueManager2)&amp;lt;/queueManager&amp;gt;&amp;lt;queue&amp;gt;UNI.BIZ.BATCH.USM.REQ&amp;lt;/queue&amp;gt;&amp;lt;heartBeat&amp;gt;300&amp;lt;/heartBeat&amp;gt;&amp;lt;transportType&amp;gt;tcp&amp;lt;/transportType&amp;gt;&amp;lt;waitInterval&amp;gt;3&amp;lt;/waitInterval&amp;gt;&amp;lt;pollingInterval&amp;gt;1&amp;lt;/pollingInterval&amp;gt;&amp;lt;transactionSupported&amp;gt;no&amp;lt;/transactionSupported&amp;gt;&amp;lt;suspendAsNonResumable&amp;gt;no&amp;lt;/suspendAsNonResumable&amp;gt;&amp;lt;dataOffsetForHeaders&amp;gt;yes&amp;lt;/dataOffsetForHeaders&amp;gt;&amp;lt;errorThreshold&amp;gt;10&amp;lt;/errorThreshold&amp;gt;&amp;lt;segmentation&amp;gt;no&amp;lt;/segmentation&amp;gt;&amp;lt;ordered&amp;gt;no&amp;lt;/ordered&amp;gt;&amp;lt;stopOnError&amp;gt;no&amp;lt;/stopOnError&amp;gt;&amp;lt;maximumBatchSize&amp;gt;100&amp;lt;/maximumBatchSize&amp;gt;&amp;lt;maximumNumberOfMessages&amp;gt;10&amp;lt;/maximumNumberOfMessages&amp;gt;&amp;lt;threadCount&amp;gt;2&amp;lt;/threadCount&amp;gt;&amp;lt;characterSet&amp;gt;none&amp;lt;/characterSet&amp;gt;&amp;lt;/Config&amp;gt;&lt;/AdapterConfig&gt;&lt;/CustomProps&gt;</ReceiveLocationTransportTypeData>
+                    <ReceivePipeline Name="NBS.Payments.BatchPayments.Connectors.Unisys.Pipelines.UnisysUsmRcvPipeline" FullyQualifiedName="NBS.Payments.BatchPayments.Connectors.Unisys.Pipelines.UnisysUsmRcvPipeline, NBS.Payments.BatchPayments.Connectors.Unisys.Pipelines, Version=4.0.0.0, Culture=neutral, PublicKeyToken=fb2f49117c105d89" Type="1" TrackingOption="$(PipelineTrackingOptions)" Description="" />
+                    <ReceivePipelineData xsi:nil="true" />
+                    <SendPipeline xsi:nil="true" />
+                    <SendPipelineData xsi:nil="true" />
+                    <Enable>true</Enable>
+                    <ReceiveHandler Name="$(BatchUSMHostName)" HostTrusted="false">
+                        <TransportType Name="MQSC" Capabilities="15627" ConfigurationClsid="8a8ca722-047c-4574-9850-8bd63e6e9089" />
+                    </ReceiveHandler>
+                </ReceiveLocation>
+            </ReceiveLocations>
+            <SendPipelineData xsi:nil="true" />
+            <Authentication>0</Authentication>
+            <Tracking>51</Tracking>
+            <Transforms />
+            <RouteFailedMessage>true</RouteFailedMessage>
+            <ApplicationName>$(BatchBizTalkApplication)</ApplicationName>
+        </ReceivePort>
+        <ReceivePort Name="ImmediatePaymentFromSapPort" IsTwoWay="true" BindingOption="1">
+            <Description xsi:nil="true" />
+            <ReceiveLocations>
+                <ReceiveLocation Name="ImmediatePaymentFromSap:WCF">
+                    <Description xsi:nil="true" />
+                    <Address>$(SAPImmediatePaymentsLocalServiceUrl)</Address>
+                    <PublicAddress />
+                    <Primary>true</Primary>
+                    <ReceiveLocationServiceWindowEnabled>false</ReceiveLocationServiceWindowEnabled>
+                    <ReceiveLocationFromTime>2000-01-01T00:00:00</ReceiveLocationFromTime>
+                    <ReceiveLocationToTime>2000-01-01T23:59:59</ReceiveLocationToTime>
+                    <ReceiveLocationStartDateEnabled>false</ReceiveLocationStartDateEnabled>
+                    <ReceiveLocationStartDate>2000-01-01T00:00:00</ReceiveLocationStartDate>
+                    <ReceiveLocationEndDateEnabled>false</ReceiveLocationEndDateEnabled>
+                    <ReceiveLocationEndDate>2000-01-01T23:59:59</ReceiveLocationEndDate>
+                    <ReceiveLocationTransportType Name="WCF-CustomIsolated" Capabilities="641" ConfigurationClsid="16824334-968f-42db-b33b-6f8d62ed1ebc" />
+                    <ReceiveLocationTransportTypeData>
+                        &lt;CustomProps&gt;&lt;InboundBodyPathExpression vt="8" /&gt;&lt;InboundBodyLocation vt="8"&gt;UseBodyElement&lt;/InboundBodyLocation&gt;&lt;BindingConfiguration vt="8"&gt;&amp;lt;binding name="SAPBATCHBINDING" closeTimeout="00:10:00" openTimeout="00:10:00" sendTimeout="00:10:00"&amp;gt;&amp;lt;security defaultAlgorithmSuite="Basic128Rsa15" allowSerializedSigningTokenOnReply="true" authenticationMode="MutualCertificate" requireDerivedKeys="false" messageProtectionOrder="SignBeforeEncrypt" messageSecurityVersion="WSSecurity10WSTrust13WSSecureConversation13WSSecurityPolicy12BasicSecurityProfile10"&amp;gt;&amp;lt;secureConversationBootstrap /&amp;gt;&amp;lt;/security&amp;gt;&amp;lt;textMessageEncoding messageVersion="Soap11"&amp;gt;&amp;lt;readerQuotas maxDepth="32" maxStringContentLength="8192" maxArrayLength="16384" maxBytesPerRead="4096" maxNameTableCharCount="16384" /&amp;gt;&amp;lt;/textMessageEncoding&amp;gt;&amp;lt;httpTransport authenticationScheme="Anonymous" proxyAuthenticationScheme="Negotiate" /&amp;gt;&amp;lt;/binding&amp;gt;&lt;/BindingConfiguration&gt;&lt;OutboundXmlTemplate vt="8"&gt;&amp;lt;bts-msg-body xmlns="http://www.microsoft.com/schemas/bts2007" encoding="xml"/&amp;gt;&lt;/OutboundXmlTemplate&gt;&lt;CredentialType vt="8"&gt;None&lt;/CredentialType&gt;&lt;Identity vt="8"&gt;&amp;lt;identity&amp;gt;
+                        &amp;lt;dns value="$(NWServiceHostingCert)" /&amp;gt;
+                        &amp;lt;/identity&amp;gt;&lt;/Identity&gt;&lt;ServiceBehaviorConfiguration vt="8"&gt;&amp;lt;behavior name="customSapBehaviorForCert"&amp;gt;&amp;lt;serviceMetadata httpGetEnabled="true" /&amp;gt;&amp;lt;serviceCredentials&amp;gt;&amp;lt;clientCertificate&amp;gt;&amp;lt;certificate findValue="$(SAPServiceHostingCert)" storeName="TrustedPeople" x509FindType="FindBySubjectName" /&amp;gt;&amp;lt;authentication certificateValidationMode="PeerOrChainTrust" revocationMode="$(ImmediatePaymentFromSapRevocationMode)" /&amp;gt;&amp;lt;/clientCertificate&amp;gt;&amp;lt;serviceCertificate findValue="$(NWServiceHostingCert)" x509FindType="FindBySubjectName" /&amp;gt;&amp;lt;/serviceCredentials&amp;gt;&amp;lt;serviceThrottling maxConcurrentCalls="200" maxConcurrentSessions="200" maxConcurrentInstances="200" /&amp;gt;&amp;lt;/behavior&amp;gt;&lt;/ServiceBehaviorConfiguration&gt;&lt;OrderedProcessing vt="11"&gt;0&lt;/OrderedProcessing&gt;&lt;IncludeExceptionDetailInFaults vt="11"&gt;-1&lt;/IncludeExceptionDetailInFaults&gt;&lt;AffiliateApplicationName vt="8" /&gt;&lt;DisableLocationOnFailure vt="11"&gt;0&lt;/DisableLocationOnFailure&gt;&lt;SuspendMessageOnFailure vt="11"&gt;0&lt;/SuspendMessageOnFailure&gt;&lt;BindingType vt="8"&gt;customBinding&lt;/BindingType&gt;&lt;UserName vt="8" /&gt;&lt;InboundNodeEncoding vt="8"&gt;Xml&lt;/InboundNodeEncoding&gt;&lt;EndpointBehaviorConfiguration vt="8"&gt;&amp;lt;behavior name="EndpointBehavior" /&amp;gt;&lt;/EndpointBehaviorConfiguration&gt;&lt;OutboundBodyLocation vt="8"&gt;UseBodyElement&lt;/OutboundBodyLocation&gt;&lt;/CustomProps&gt;
+                    </ReceiveLocationTransportTypeData>
+                    <ReceivePipeline Name="NBS.Payments.Distribution.Connectors.Sap.Pipelines.Outbound.SapOutboundRcvPipeline" FullyQualifiedName="NBS.Payments.Distribution.Connectors.Sap.Pipelines.Outbound.SapOutboundRcvPipeline, NBS.Payments.Distribution.Connectors.Sap.Pipelines, Version=4.0.0.0, Culture=neutral, PublicKeyToken=fb2f49117c105d89" Type="1" TrackingOption="$(PipelineTrackingOptions)" Description="" />
+                    <ReceivePipelineData xsi:nil="true" />
+                    <SendPipeline Name="NBS.Payments.Distribution.Connectors.Sap.Pipelines.Outbound.SapOutboundSendPipeline" FullyQualifiedName="NBS.Payments.Distribution.Connectors.Sap.Pipelines.Outbound.SapOutboundSendPipeline, NBS.Payments.Distribution.Connectors.Sap.Pipelines, Version=4.0.0.0, Culture=neutral, PublicKeyToken=fb2f49117c105d89" Type="2" TrackingOption="$(PipelineTrackingOptions)" Description="" />
+                    <SendPipelineData xsi:nil="true" />
+                    <Enable>true</Enable>
+                    <ReceiveHandler Name="$(SLASapOutboundReceiveHostName)" HostTrusted="false">
+                        <TransportType Name="WCF-CustomIsolated" Capabilities="641" ConfigurationClsid="16824334-968f-42db-b33b-6f8d62ed1ebc" />
+                    </ReceiveHandler>
+                </ReceiveLocation>
+            </ReceiveLocations>
+            <SendPipelineData xsi:nil="true" />
+            <Authentication>0</Authentication>
+            <Tracking>0</Tracking>
+            <Transforms />
+            <OutboundTransforms />
+            <RouteFailedMessage>false</RouteFailedMessage>
+            <ApplicationName>$(NRTBizTalkApplication)</ApplicationName>
+        </ReceivePort>
+    </ReceivePortCollection>
+    <PartyCollection xsi:nil="true" />
+</BindingInfo>

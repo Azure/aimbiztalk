@@ -1,0 +1,262 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+    <!-- Custom styles for this template -->
+    <!--<link href="offcanvas.css" rel="stylesheet">-->
+
+    <title>BizTalk to Azure Integration Services Migration Report</title>
+
+    <style>
+        html,
+        body {
+            overflow-x: hidden; /* Prevent scroll on narrow devices */
+        }
+
+        body {
+            padding-top: 56px;
+        }
+
+        @media (max-width: 767.98px) {
+            .offcanvas-collapse {
+                position: fixed;
+                top: 56px; /* Height of navbar */
+                bottom: 0;
+                width: 100%;
+                padding-right: 1rem;
+                padding-left: 1rem;
+                overflow-y: auto;
+                background-color: var(--gray-dark);
+                transition: -webkit-transform .3s ease-in-out;
+                transition: transform .3s ease-in-out;
+                transition: transform .3s ease-in-out, -webkit-transform .3s ease-in-out;
+                -webkit-transform: translateX(100%);
+                transform: translateX(100%);
+            }
+
+                .offcanvas-collapse.open {
+                    -webkit-transform: translateX(-1rem);
+                    transform: translateX(-1rem); /* Account for horizontal padding on navbar */
+                }
+        }
+
+        .nav-scroller {
+            position: relative;
+            z-index: 2;
+            height: 2.75rem;
+            overflow-y: hidden;
+        }
+
+            .nav-scroller .nav {
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+                -ms-flex-wrap: nowrap;
+                flex-wrap: nowrap;
+                padding-bottom: 1rem;
+                margin-top: -1px;
+                overflow-x: auto;
+                color: rgba(255, 255, 255, .75);
+                text-align: center;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+            }
+
+        .nav-underline .nav-link {
+            padding-top: .75rem;
+            padding-bottom: .75rem;
+            font-size: .875rem;
+            color: var(--secondary);
+        }
+
+            .nav-underline .nav-link:hover {
+                color: var(--blue);
+            }
+
+        .nav-underline .active {
+            font-weight: 500;
+            color: var(--gray-dark);
+        }
+
+        .text-white-50 {
+            color: rgba(255, 255, 255, .5);
+        }
+
+        .bg-purple {
+            background-color: var(--purple);
+        }
+
+        .border-bottom {
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .box-shadow {
+            box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+        }
+
+        .lh-100 {
+            line-height: 1;
+        }
+
+        .lh-125 {
+            line-height: 1.25;
+        }
+
+        .lh-150 {
+            line-height: 1.5;
+        }
+
+        .section-icon {
+            font-size: 48px;
+        }
+
+        .resource-icon {
+            font-size: 32px;
+        }
+
+        .analysis-icon {
+            font-size: 1rem;
+        }
+
+        .expand-apps:before {
+            content: "Expand Applications";
+        }
+
+        .expand-apps.active:before {
+            content: "Collapse Applications";
+        }
+
+        .expand-resources:before {
+            content: "Expand Resources";
+        }
+
+        .expand-resources.active:before {
+            content: "Collapse Resources";
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-primary">
+        <a class="navbar-brand" href="BizTalkMigrationReport.html" id="home-link">BizTalk Migration Report</a>
+        <button class="navbar-toggler p-0 border-0" type="button" data-toggle="offcanvas">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav mr-auto" id="navbar-list">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Input BizTalk Applications</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdown01" id="source-application-dropdown">
+                        <!-- Application menu links are rendered in here. -->
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Output AIS Applications</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdown01" id="target-application-dropdown">
+                        <!-- Application menu links are rendered in here. -->
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </nav>
+
+    <main role="main" class="container">
+        <div id="report-content">
+            <!-- Report content is rendered in here. -->
+        </div>
+    </main>
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.7/holder.min.js" crossorigin="anonymous"></script>
+    <script type='text/javascript' src='https://kit.fontawesome.com/79f5499051.js?ver=2.6.2'></script>
+    <!-- embedded offcanvas script -->
+    <script language="javascript">
+        $(function () {
+            'use strict'
+
+            $('[data-toggle="offcanvas"]').on('click', function () {
+                $('.offcanvas-collapse').toggleClass('open')
+            })
+        })
+
+        // Expand / collapse all applications
+        $(document).ready(function () {
+            $(".expand-apps").on("click", function () {
+                console.log("Expanding / collapsing all application panels");
+                $(this).toggleClass("active");
+                if ($(this).hasClass("active")) {
+                    $('.application-more').collapse('hide');
+                    $('.application-less').collapse('show');
+                }
+                else {
+                    $('.application-more').collapse('show');
+                    $('.application-less').collapse('hide');
+                }
+            })
+            $(".expand-resources").on("click", function () {
+                console.log("Expanding / collapsing all resource panels");
+                $(this).toggleClass("active");
+                if ($(this).hasClass("active")) {
+                    $('#resource-container-content').find('.rc-more').collapse('hide');
+                    $('#resource-container-content').find('.rc-less').collapse('show');
+                }
+                else {
+                    $('#resource-container-content').find('.rc-more').collapse('show');
+                    $('#resource-container-content').find('.rc-less').collapse('hide');
+                }
+            })
+            $(".resource-link").on("click", function () {
+                console.log("Resource linking to associated resource");
+                // Get the resource refid from the class
+                var refId = this.id;
+                console.log(refId);
+                // Look up the section contents by the refId and check to see if it's already expanded
+                var applicationContents = $("#multi-collapse-" + refId + "-detail-content").closest(".application-section");
+
+                // If not expanded then expand
+                if (applicationContents) {
+                    var hasExpanded = applicationContents.hasClass("show");
+                    console.log("Check to see if application section is already expanded: " + hasExpanded);
+                    if (!hasExpanded) {
+                        console.log("Looking up application section so it can be expanded.");
+                        var applicationSection = applicationContents.closest(".application-container");
+                        console.log("Application section: " + applicationSection.prop("tagName"));
+                        applicationSection.find(".application-more").collapse("hide");
+                        applicationSection.find(".application-less").collapse("show");
+                    }
+                    setTimeout(function () {
+                        var element = document.getElementById(refId + "-detail-more");
+                        var offset = 60;
+                        var elementPosition = element.getBoundingClientRect().top;
+                        var position = elementPosition - offset;
+                        console.log("Scrolling to: " + position);
+                        window.scrollTo({
+                            top: position,
+                            behavior: "smooth"
+                        });
+                    }, 500);
+                }
+                else {
+                    console.log("Application contents not located.");
+                }
+                return false;
+            })
+        })
+    </script>
+</body>
+</html>

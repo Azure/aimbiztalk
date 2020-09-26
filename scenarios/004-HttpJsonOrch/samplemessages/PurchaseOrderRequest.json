@@ -1,0 +1,22 @@
+{
+	"customer": {
+		"customerId": 123456,
+		"orderItems": [
+			{
+				"lineNumber": 1,
+				"productId": "CL10221",
+				"quantity": 1
+			},
+			{
+				"lineNumber": 2,
+				"productId": "CL1022",
+				"quantity": 13
+			},
+			{
+				"lineNumber": 3,
+				"productId": "CL1023",
+				"quantity": 2
+			}
+		]
+	}
+}

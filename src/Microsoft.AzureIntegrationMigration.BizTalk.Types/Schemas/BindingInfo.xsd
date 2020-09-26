@@ -1,0 +1,537 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://www.w3.org/2001/XMLSchema" />
+  <xs:element name="BindingInfo" nillable="true" type="BindingInfo" />
+  <xs:complexType name="BindingInfo">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="Description" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Timestamp" type="xs:dateTime" />
+      <xs:element minOccurs="1" maxOccurs="1" name="ModuleRefCollection" nillable="true" type="ArrayOfModuleRef" />
+      <xs:element minOccurs="1" maxOccurs="1" name="SendPortCollection" nillable="true" type="ArrayOfSendPort" />
+      <xs:element minOccurs="1" maxOccurs="1" name="DistributionListCollection" nillable="true" type="ArrayOfDistributionList" />
+      <xs:element minOccurs="1" maxOccurs="1" name="ReceivePortCollection" nillable="true" type="ArrayOfReceivePort" />
+      <xs:element minOccurs="1" maxOccurs="1" name="PartyCollection" nillable="true">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="xs:schema" />
+            <xs:any />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element minOccurs="0" maxOccurs="1" name="EdiGlobalProperties">
+        <xs:complexType mixed="true">
+          <xs:sequence>
+            <xs:any />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="Assembly" type="xs:string" />
+    <xs:attribute name="Version" type="xs:string" />
+    <xs:attribute name="BindingStatus" type="BindingState" use="required" />
+    <xs:attribute name="BoundEndpoints" type="xs:int" use="required" />
+    <xs:attribute name="TotalEndpoints" type="xs:int" use="required" />
+  </xs:complexType>
+  <xs:complexType name="ArrayOfModuleRef">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ModuleRef" nillable="true" type="ModuleRef" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ModuleRef">
+    <xs:complexContent mixed="false">
+      <xs:extension base="BindingBaseObject">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="Services" nillable="true" type="ArrayOfServiceRef" />
+          <xs:element minOccurs="1" maxOccurs="1" name="TrackedSchemas" nillable="true" type="ArrayOfSchema" />
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string" />
+        <xs:attribute name="Version" type="xs:string" />
+        <xs:attribute name="Culture" type="xs:string" />
+        <xs:attribute name="PublicKeyToken" type="xs:string" />
+        <xs:attribute name="FullName" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="BindingBaseObject" abstract="true" />
+  <xs:complexType name="ReceiveLocation">
+    <xs:complexContent mixed="false">
+      <xs:extension base="BindingBaseObject">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="Description" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="Address" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="PublicAddress" nillable="true" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="Primary" type="xs:boolean" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ReceiveLocationServiceWindowEnabled" type="xs:boolean" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ReceiveLocationFromTime" type="xs:dateTime" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ReceiveLocationToTime" type="xs:dateTime" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ReceiveLocationStartDateEnabled" type="xs:boolean" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ReceiveLocationStartDate" type="xs:dateTime" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ReceiveLocationEndDateEnabled" type="xs:boolean" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ReceiveLocationEndDate" type="xs:dateTime" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ReceiveLocationTransportType" nillable="true" type="ProtocolType" />
+          <xs:element minOccurs="0" maxOccurs="1" name="ReceiveLocationTransportTypeData" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ReceivePipeline" nillable="true" type="PipelineRef" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ReceivePipelineData" nillable="true" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="SendPipeline" nillable="true" type="PipelineRef" />
+          <xs:element minOccurs="1" maxOccurs="1" name="SendPipelineData" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="EncryptionCert" type="CertificateInfo" />
+          <xs:element minOccurs="1" maxOccurs="1" name="Enable" type="xs:boolean" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ReceiveHandler" nillable="true" type="ReceiveHandlerRef" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ScheduleRecurrenceType" type="RecurrenceType" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ScheduleRecurenceFrom" type="xs:dateTime" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ScheduleRecurrenceInterval" type="xs:int" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ScheduleDaysOfWeek" type="BtsDayOfWeek" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ScheduleMonths" type="Month" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ScheduleMonthDays" type="MonthDay" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ScheduleOrdinalDayOfWeek" type="BtsDayOfWeek" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ScheduleOrdinalType" type="OrdinalType" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ScheduleIsOrdinal" type="xs:boolean" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ScheduleLastDayOfMonth" type="xs:boolean" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ScheduleAutoAdjustToDaylightSaving" type="xs:boolean" />
+          <xs:element minOccurs="0" maxOccurs="1" name="ScheduleTimeZone" type="xs:string" />
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ProtocolType">
+    <xs:attribute name="Name" type="xs:string" />
+    <xs:attribute name="Capabilities" type="xs:int" use="required" />
+    <xs:attribute name="ConfigurationClsid" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="PipelineRef">
+    <xs:attribute name="Name" type="xs:string" />
+    <xs:attribute name="FullyQualifiedName" type="xs:string" />
+    <xs:attribute name="Type" type="xs:int" use="required" />
+    <xs:attribute name="TrackingOption" type="PipelineTrackingTypes" use="required" />
+    <xs:attribute name="Description" type="xs:string" />
+  </xs:complexType>
+  <xs:simpleType name="PipelineTrackingTypes">
+    <xs:list>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="None" />
+          <xs:enumeration value="ServiceStartEnd" />
+          <xs:enumeration value="MessageSendReceive" />
+          <xs:enumeration value="InboundMessageBody" />
+          <xs:enumeration value="OutboundMessageBody" />
+          <xs:enumeration value="PipelineEvents" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:list>
+  </xs:simpleType>
+  <xs:complexType name="CertificateInfo">
+    <xs:attribute name="LongName" type="xs:string" />
+    <xs:attribute name="ShortName" type="xs:string" />
+    <xs:attribute name="UsageType" type="CertUsageType" use="required" />
+    <xs:attribute name="ThumbPrint" type="xs:string" />
+  </xs:complexType>
+  <xs:simpleType name="CertUsageType">
+    <xs:list>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="None" />
+          <xs:enumeration value="Encryption" />
+          <xs:enumeration value="Signature" />
+          <xs:enumeration value="Both" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:list>
+  </xs:simpleType>
+  <xs:complexType name="ReceiveHandlerRef">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="TransportType" nillable="true" type="ProtocolType" />
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string" />
+    <xs:attribute name="HostTrusted" type="xs:boolean" use="required" />
+  </xs:complexType>
+  <xs:simpleType name="RecurrenceType">
+    <xs:list>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="None" />
+          <xs:enumeration value="Day" />
+          <xs:enumeration value="Week" />
+          <xs:enumeration value="Month" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:list>
+  </xs:simpleType>
+  <xs:simpleType name="BtsDayOfWeek">
+    <xs:list>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="None" />
+          <xs:enumeration value="Monday" />
+          <xs:enumeration value="Tuesday" />
+          <xs:enumeration value="Wednesday" />
+          <xs:enumeration value="Thursday" />
+          <xs:enumeration value="Friday" />
+          <xs:enumeration value="Saturday" />
+          <xs:enumeration value="Sunday" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:list>
+  </xs:simpleType>
+  <xs:simpleType name="Month">
+    <xs:list>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="None" />
+          <xs:enumeration value="January" />
+          <xs:enumeration value="Feburary" />
+          <xs:enumeration value="March" />
+          <xs:enumeration value="April" />
+          <xs:enumeration value="May" />
+          <xs:enumeration value="June" />
+          <xs:enumeration value="July" />
+          <xs:enumeration value="August" />
+          <xs:enumeration value="September" />
+          <xs:enumeration value="October" />
+          <xs:enumeration value="November" />
+          <xs:enumeration value="December" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:list>
+  </xs:simpleType>
+  <xs:simpleType name="MonthDay">
+    <xs:list>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="None" />
+          <xs:enumeration value="Day01" />
+          <xs:enumeration value="Day02" />
+          <xs:enumeration value="Day03" />
+          <xs:enumeration value="Day04" />
+          <xs:enumeration value="Day05" />
+          <xs:enumeration value="Day06" />
+          <xs:enumeration value="Day07" />
+          <xs:enumeration value="Day08" />
+          <xs:enumeration value="Day09" />
+          <xs:enumeration value="Day10" />
+          <xs:enumeration value="Day11" />
+          <xs:enumeration value="Day12" />
+          <xs:enumeration value="Day13" />
+          <xs:enumeration value="Day14" />
+          <xs:enumeration value="Day15" />
+          <xs:enumeration value="Day16" />
+          <xs:enumeration value="Day17" />
+          <xs:enumeration value="Day18" />
+          <xs:enumeration value="Day19" />
+          <xs:enumeration value="Day20" />
+          <xs:enumeration value="Day21" />
+          <xs:enumeration value="Day22" />
+          <xs:enumeration value="Day23" />
+          <xs:enumeration value="Day24" />
+          <xs:enumeration value="Day25" />
+          <xs:enumeration value="Day26" />
+          <xs:enumeration value="Day27" />
+          <xs:enumeration value="Day28" />
+          <xs:enumeration value="Day29" />
+          <xs:enumeration value="Day30" />
+          <xs:enumeration value="Day31" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:list>
+  </xs:simpleType>
+  <xs:simpleType name="OrdinalType">
+    <xs:list>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="None" />
+          <xs:enumeration value="First" />
+          <xs:enumeration value="Second" />
+          <xs:enumeration value="Third" />
+          <xs:enumeration value="Fourth" />
+          <xs:enumeration value="SecondLast" />
+          <xs:enumeration value="Last" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:list>
+  </xs:simpleType>
+  <xs:complexType name="ReceivePort">
+    <xs:complexContent mixed="false">
+      <xs:extension base="BindingBaseObject">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="Description" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="ReceiveLocations" type="ArrayOfReceiveLocation" />
+          <xs:element minOccurs="0" maxOccurs="1" name="TransmitPipeline" type="PipelineRef" />
+          <xs:element minOccurs="1" maxOccurs="1" name="SendPipelineData" nillable="true" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="Authentication" type="xs:int" />
+          <xs:element minOccurs="1" maxOccurs="1" name="Tracking" type="xs:int" />
+          <xs:element minOccurs="0" maxOccurs="1" name="Transforms" type="ArrayOfTransform" />
+          <xs:element minOccurs="0" maxOccurs="1" name="OutboundTransforms" type="ArrayOfTransform" />
+          <xs:element minOccurs="1" maxOccurs="1" name="RouteFailedMessage" type="xs:boolean" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ApplicationName" nillable="true" type="xs:string" />
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string" />
+        <xs:attribute name="IsTwoWay" type="xs:boolean" use="required" />
+        <xs:attribute name="BindingOption" type="xs:int" use="required" />
+        <xs:attribute name="AnalyticsEnabled" type="xs:boolean" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfReceiveLocation">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ReceiveLocation" nillable="true" type="ReceiveLocation" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfTransform">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Transform" nillable="true" type="Transform" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Transform">
+    <xs:attribute name="FullName" type="xs:string" />
+    <xs:attribute name="AssemblyQualifiedName" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="DistributionList">
+    <xs:complexContent mixed="false">
+      <xs:extension base="BindingBaseObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="SendPorts" type="ArrayOfSendPortRef" />
+          <xs:element minOccurs="1" maxOccurs="1" name="Filter" nillable="true" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ApplicationName" nillable="true" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="Description" nillable="true" type="xs:string" />
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfSendPortRef">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SendPortRef" nillable="true" type="SendPortRef" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="SendPortRef">
+    <xs:attribute name="Name" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="TransportInfo">
+    <xs:complexContent mixed="false">
+      <xs:extension base="BindingBaseObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="Address" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="TransportType" type="ProtocolType" />
+          <xs:element minOccurs="0" maxOccurs="1" name="TransportTypeData" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="RetryCount" type="xs:int" />
+          <xs:element minOccurs="1" maxOccurs="1" name="RetryInterval" type="xs:int" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ServiceWindowEnabled" type="xs:boolean" />
+          <xs:element minOccurs="1" maxOccurs="1" name="FromTime" type="xs:dateTime" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ToTime" type="xs:dateTime" />
+          <xs:element minOccurs="1" maxOccurs="1" name="Primary" type="xs:boolean" />
+          <xs:element minOccurs="1" maxOccurs="1" name="OrderedDelivery" type="xs:boolean" />
+          <xs:element minOccurs="1" maxOccurs="1" name="DeliveryNotification" type="xs:int" />
+          <xs:element minOccurs="1" maxOccurs="1" name="SendHandler" nillable="true" type="SendHandlerRef" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SendHandlerRef">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="TransportType" nillable="true" type="ProtocolType" />
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string" />
+    <xs:attribute name="HostTrusted" type="xs:boolean" use="required" />
+  </xs:complexType>
+  <xs:complexType name="SendPort">
+    <xs:complexContent mixed="false">
+      <xs:extension base="BindingBaseObject">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="Description" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="TransmitPipeline" type="PipelineRef" />
+          <xs:element minOccurs="0" maxOccurs="1" name="SendPipelineData" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="PrimaryTransport" type="TransportInfo" />
+          <xs:element minOccurs="0" maxOccurs="1" name="SecondaryTransport" type="TransportInfo" />
+          <xs:element minOccurs="0" maxOccurs="1" name="EncryptionCert" type="CertificateInfo" />
+          <xs:element minOccurs="0" maxOccurs="1" name="ReceivePipeline" type="PipelineRef" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ReceivePipelineData" nillable="true" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="Tracking" type="xs:int" />
+          <xs:element minOccurs="1" maxOccurs="1" name="Filter" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="Transforms" type="ArrayOfTransform" />
+          <xs:element minOccurs="0" maxOccurs="1" name="InboundTransforms" type="ArrayOfTransform" />
+          <xs:element minOccurs="1" maxOccurs="1" name="OrderedDelivery" type="xs:boolean" />
+          <xs:element minOccurs="1" maxOccurs="1" name="Priority" type="xs:int" />
+          <xs:element minOccurs="1" maxOccurs="1" name="StopSendingOnFailure" type="xs:boolean" />
+          <xs:element minOccurs="1" maxOccurs="1" name="RouteFailedMessage" type="xs:boolean" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ApplicationName" nillable="true" type="xs:string" />
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string" />
+        <xs:attribute name="IsStatic" type="xs:boolean" use="required" />
+        <xs:attribute name="IsTwoWay" type="xs:boolean" use="required" />
+        <xs:attribute name="BindingOption" type="xs:int" use="required" />
+        <xs:attribute name="AnalyticsEnabled" type="xs:boolean" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="EnlistedParty">
+    <xs:complexContent mixed="false">
+      <xs:extension base="BindingBaseObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="Mappings" type="ArrayOfEnlistedPartyMapping" />
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfEnlistedPartyMapping">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Mapping" nillable="true" type="EnlistedPartyMapping" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="EnlistedPartyMapping">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="SendPortRef" type="SendPortRef" />
+    </xs:sequence>
+    <xs:attribute name="PortTypeName" type="xs:string" />
+    <xs:attribute name="OperationName" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="RoleRef">
+    <xs:complexContent mixed="false">
+      <xs:extension base="BindingBaseObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="EnlistedParties" type="ArrayOfEnlistedParty" />
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string" />
+        <xs:attribute name="RoleLinkTypeName" type="xs:string" />
+        <xs:attribute name="RoleType" type="RoleRefType" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfEnlistedParty">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="EnlistedParty" nillable="true" type="EnlistedParty" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="RoleRefType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Unknown" />
+      <xs:enumeration value="Implements" />
+      <xs:enumeration value="Uses" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ServicePortRef">
+    <xs:complexContent mixed="false">
+      <xs:extension base="BindingBaseObject">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="SendPortRef" nillable="true" type="SendPortRef" />
+          <xs:element minOccurs="1" maxOccurs="1" name="DistributionListRef" nillable="true" type="DistributionListRef" />
+          <xs:element minOccurs="1" maxOccurs="1" name="ReceivePortRef" nillable="true" type="ReceivePortRef" />
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string" />
+        <xs:attribute name="Modifier" type="xs:int" use="required" />
+        <xs:attribute name="BindingOption" type="xs:int" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DistributionListRef">
+    <xs:attribute name="Name" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="ReceivePortRef">
+    <xs:attribute name="Name" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="ServiceRef">
+    <xs:complexContent mixed="false">
+      <xs:extension base="BindingBaseObject">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="Ports" type="ArrayOfServicePortRef" />
+          <xs:element minOccurs="1" maxOccurs="1" name="Roles" nillable="true" type="ArrayOfRoleRef" />
+          <xs:element minOccurs="1" maxOccurs="1" name="Host" nillable="true" type="HostRef" />
+        </xs:sequence>
+        <xs:attribute name="Name" type="xs:string" />
+        <xs:attribute name="State" type="ServiceRefState" use="required" />
+        <xs:attribute name="TrackingOption" type="OrchestrationTrackingTypes" use="required" />
+        <xs:attribute name="AnalyticsEnabled" type="xs:boolean" use="required" />
+        <xs:attribute name="Description" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfServicePortRef">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Port" nillable="true" type="ServicePortRef" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfRoleRef">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Role" nillable="true" type="RoleRef" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="HostRef">
+    <xs:attribute name="Name" type="xs:string" />
+    <xs:attribute name="NTGroupName" type="xs:string" />
+    <xs:attribute name="Type" type="xs:int" use="required" />
+    <xs:attribute name="Trusted" type="xs:boolean" use="required" />
+  </xs:complexType>
+  <xs:simpleType name="ServiceRefState">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Default" />
+      <xs:enumeration value="Unenlisted" />
+      <xs:enumeration value="Enlisted" />
+      <xs:enumeration value="Started" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="OrchestrationTrackingTypes">
+    <xs:list>
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="None" />
+          <xs:enumeration value="ServiceStartEnd" />
+          <xs:enumeration value="MessageSendReceive" />
+          <xs:enumeration value="InboundMessageBody" />
+          <xs:enumeration value="OutboundMessageBody" />
+          <xs:enumeration value="OrchestrationEvents" />
+          <xs:enumeration value="TrackPropertiesForIncomingMessages" />
+          <xs:enumeration value="TrackPropertiesForOutgoingMessages" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:list>
+  </xs:simpleType>
+  <xs:complexType name="ArrayOfServiceRef">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Service" nillable="true" type="ServiceRef" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfSchema">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Schema" nillable="true" type="Schema" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Schema">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="1" name="TrackedPropertyNames" type="ArrayOfString" />
+    </xs:sequence>
+    <xs:attribute name="FullName" type="xs:string" />
+    <xs:attribute name="RootName" type="xs:string" />
+    <xs:attribute name="AssemblyQualifiedName" type="xs:string" />
+    <xs:attribute name="AlwaysTrackAllProperties" type="xs:boolean" use="required" />
+    <xs:attribute name="Description" type="xs:string" />
+  </xs:complexType>
+  <xs:complexType name="ArrayOfString">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfSendPort">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="SendPort" nillable="true" type="SendPort" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfDistributionList">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DistributionList" nillable="true" type="DistributionList" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfReceivePort">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ReceivePort" nillable="true" type="ReceivePort" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="BindingState">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Unknown" />
+      <xs:enumeration value="NoBindings" />
+      <xs:enumeration value="Unbound" />
+      <xs:enumeration value="PartiallyBound" />
+      <xs:enumeration value="FullyBound" />
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
