@@ -1,4 +1,6 @@
-﻿using System.IO;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+using System.IO;
 using Microsoft.AzureIntegrationMigration.ApplicationModel;
 using Microsoft.AzureIntegrationMigration.ApplicationModel.Source;
 using Microsoft.AzureIntegrationMigration.BizTalk.Analyze;

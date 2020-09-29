@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+using System.Collections.Generic;
 using Microsoft.AzureIntegrationMigration.ApplicationModel.Target;
 using Microsoft.AzureIntegrationMigration.ApplicationModel.Target.Channels;
 using Microsoft.AzureIntegrationMigration.ApplicationModel.Target.Endpoints;

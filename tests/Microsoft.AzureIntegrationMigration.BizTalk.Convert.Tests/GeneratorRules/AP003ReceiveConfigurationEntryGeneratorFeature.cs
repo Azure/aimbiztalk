@@ -1,4 +1,6 @@
-﻿using System;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+using System;
 using FluentAssertions;
 using Microsoft.AzureIntegrationMigration.ApplicationModel;
 using Microsoft.AzureIntegrationMigration.BizTalk.Convert;

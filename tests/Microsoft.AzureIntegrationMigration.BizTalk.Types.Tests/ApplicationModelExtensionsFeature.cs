@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+using System.Collections.Generic;
 using FluentAssertions;
 using Microsoft.AzureIntegrationMigration.ApplicationModel;
 using Microsoft.AzureIntegrationMigration.ApplicationModel.Source;

@@ -1,4 +1,6 @@
-﻿using System;
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT license.
+using System;
 using Microsoft.AzureIntegrationMigration.ApplicationModel.Generator;
 using Microsoft.AzureIntegrationMigration.ApplicationModel.Renderer;
 using Microsoft.AzureIntegrationMigration.BizTalk.Types.Entities;
