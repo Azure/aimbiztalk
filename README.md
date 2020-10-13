@@ -1,3 +1,40 @@
+# aimbiztalk
+[![Build Status](https://github.com/azure/aimbiztalk/workflows/CI%20Build/badge.svg)](https://github.com/azure/aimbiztalk/actions)
+
+```
+$$$$$$$\  $$\        $$$$$$$$\        $$\ $$\                              
+$$  __$$\ \__|       \__$$  __|       $$ |$$ |                             
+$$ |  $$ |$$\ $$$$$$$$\ $$ | $$$$$$\  $$ |$$ |  $$\                        
+$$$$$$$\ |$$ |\____$$  |$$ | \____$$\ $$ |$$ | $$  |                       
+$$  __$$\ $$ |  $$$$ _/ $$ | $$$$$$$ |$$ |$$$$$$  /                        
+$$ |  $$ |$$ | $$  _/   $$ |$$  __$$ |$$ |$$  _$$<                         
+$$$$$$$  |$$ |$$$$$$$$\ $$ |\$$$$$$$ |$$ |$$ | \$$\                        
+\_______/ \__|\________|\__| \_______|\__|\__|  \__|                       
+                                                                           
+                                                                           
+                                                                           
+$$\      $$\ $$\                               $$\                         
+$$$\    $$$ |\__|                              $$ |                        
+$$$$\  $$$$ |$$\  $$$$$$\   $$$$$$\  $$$$$$\ $$$$$$\    $$$$$$\   $$$$$$\  
+$$\$$\$$ $$ |$$ |$$  __$$\ $$  __$$\ \____$$\\_$$  _|  $$  __$$\ $$  __$$\ 
+$$ \$$$  $$ |$$ |$$ /  $$ |$$ |  \__|$$$$$$$ | $$ |    $$ /  $$ |$$ |  \__|
+$$ |\$  /$$ |$$ |$$ |  $$ |$$ |     $$  __$$ | $$ |$$\ $$ |  $$ |$$ |      
+$$ | \_/ $$ |$$ |\$$$$$$$ |$$ |     \$$$$$$$ | \$$$$  |\$$$$$$  |$$ |      
+\__|     \__|\__| \____$$ |\__|      \_______|  \____/  \______/ \__|      
+                 $$\   $$ |                                                
+                 \$$$$$$  |                                                
+                  \______/                                                 
+```
+
+# BizTalk Migrator
+
+This repository contains the BizTalk-specific components of the BizTalk Migrator.
+
+The BizTalk Migrator is a command-line tool that helps migrate BizTalk applications to Azure.
+This is implemented across several GitHub repositories - aimcore, aimmodel, aimtool, aimazure, and aimbiztalk.
+The documentation for the tool is available at the following link in the aimtool repository:
+
+- [aimtool](https://github.com/Azure/aimtool/blob/main/docs/README.md)
 
 # Contributing
 
