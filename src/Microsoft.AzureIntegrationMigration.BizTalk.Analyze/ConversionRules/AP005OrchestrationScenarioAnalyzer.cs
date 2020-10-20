@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.Collections.Generic;
@@ -970,71 +970,87 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
         /// <returns>The current workflow object.</returns>
         private static WorkflowObject HandleConstruct(WorkflowObject parentObject, Element element, int elementIndex)
         {
-            var constructActivity = new WorkflowActivity()
+            // Set up a group for message assignment and message transform activities
+            var groupContainer = new WorkflowActivityContainer()
             {
                 Name = element.FindPropertyValue(MetaModelConstants.PropertyKeyName) ?? element.Type,
                 Key = string.Concat(parentObject.Key, ".", element.FindPropertyValue(MetaModelConstants.PropertyKeyName) ?? element.Type, elementIndex.ToString(CultureInfo.InvariantCulture)).FormatKey(),
-                Type = WorkflowModelConstants.ActivityTypeMessageConstruction
+                Type = WorkflowModelConstants.ActivityTypeActivityGroup
             };
 
-            AddProperties(constructActivity, element);
+            AddProperties(groupContainer, element);
 
-            ((WorkflowActivityContainer)parentObject).Activities.Add(constructActivity);
+            ((WorkflowActivityContainer)parentObject).Activities.Add(groupContainer);
 
-            var messageAssignment = element.Element1.Where(e => e.Type == MetaModelConstants.ElementTypeMessageAssignment).ToArray();
-            if (messageAssignment != null && messageAssignment.Any())
+            // Check each child shape in the construct and build the activities in the correct order
+            var childElements = element.Element1.Where(e => e.Type == MetaModelConstants.ElementTypeMessageAssignment || e.Type == MetaModelConstants.ElementTypeTransform).ToArray();
+            if (childElements != null && childElements.Any())
             {
-                for (var i = 0; i < messageAssignment.Length; i++)
+                foreach (var childElement in childElements)
                 {
-                    constructActivity.Properties.Add($"{WorkflowModelConstants.PropertyExpression}{i}", messageAssignment[i].FindPropertyValue(MetaModelConstants.PropertyKeyExpression));
-                }
-            }
-
-            var transform = element.Element1.Where(e => e.Type == MetaModelConstants.ElementTypeTransform).SingleOrDefault();
-            if (transform != null)
-            {
-                constructActivity.Type = WorkflowModelConstants.ActivityTypeMessageTransform;
-                constructActivity.Properties.Add(WorkflowModelConstants.PropertyMap, transform.FindPropertyValue(MetaModelConstants.PropertyKeyClassName));
-
-                var parts = transform.Element1.Where(e => e.Type == MetaModelConstants.ElementTypeMessagePartRef).ToArray();
-                if (parts != null && parts.Any())
-                {
-                    // Get input and output messages separately
-                    var sourceParts = parts.Where(p => p.ParentLink == MetaModelConstants.ParentLinkTransformInputMessage).ToArray();
-                    var targetParts = parts.Where(p => p.ParentLink == MetaModelConstants.ParentLinkTransformOutputMessage).ToArray();
-
-                    // Add source (input) messages to activity
-                    if (sourceParts != null && sourceParts.Any())
+                    var constructActivity = new WorkflowActivity()
                     {
-                        var sourceMessageRefs = new List<string>(sourceParts.Length);
+                        Name = childElement.FindPropertyValue(MetaModelConstants.PropertyKeyName) ?? childElement.Type,
+                        Key = string.Concat(groupContainer.Key, ".", childElement.FindPropertyValue(MetaModelConstants.PropertyKeyName) ?? childElement.Type, elementIndex.ToString(CultureInfo.InvariantCulture)).FormatKey()
+                    };
 
-                        for (var i = 0; i < sourceParts.Length; i++)
-                        {
-                            var messageRef = sourceParts[i].FindPropertyValue(MetaModelConstants.PropertyKeyMessageRef);
-                            var partRef = sourceParts[i].FindPropertyValue(MetaModelConstants.PropertyKeyPartRef);
-                            var formattedMessageRef = partRef != null ? $"{messageRef}.{partRef}" : messageRef;
-                            sourceMessageRefs.Add(formattedMessageRef);
-                        }
+                    AddProperties(constructActivity, childElement);
 
-                        constructActivity.Properties.Add(WorkflowModelConstants.PropertySourceMessageReferences, sourceMessageRefs);
-                        constructActivity.Properties.Add(WorkflowModelConstants.PropertyIsMultiSource, sourceParts.Length > 1 ? true : false);
+                    groupContainer.Activities.Add(constructActivity);
+
+                    // Is it a message assignment shape?
+                    if (childElement.Type == MetaModelConstants.ElementTypeMessageAssignment)
+                    {
+                        constructActivity.Type = WorkflowModelConstants.ActivityTypeMessageConstruction;
                     }
 
-                    // Add target (output) messages to activity
-                    if (targetParts != null && targetParts.Any())
+                    // Is it a transform shape?
+                    if (childElement.Type == MetaModelConstants.ElementTypeTransform)
                     {
-                        var targetMessageRefs = new List<string>(targetParts.Length);
+                        constructActivity.Type = WorkflowModelConstants.ActivityTypeMessageTransform;
+                        constructActivity.Properties.Add(WorkflowModelConstants.PropertyMap, childElement.FindPropertyValue(MetaModelConstants.PropertyKeyClassName));
 
-                        for (var i = 0; i < targetParts.Length; i++)
+                        var parts = childElement.Element1.Where(e => e.Type == MetaModelConstants.ElementTypeMessagePartRef).ToArray();
+                        if (parts != null && parts.Any())
                         {
-                            var messageRef = targetParts[i].FindPropertyValue(MetaModelConstants.PropertyKeyMessageRef);
-                            var partRef = targetParts[i].FindPropertyValue(MetaModelConstants.PropertyKeyPartRef);
-                            var formattedMessageRef = partRef != null ? $"{messageRef}.{partRef}" : messageRef;
-                            targetMessageRefs.Add(formattedMessageRef);
-                        }
+                            // Get input and output messages separately
+                            var sourceParts = parts.Where(p => p.ParentLink == MetaModelConstants.ParentLinkTransformInputMessage).ToArray();
+                            var targetParts = parts.Where(p => p.ParentLink == MetaModelConstants.ParentLinkTransformOutputMessage).ToArray();
 
-                        constructActivity.Properties.Add(WorkflowModelConstants.PropertyTargetMessageReferences, targetMessageRefs);
-                        constructActivity.Properties.Add(WorkflowModelConstants.PropertyIsMultiTarget, targetParts.Length > 1 ? true : false);
+                            // Add source (input) messages to activity
+                            if (sourceParts != null && sourceParts.Any())
+                            {
+                                var sourceMessageRefs = new List<string>(sourceParts.Length);
+
+                                for (var i = 0; i < sourceParts.Length; i++)
+                                {
+                                    var messageRef = sourceParts[i].FindPropertyValue(MetaModelConstants.PropertyKeyMessageRef);
+                                    var partRef = sourceParts[i].FindPropertyValue(MetaModelConstants.PropertyKeyPartRef);
+                                    var formattedMessageRef = partRef != null ? $"{messageRef}.{partRef}" : messageRef;
+                                    sourceMessageRefs.Add(formattedMessageRef);
+                                }
+
+                                constructActivity.Properties.Add(WorkflowModelConstants.PropertySourceMessageReferences, sourceMessageRefs);
+                                constructActivity.Properties.Add(WorkflowModelConstants.PropertyIsMultiSource, sourceParts.Length > 1 ? true : false);
+                            }
+
+                            // Add target (output) messages to activity
+                            if (targetParts != null && targetParts.Any())
+                            {
+                                var targetMessageRefs = new List<string>(targetParts.Length);
+
+                                for (var i = 0; i < targetParts.Length; i++)
+                                {
+                                    var messageRef = targetParts[i].FindPropertyValue(MetaModelConstants.PropertyKeyMessageRef);
+                                    var partRef = targetParts[i].FindPropertyValue(MetaModelConstants.PropertyKeyPartRef);
+                                    var formattedMessageRef = partRef != null ? $"{messageRef}.{partRef}" : messageRef;
+                                    targetMessageRefs.Add(formattedMessageRef);
+                                }
+
+                                constructActivity.Properties.Add(WorkflowModelConstants.PropertyTargetMessageReferences, targetMessageRefs);
+                                constructActivity.Properties.Add(WorkflowModelConstants.PropertyIsMultiTarget, targetParts.Length > 1 ? true : false);
+                            }
+                        }
                     }
                 }
             }
@@ -1050,10 +1066,10 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                     constructedMessages.Add(constructedMessage);
                 }
 
-                constructActivity.Properties.Add(WorkflowModelConstants.PropertyConstructedMessages, constructedMessages);
+                groupContainer.Properties.Add(WorkflowModelConstants.PropertyConstructedMessages, constructedMessages);
             }
 
-            return constructActivity;
+            return groupContainer;
         }
 
         /// <summary>
@@ -1907,7 +1923,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                                 _logger.LogTrace(TraceMessages.FoundPortForSendActivityLogicalBinding, RuleName, sendPort, channel.Name, activity.Name, model.Name);
 
                                 // Find send port
-                                var sendPortObject = sourceApplication.FindRelatedResourcesByType(Model, ResourceRelationshipType.Child, ModelConstants.ResourceSendPort).Where(s => s.Name == sendPort).SingleOrDefault();
+                                var sendPortObject = Model.FindResourcesByType(ModelConstants.ResourceSendPort).Where(s => s.Name == sendPort).SingleOrDefault();
                                 if (sendPortObject != null)
                                 {
                                     var sendPortSource = (SendPort)sendPortObject.SourceObject;
