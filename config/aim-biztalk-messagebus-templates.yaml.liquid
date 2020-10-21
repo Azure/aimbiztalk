@@ -139,7 +139,6 @@ resourceTemplates:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
-      - azure_sku: Free
     outputPath: messagebus/routingstore
     files:
       - env: ['dev', 'prod']

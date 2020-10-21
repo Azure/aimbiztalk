@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.Collections.Generic;
@@ -611,7 +611,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze
                     // Check there is one source schema.
                     if (sourceSchemaResources == null || sourceSchemaResources.Count == 0)
                     {
-                        _logger.LogError(ErrorMessages.UnableToFindFindRelatedResourceByType, map.Key, ResourceRelationshipType.ReferencedBy, ModelConstants.ResourceDocumentSchema);
+                        _logger.LogError(ErrorMessages.UnableToFindFindRelatedResourceByType, ModelConstants.ResourceDocumentSchema, ResourceRelationshipType.ReferencedBy, map.Key);
                         Context.Errors.Add(new ErrorMessage(string.Format(CultureInfo.CurrentCulture, ErrorMessages.UnableToFindFindRelatedResourceByType, ModelConstants.ResourceDocumentSchema, ResourceRelationshipType.ReferencedBy, map.Key)));
                     }
                     else if (sourceSchemaResources.Count != 1)
@@ -764,18 +764,55 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze
                 // TODO: Change this back to true when envelope debatching is supported by the solution.
                 xmlMessageProcessor.Properties.Add(ModelConstants.HandleBatches, false);
 
-                // Get properties
-                var allowUnrecognizedMessage = properties.ContainsKey("AllowUnrecognizedMessage") ?
-                    Convert.ToBoolean(properties["AllowUnrecognizedMessage"], CultureInfo.CurrentCulture) :
-                    false;
+                // These properties if overridden with true has a value of -1 in the pipeline data field in the binding
+                // file but a value of false in the pipeline document XML.
+                var allowUnrecognizedMessage = false;
+                if (properties.ContainsKey("AllowUnrecognizedMessage"))
+                {
+                    if (bool.TryParse(properties["AllowUnrecognizedMessage"].ToString(), out var boolResult))
+                    {
+                        allowUnrecognizedMessage = boolResult;
+                    }
+                    else
+                    {
+                        if (int.TryParse(properties["AllowUnrecognizedMessage"].ToString(), out var numberResult))
+                        {
+                            allowUnrecognizedMessage = numberResult == -1 ? true : false;
+                        }
+                    }
+                }
 
-                var validateDocument = properties.ContainsKey("ValidateDocument") ?
-                    Convert.ToBoolean(properties["ValidateDocument"], CultureInfo.CurrentCulture) :
-                    false;
+                var validateDocument = false;
+                if (properties.ContainsKey("ValidateDocument"))
+                {
+                    if (bool.TryParse(properties["ValidateDocument"].ToString(), out var boolResult))
+                    {
+                        validateDocument = boolResult;
+                    }
+                    else
+                    {
+                        if (int.TryParse(properties["ValidateDocument"].ToString(), out var numberResult))
+                        {
+                            validateDocument = numberResult == -1 ? true : false;
+                        }
+                    }
+                }
 
-                var recoverableInterchangeProcessing = properties.ContainsKey("RecoverableInterchangeProcessing") ?
-                    Convert.ToBoolean(properties["RecoverableInterchangeProcessing"], CultureInfo.CurrentCulture) :
-                    false;
+                var recoverableInterchangeProcessing = false;
+                if (properties.ContainsKey("RecoverableInterchangeProcessing"))
+                {
+                    if (bool.TryParse(properties["RecoverableInterchangeProcessing"].ToString(), out var boolResult))
+                    {
+                        recoverableInterchangeProcessing = boolResult;
+                    }
+                    else
+                    {
+                        if (int.TryParse(properties["RecoverableInterchangeProcessing"].ToString(), out var numberResult))
+                        {
+                            recoverableInterchangeProcessing = numberResult == -1 ? true : false;
+                        }
+                    }
+                }
 
                 // Build configuration
                 var config = new Dictionary<string, object>()
@@ -895,14 +932,6 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze
                 // Get properties
                 var properties = GetPipelineProperties(component, pipelineStages);
 
-                var addXmlDeclaration = properties.ContainsKey("AddXmlDeclaration") ?
-                    Convert.ToBoolean(properties["AddXmlDeclaration"], CultureInfo.CurrentCulture) :
-                    true;
-
-                var preserveBom = properties.ContainsKey("PreserveBom") ?
-                    Convert.ToBoolean(properties["PreserveBom"], CultureInfo.CurrentCulture) :
-                    true;
-
                 var xmlAssemblerProcessingInstructions = properties.ContainsKey("XmlAsmProcessingInstructions") ?
                     properties["XmlAsmProcessingInstructions"] :
                     null;
@@ -922,6 +951,40 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze
                 var targetCodePage = properties.ContainsKey("TargetCodePage") ?
                     Convert.ToInt32(properties["TargetCodePage"], CultureInfo.CurrentCulture) :
                     0;
+
+                // These properties if overridden with true has a value of -1 in the pipeline data field in the binding
+                // file but a value of false in the pipeline document XML.
+                var addXmlDeclaration = false;
+                if (properties.ContainsKey("AddXmlDeclaration"))
+                {
+                    if (bool.TryParse(properties["AddXmlDeclaration"].ToString(), out var boolResult))
+                    {
+                        addXmlDeclaration = boolResult;
+                    }
+                    else
+                    {
+                        if (int.TryParse(properties["AddXmlDeclaration"].ToString(), out var numberResult))
+                        {
+                            addXmlDeclaration = numberResult == -1 ? true : false;
+                        }
+                    }
+                }
+
+                var preserveBom = false;
+                if (properties.ContainsKey("PreserveBom"))
+                {
+                    if (bool.TryParse(properties["PreserveBom"].ToString(), out var boolResult))
+                    {
+                        preserveBom = boolResult;
+                    }
+                    else
+                    {
+                        if (int.TryParse(properties["PreserveBom"].ToString(), out var numberResult))
+                        {
+                            preserveBom = numberResult == -1 ? true : false;
+                        }
+                    }
+                }
 
                 // This is by default, but can be set using context property XMLNORM.AllowUnrecognizedMessage.  We
                 // currently don't parse this from the orchestration, so default to false.
