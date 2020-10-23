@@ -139,7 +139,7 @@ resourceTemplates:
   {%- for channel in application.channels %}
     {%- if channel.name == 'Message Box' %}
       {% assign channel_name = channel.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: topicChannelAzureServiceBusStandard
+  - template: namespaceAzureServiceBusStandard
     templateType: microsoft.template.json
     resourceName: {{ service_bus_namespace_name }}
     resourceType: microsoft.messaging.azureservicebus
@@ -152,6 +152,35 @@ resourceTemplates:
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ system_application_group }}
       - azure_sku : Standard
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/channels/{{ channel.topic_name | replace: ":", "-" | to_safe_file_path | downcase }}/namespace
+    files:
+      - env: ['dev']
+        paths:
+          - channels/topicchannel/namespace/namespace.sb.dev.psparameters.json.liquid
+      - env: ['prod']
+        paths:
+          - channels/topicchannel/namespace/namespace.sb.prod.psparameters.json.liquid
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for channel in application.channels %}
+    {%- if channel.name == 'Message Box' %}
+      {% assign channel_name = channel.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - template: topicChannelAzureServiceBusStandard
+    templateType: microsoft.template.json
+    resourceName: {{ service_bus_namespace_name }}
+    resourceType: microsoft.messaging.azureservicebus
+    tags:
+      - ApplicationName: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
       - topic_name: {{ channel.topic_name }}
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/channels/{{ channel.topic_name | replace: ":", "-" | to_safe_file_path | downcase }}
     files:
@@ -182,7 +211,6 @@ resourceTemplates:
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ system_application_group }}
-      - azure_sku : Standard
       - topic_name: {{ channel.topic_name }}
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/channels/{{ channel.topic_name | replace: ":", "-" | to_safe_file_path | downcase }}
     files:
@@ -759,6 +787,24 @@ resourceTemplates:
   # ------------------------------------------------------------------------------
   # Scripts
   # ------------------------------------------------------------------------------
+
+  - template: deployNamespace
+    templateType: microsoft.template.powershell
+    resourceName: {{ service_bus_namespace_name }}
+    resourceType: microsoft.scripts.powershell
+    resourceGroup: 
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}            
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/channels/messagebox/namespace
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - channels/topicchannel/namespace/Deploy-15-Namespace-ServiceBus.ps1.liquid
+          - channels/topicchannel/namespace/New-Namespace-ServiceBus.ps1          
+          - channels/topicchannel/namespace/TearDown-15-Namespace-ServiceBus.ps1.liquid
+          - channels/topicchannel/namespace/Remove-Namespace-ServiceBus.ps1
 
   - template: deployTopicChannel
     templateType: microsoft.template.powershell
