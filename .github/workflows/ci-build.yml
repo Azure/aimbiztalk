@@ -120,6 +120,19 @@ jobs:
       - name: Publish the plugin library and dependency files for Chocolatey
         run: dotnet publish ${{ env.PLUGIN_PROJECT_FILE }} -r win-x64 -o ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }} --configuration ${{ env.BUILD_TYPE }} -p:Version=${{ env.VERSION_NUMBER_SEM2 }} -p:TargetFramework=netcoreapp3.1 --self-contained true
 
+      - name: Create the Chocolatey verification file and copy the license file
+        shell: bash
+        run: |         
+          cp ./LICENSE ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/LICENSE
+          verificationFile=./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION
+          touch $verificationFile
+          find ${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }} -type f  | 
+          while read f
+          do
+            filename="$basename -- $f"
+            echo $filename >> $verificationFile
+          done
+
       - name: Create the Chocolatey package output directory
         shell: bash
         run: |
