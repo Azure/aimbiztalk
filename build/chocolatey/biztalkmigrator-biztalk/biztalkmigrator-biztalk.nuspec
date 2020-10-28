@@ -5,12 +5,12 @@
     <!-- Note This version will be overriden by the command line. -->
     <version>0.0.1-beta</version>
     <packageSourceUrl>https://github.com/azure/aimbiztalk</packageSourceUrl>
-    <title>BizTalk to Azure Integration Services Migration</title>
+    <title>BizTalk Migrator Dependency - BizTalk Rules</title>
     <authors>Microsoft</authors>
     <projectUrl>https://github.com/azure/aimbiztalk</projectUrl>
     <licenseUrl>https://github.com/azure/aimbiztalk/blob/master/LICENSE</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <tags>biztalkmigrator-biztalk BizTalk Azure AIS CLI</tags>
+    <tags>biztalkmigrator-biztalk BizTalk Azure Integration AIM AIS CLI</tags>
     <description>Components to migrate BizTalk applications to Microsoft Azure Integration Services.</description>
   </metadata>
   <files>
