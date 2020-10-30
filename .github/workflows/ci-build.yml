@@ -136,7 +136,7 @@ jobs:
           done
 
       - name: Push the Chocolatey package to the public repo
-        if: github.event_name == 'release' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+        if: github.event_name == 'release'
         shell: bash
         run: | 
           find ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_PACKAGE_OUTPUT_DIR }}/ -name "*.nupkg" |
