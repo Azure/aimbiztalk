@@ -17,7 +17,7 @@ on:
 
 env:
   BUILD_TYPE: 'Release'
-  DOTNET_VERSION: '5.0.x'
+  DOTNET_VERSION: '3.1.200'
   CHOCO_BIZTALK_MIGRATOR_PACKAGE: '..\..\build\chocolatey\biztalkmigrator\biztalkmigrator.nuspec'
   CHOCO_CONFIG_DIR: 'build/chocolatey'
   CHOCO_PACKAGE_OUTPUT_DIR: 'choco-package'
