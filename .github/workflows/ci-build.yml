@@ -17,7 +17,7 @@ on:
 
 env:
   BUILD_TYPE: 'Release'
-  DOTNET_VERSION: '3.1.200'
+  DOTNET_VERSION: '5.0.x'
   CHOCO_BIZTALK_MIGRATOR_PACKAGE: '..\..\build\chocolatey\biztalkmigrator\biztalkmigrator.nuspec'
   CHOCO_CONFIG_DIR: 'build/chocolatey'
   CHOCO_PACKAGE_OUTPUT_DIR: 'choco-package'
@@ -41,6 +41,7 @@ env:
   VERSION_NUMBER_SEM2: 'NOT SET'
   VERSION_NUMBER_SUFFIX_SEM1: ''
   VERSION_NUMBER_SUFFIX_SEM2: ''
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
 jobs:
   build-and-test:
@@ -136,7 +137,7 @@ jobs:
           done
 
       - name: Push the Chocolatey package to the public repo
-        if: github.event_name == 'release' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+        if: github.event_name == 'release'
         shell: bash
         run: | 
           find ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_PACKAGE_OUTPUT_DIR }}/ -name "*.nupkg" |

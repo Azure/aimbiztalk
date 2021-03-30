@@ -13,6 +13,8 @@
 		<RepositoryUrl>https://github.com/azure/aimbiztalk</RepositoryUrl>
 		<Version>0.0.4-alpha</Version>
 		<NoWarn>NU5105</NoWarn>
+    <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -36,15 +38,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AzureIntegrationMigration.ApplicationModel" Version="0.5.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="3.6.0-beta1-20111-10">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
+		<PackageReference Include="Microsoft.AzureIntegrationMigration.ApplicationModel" Version="0.5.1" />
 		<PackageReference Include="Mono.Cecil" Version="0.11.3" />
 	  <PackageReference Include="wix-libs" Version="3.11.1" NoWarn="NU1701" />
 	</ItemGroup>
