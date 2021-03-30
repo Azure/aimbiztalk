@@ -1,5 +1,6 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
+
 //-----------------------------------------------------------------------
 // <copyright file="ErrorMessage.cs" company="Microsoft Corporation">
 // Copyright (c) Microsoft Corporation. All rights reserved. THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE. 
@@ -65,12 +66,12 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Types.Entities
         /// <param name="severity">Severity of error.</param>
         public ErrorMessage(string message, Exception ex, ErrorSeverity severity) : this()
         {
-            this.Message = message;
+            Message = message;
             if (ex != null)
             {
-                this.StackTrace = ex.StackTrace;
+                StackTrace = ex.StackTrace;
             }
-            this.Severity = severity;
+            Severity = severity;
         }
 
         /// <summary>
@@ -113,7 +114,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Types.Entities
         /// <returns>String representation of this instance.</returns>
         public override string ToString()
         {
-            return string.Format("{0}: {1}", this.Severity, this.Message);
+            return string.Format("{0}: {1}", Severity, Message);
         }
 
         #endregion

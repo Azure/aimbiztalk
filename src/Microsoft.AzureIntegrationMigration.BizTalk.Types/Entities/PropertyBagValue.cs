@@ -1,5 +1,6 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
+
 //-----------------------------------------------------------------------
 // <copyright file="PropertyBagValue.cs" company="Microsoft Corporation">
 // Copyright (c) Microsoft Corporation. All rights reserved. THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE. 
@@ -49,8 +50,8 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Types.Entities
         /// <param name="type">Type of value.</param>
         public PropertyBagValue(string value, PropertyBagValueType type)
         {
-            this.Value = value;
-            this.Type = type;
+            Value = value;
+            Type = type;
         }
 
         #endregion
