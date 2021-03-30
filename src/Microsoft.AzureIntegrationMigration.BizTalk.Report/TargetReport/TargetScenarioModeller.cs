@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.Collections.Generic;
@@ -60,7 +60,11 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Report.TargetReport
             application.Application.Intermediaries.Where(e => e.Activator).ToList().ForEach(i => scenarios.Add(i.CreateScenario()));
 
             // Recurse through the scenarios to find subsequent stages.
-            scenarios.ForEach(s => RecurseScenarioStage(s.Activator, target));
+            scenarios.ForEach(s =>
+            {
+                var allRefs = new List<string>();
+                RecurseScenarioStage(s.Activator, target, allRefs);
+            });
 
             // Append to output.
             scenarios.ForEach(s => application.Scenarios.Add(s));
@@ -71,7 +75,8 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Report.TargetReport
         /// </summary>
         /// <param name="stage">The current stage being walked.</param>
         /// <param name="target">The entire target model.</param>
-        private static void RecurseScenarioStage(TargetScenarioStage stage, AzureIntegrationServicesMigrationTarget target)
+        /// <param name="allRefs">The list of references already processed, to prevent circular scenario walks.</param>
+        private static void RecurseScenarioStage(TargetScenarioStage stage, AzureIntegrationServicesMigrationTarget target, List<string> allRefs)
         {
             // The list of subsequent stages referenced by the current stage.
             var outputRefs = new List<string>();
@@ -99,11 +104,15 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Report.TargetReport
 
             outputRefs.ForEach((o) =>
             {
-                var mo = target.FindMessagingObject(o, stage.MessagingObject.Type);
-                if (mo != null) stage.FollowingStages.Add(mo.CreateScenarioStage());
+                if (!allRefs.Contains(o))
+                {
+                    var mo = target.FindMessagingObject(o, stage.MessagingObject.Type);
+                    if (mo != null) stage.FollowingStages.Add(mo.CreateScenarioStage());
+                    allRefs.Add(o);
+                }
             });
 
-            stage.FollowingStages.ToList().ForEach(s => RecurseScenarioStage(s, target));
+            stage.FollowingStages.ToList().ForEach(s => RecurseScenarioStage(s, target, allRefs));
         }
 
         /// <summary>
