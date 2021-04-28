@@ -110,7 +110,7 @@ jobs:
           gpr push .\${{ env.OUTPUT_DIR }}\*.nupkg --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }}
 
       - name: Publish the plugin library and dependency files for Chocolatey
-        run: dotnet publish ${{ env.PLUGIN_PROJECT_FILE }} -r win-x64 -o ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }} --configuration ${{ env.BUILD_TYPE }} -p:Version=${{ env.VERSION_NUMBER_SEM2 }} -p:TargetFramework=netcoreapp3.1 --self-contained true
+        run: dotnet publish ${{ env.PLUGIN_PROJECT_FILE }} -r win-x64 -o ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }} --configuration ${{ env.BUILD_TYPE }} -p:Version=${{ env.VERSION_NUMBER_SEM2 }} -p:TargetFramework=net5.0 --self-contained true
 
       - name: Create the Chocolatey verification file and copy the license file
         shell: bash
