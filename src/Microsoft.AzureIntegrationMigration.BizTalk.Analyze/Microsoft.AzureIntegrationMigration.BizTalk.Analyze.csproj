@@ -36,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AzureIntegrationMigration.ApplicationModel" Version="0.5.1" />
+    <PackageReference Include="Microsoft.AzureIntegrationMigration.ApplicationModel" Version="0.5.2-beta.2021042628864" />
     <PackageReference Include="wix-libs" Version="3.11.1" NoWarn="NU1701" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.8" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.8" />
