@@ -8,10 +8,14 @@
     <title>BizTalk Migrator Tool</title>
     <authors>Microsoft</authors>
     <projectUrl>https://github.com/azure/aimbiztalk</projectUrl>
+    <projectSourceUrl>https://github.com/azure/aimbiztalk</projectSourceUrl>
+    <bugTrackerUrl>https://github.com/azure/aimbiztalk/issues</bugTrackerUrl>
     <licenseUrl>https://github.com/azure/aimbiztalk/blob/master/LICENSE</licenseUrl>
+    <docsUrl>https://github.com/azure/aimbiztalk#readme</docsUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <tags>biztalkmigrator BizTalk Azure Integration AIM AIS CLI</tags>
     <description>Command Line Interface (CLI) to migrate BizTalk applications to Microsoft Azure Integration Services. This package includes the dependency on the Azure Integration Migration CLI and the Azure templates.</description>
+    <tags>biztalkmigrator BizTalk Azure Integration AIM AIS CLI</tags>
+    <summary>Command Line Interface (CLI) to migrate BizTalk applications to Microsoft Azure Integration Services. This package includes the dependency on the Azure Integration Migration CLI and the Azure templates.</summary>
     <dependencies>
       <dependency id="biztalkmigrator-cli"/>
       <dependency id="biztalkmigrator-azure"/>

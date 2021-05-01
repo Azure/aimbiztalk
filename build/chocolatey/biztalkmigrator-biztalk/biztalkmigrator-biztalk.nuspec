@@ -8,10 +8,14 @@
     <title>BizTalk Migrator Dependency - BizTalk Rules</title>
     <authors>Microsoft</authors>
     <projectUrl>https://github.com/azure/aimbiztalk</projectUrl>
+    <projectSourceUrl>https://github.com/azure/aimbiztalk</projectSourceUrl>
+    <bugTrackerUrl>https://github.com/azure/aimbiztalk/issues</bugTrackerUrl>
     <licenseUrl>https://github.com/azure/aimbiztalk/blob/master/LICENSE</licenseUrl>
+    <docsUrl>https://github.com/azure/aimbiztalk#readme</docsUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <tags>biztalkmigrator-biztalk BizTalk Azure Integration AIM AIS CLI</tags>
     <description>Components to migrate BizTalk applications to Microsoft Azure Integration Services.</description>
+    <tags>biztalkmigrator-biztalk BizTalk Azure Integration AIM AIS CLI</tags>
+    <summary>Components to migrate BizTalk applications to Microsoft Azure Integration Services.</summary>
   </metadata>
   <files>
     <file src="..\..\..\dist\choco-src\**" target="tools\bin"/>
