@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.Collections.Generic;
@@ -148,7 +148,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         /// Builds an instance of a process manager intermediary using snippets.
         /// </summary>
         /// <remarks>
-        /// As a process manager is a worklow related intermediary, this rule assumes that the workflow implementation
+        /// As a process manager is a workflow related intermediary, this rule assumes that the workflow implementation
         /// in AIS will be a Logic App.  This code will therefore expect the snippets to be individual parts of a
         /// Logic App that need to be stitched together to form a single Logic App.
         /// </remarks>

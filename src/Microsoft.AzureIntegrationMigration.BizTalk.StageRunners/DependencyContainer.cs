@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using Microsoft.AzureIntegrationMigration.ApplicationModel.Generator;
@@ -102,8 +102,15 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.StageRunners
             services.AddTransient<BizTalk.Analyze.ConversionRules.RP001FtpReceivePortAnalyzer>();
             services.AddTransient<BizTalk.Analyze.ConversionRules.RP002FileReceivePortAnalyzer>();
             services.AddTransient<BizTalk.Analyze.ConversionRules.RP003HttpReceivePortAnalyzer>();
+            services.AddTransient<BizTalk.Analyze.ConversionRules.RP004SftpReceivePortAnalyzer>();
+            services.AddTransient<BizTalk.Analyze.ConversionRules.RP005MqReceivePortAnalyzer>();
+            //services.AddTransient<BizTalk.Analyze.ConversionRules.RP006SapReceivePortAnalyzer>();
             services.AddTransient<BizTalk.Analyze.ConversionRules.SP001FtpSendPortAnalyzer>();
             services.AddTransient<BizTalk.Analyze.ConversionRules.SP002FileSendPortAnalyzer>();
+            services.AddTransient<BizTalk.Analyze.ConversionRules.SP003HttpSendPortAnalyzer>();
+            services.AddTransient<BizTalk.Analyze.ConversionRules.SP004SftpSendPortAnalyzer>();
+            services.AddTransient<BizTalk.Analyze.ConversionRules.SP005MqSendPortAnalyzer>();
+            services.AddTransient<BizTalk.Analyze.ConversionRules.SP006SapSendPortAnalyzer>();
             services.AddTransient<BizTalk.Analyze.ConversionRules.MA001TransformAnalyzer>();
 
             // Add report components

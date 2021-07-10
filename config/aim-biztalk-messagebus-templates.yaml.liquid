@@ -22,6 +22,9 @@ aim-apim-subscriptionkey-unlimited
 {%- capture api_management_service_name -%}
 {{ aim_user_prefix }}apim-aimmsgbussvc-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
 {%- endcapture -%}
+{%- capture standard_app_service_plan_name -%}
+{{ aim_user_prefix }}plan-logicapp-aimmsgbussvc-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
 {%- capture app_service_name -%}
 {{ aim_user_prefix }}plan-aimmsgbussvc-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
 {%- endcapture -%}
@@ -80,7 +83,7 @@ resourceTemplates:
     resourceName: {{ message_bus_resource_group_name }}
     resourceType: microsoft.groups.azureresourcegroup
     tags:
-      - ApplicationName: AIM-MessageBus
+      - Application: AIM-MessageBus
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -106,7 +109,7 @@ resourceTemplates:
     resourceName: {{ app_insights_name }}
     resourceType: microsoft.services.azureappinsights
     tags:
-      - ApplicationName: AIM-MessageBus
+      - Application: AIM-MessageBus
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -133,7 +136,7 @@ resourceTemplates:
     resourceName: {{ app_config_name }}
     resourceType: microsoft.stores.azureappconfiguration
     tags:
-      - ApplicationName: AIM-MessageBus
+      - Application: AIM-MessageBus
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -156,7 +159,7 @@ resourceTemplates:
     resourceName: {{ key_vault_name }}
     resourceType: microsoft.stores.azurekeyvault
     tags:
-      - ApplicationName: AIM-MessageBus
+      - Application: AIM-MessageBus
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -180,7 +183,7 @@ resourceTemplates:
     resourceName: {{ integration_account_name }}
     resourceType: microsoft.stores.azureintegrationaccount
     tags:
-      - ApplicationName: AIM-MessageBus
+      - Application: AIM-MessageBus
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -221,7 +224,7 @@ resourceTemplates:
     resourceName: {{ api_management_service_name }}
     resourceType: microsoft.services.azureapimanagement
     tags:
-      - ApplicationName: AIM-MessageBus
+      - Application: AIM-MessageBus
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -248,7 +251,7 @@ resourceTemplates:
     resourceName: {{ api_management_service_name }}
     resourceType: microsoft.services.azureapimanagement
     tags:
-      - ApplicationName: AIM-MessageBus
+      - Application: AIM-MessageBus
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -274,7 +277,7 @@ resourceTemplates:
     resourceName: {{ api_management_service_name }}
     resourceType: microsoft.services.azureapimanagement
     tags:
-      - ApplicationName: AIM-MessageBus
+      - Application: AIM-MessageBus
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -301,7 +304,7 @@ resourceTemplates:
     resourceName: {{ app_service_name }}
     resourceType: microsoft.services.azureappservice
     tags:
-      - ApplicationName: AIM-MessageBus
+      - Application: AIM-MessageBus
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -320,13 +323,39 @@ resourceTemplates:
         paths:
           - messagebus/messagebusservice/messagebusservice.plan.json.liquid
           - messagebus/messagebusservice/messagebusservice.plan.prod.parameters.json.liquid
+
+  - template: messageBusServiceLogicAppServicePlanStandard
+    templateType: microsoft.template.arm
+    resourceName: {{ standard_app_service_plan_name }}
+    resourceType: microsoft.services.azureappservice
+    tags:
+      - Application: AIM-MessageBus
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_sku: WS1
+      - azure_sku_tier: WorkflowStandard
+      - azure_sku_family: WS
+      - azure_sku_capacity: 1
+    outputPath: messagebus/messagebusservice
+    files:
+      - env: ['dev']
+        paths:
+          - messagebus/messagebusservice/messagebusservice.logicapp.plan.json.liquid
+          - messagebus/messagebusservice/messagebusservice.logicapp.plan.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/messagebusservice/messagebusservice.logicapp.plan.json.liquid
+          - messagebus/messagebusservice/messagebusservice.logicapp.plan.prod.parameters.json.liquid
   
   - template: messageBusServiceAzureStorageAccount
     templateType: microsoft.template.json
     resourceName: {{ func_storage_account_name }}
     resourceType: microsoft.services.azurestorage
     tags:
-      - ApplicationName: AIM-MessageBus
+      - Application: AIM-MessageBus
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -349,7 +378,7 @@ resourceTemplates:
     resourceName: {{ func_routing_manager_name }}
     resourceType: microsoft.services.azurefunction
     tags:
-      - ApplicationName: AIM-MessageBus
+      - Application: AIM-MessageBus
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -376,7 +405,7 @@ resourceTemplates:
     resourceName: {{ api_management_service_name }}
     resourceType: microsoft.services.azureapimanagement
     tags:
-      - ApplicationName: AIM-MessageBus
+      - Application: AIM-MessageBus
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -401,7 +430,7 @@ resourceTemplates:
     resourceName: {{ func_messaging_manager_name }}
     resourceType: microsoft.services.azurefunction
     tags:
-      - ApplicationName: AIM-MessageBus
+      - Application: AIM-MessageBus
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -428,7 +457,7 @@ resourceTemplates:
     resourceName: {{ api_management_service_name }}
     resourceType: microsoft.services.azureapimanagement
     tags:
-      - ApplicationName: AIM-MessageBus
+      - Application: AIM-MessageBus
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -449,7 +478,7 @@ resourceTemplates:
           - messagebus/messagingmanager/messagingmanager.apim.prod.parameters.json.liquid
 
   # ------------------------------------------------------------------------------
-  # Workflows
+  # Consumption Workflows
   # ------------------------------------------------------------------------------
 
   - template: routingSlipRouterAzureLogicAppConsumption
@@ -457,7 +486,7 @@ resourceTemplates:
     resourceName: {{ routing_slip_router_logicapp_name }}
     resourceType: microsoft.workflows.azurelogicapp
     tags:
-      - ApplicationName: AIM-MessageBus
+      - Application: AIM-MessageBus
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -482,7 +511,7 @@ resourceTemplates:
   # Scripts
   # ------------------------------------------------------------------------------
 
-  - template: deployResources
+  - template: deployConsumptionResources
     templateType: microsoft.template.powershell
     resourceName: deploy-resources
     resourceType: microsoft.scripts.powershell
@@ -492,12 +521,37 @@ resourceTemplates:
     files:
       - env: ['dev']
         paths:
-          - Deploy-All.ps1.liquid
-          - TearDown-All.ps1.liquid
+          - deploy/consumption/Deploy-All.bat
+          - deploy/consumption/TearDown-All.bat
+          - deploy/consumption/Deploy-All.ps1.liquid
+          - deploy/consumption/TearDown-All.ps1.liquid
       - env: ['prod']
         paths:
-          - Deploy-All.ps1.liquid
-          - TearDown-All.ps1.liquid
+          - deploy/consumption/Deploy-All.bat
+          - deploy/consumption/TearDown-All.bat
+          - deploy/consumption/Deploy-All.ps1.liquid
+          - deploy/consumption/TearDown-All.ps1.liquid
+
+  - template: deployStandardResources
+    templateType: microsoft.template.powershell
+    resourceName: deploy-resources
+    resourceType: microsoft.scripts.powershell
+    outputPath: 
+    parameters: 
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+    files:
+      - env: ['dev']
+        paths:
+          - deploy/standard/Deploy-All.bat
+          - deploy/standard/TearDown-All.bat
+          - deploy/standard/Deploy-All.ps1.liquid
+          - deploy/standard/TearDown-All.ps1.liquid
+      - env: ['prod']
+        paths:
+          - deploy/standard/Deploy-All.bat
+          - deploy/standard/TearDown-All.bat
+          - deploy/standard/Deploy-All.ps1.liquid
+          - deploy/standard/TearDown-All.ps1.liquid
 
   - template: deployMessageBusGroup
     templateType: microsoft.template.powershell
@@ -601,6 +655,30 @@ resourceTemplates:
           - messagebus/messagebusservice/New-MessageBusService-ApiManagement.ps1
           - messagebus/messagebusservice/TearDown-30-MessageBusService-ApiManagement.ps1.liquid
           - messagebus/messagebusservice/Remove-MessageBusService-ApiManagement.ps1
+
+  - template: deployMessageBusServiceLogicAppServicePlanStandard
+    templateType: microsoft.template.powershell
+    resourceName: {{ standard_app_service_plan_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+    outputPath: messagebus/messagebusservice
+    files:
+      - env: ['dev']
+        paths:
+          - messagebus/messagebusservice/Deploy-30-MessageBusService-LogicAppPlan.ps1.liquid
+          - messagebus/messagebusservice/New-MessageBusService-LogicAppPlan.ps1
+          - messagebus/messagebusservice/TearDown-30-MessageBusService-LogicAppPlan.ps1.liquid
+          - messagebus/messagebusservice/Remove-MessageBusService-LogicAppPlan.ps1
+      - env: ['prod']
+        paths:
+          - messagebus/messagebusservice/Deploy-30-MessageBusService-LogicAppPlan.ps1.liquid
+          - messagebus/messagebusservice/New-MessageBusService-LogicAppPlan.ps1
+          - messagebus/messagebusservice/TearDown-30-MessageBusService-LogicAppPlan.ps1.liquid
+          - messagebus/messagebusservice/Remove-MessageBusService-LogicAppPlan.ps1
 
   - template: deployMessageBusServiceAppService
     templateType: microsoft.template.powershell
@@ -825,7 +903,7 @@ resourceTemplates:
           - messagebus/messagingmanager/TearDown-60-MessagingManager-ApiManagement.ps1.liquid
           - messagebus/messagingmanager/Remove-MessagingManager-ApiManagement.ps1
 
-  - template: deployRoutingSlipRouterConsumption
+  - template: deployRoutingSlipRouterAzureLogicAppConsumption
     templateType: microsoft.template.powershell
     resourceName: {{ routing_slip_router_logicapp_name }}
     resourceType: microsoft.scripts.powershell

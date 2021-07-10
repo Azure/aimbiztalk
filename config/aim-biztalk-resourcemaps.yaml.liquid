@@ -44,6 +44,7 @@ resourceMaps:
   - map: application{{ app_name }}
     resources:
       - applicationGroup{{ app_name }}
+      - applicationService{{ app_name }}
   {%- endif %}
 {%- endfor %}
 
@@ -148,6 +149,7 @@ resourceMaps:
   - map: systemApplication
     resources:
       - systemApplicationGroup
+      - systemApplicationService
       - flatFileMessageProcessor
       - jsonDecoder
       - jsonEncoder

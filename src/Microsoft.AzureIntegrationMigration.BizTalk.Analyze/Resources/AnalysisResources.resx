@@ -129,11 +129,23 @@
   <data name="FtpAdapterHelpLink" xml:space="preserve">
     <value>https://docs.microsoft.com/en-us/connectors/ftp/</value>
   </data>
+  <data name="HttpAdapterHelpLink" xml:space="preserve">
+    <value>https://docs.microsoft.com/en-us/azure/connectors/connectors-native-http</value>
+  </data>
+  <data name="MqAdapterHelpLink" xml:space="preserve">
+    <value>https://docs.microsoft.com/en-us/connectors/mq/</value>
+  </data>
   <data name="NumberOfRootNodesProperty" xml:space="preserve">
     <value>Number of root nodes</value>
   </data>
   <data name="RootNodeNameProperty" xml:space="preserve">
     <value>Root Node Name</value>
+  </data>
+  <data name="SapAdapterHelpLink" xml:space="preserve">
+    <value>https://docs.microsoft.com/en-us/connectors/sap/</value>
+  </data>
+  <data name="SftpAdapterHelpLink" xml:space="preserve">
+    <value>https://docs.microsoft.com/en-us/connectors/sftpwithssh/</value>
   </data>
   <data name="XmlNamespaceProperty" xml:space="preserve">
     <value>XML Namespace</value>

@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.Collections.Generic;
@@ -143,7 +143,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
 
                             if (logicAppResource != null)
                             {
-                                // Generate the routing conig.
+                                // Generate the routing config.
                                 routes.Add(BuildRoutingSlipConfig(scenarioStepName, logicAppResource));
                             }
                             else

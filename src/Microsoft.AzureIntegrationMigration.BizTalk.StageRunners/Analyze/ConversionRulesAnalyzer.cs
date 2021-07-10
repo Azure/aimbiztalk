@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.Collections.Generic;
@@ -69,8 +69,15 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.StageRunners.Analyze
                 Container.GetRequiredService<BizTalk.Analyze.ConversionRules.RP001FtpReceivePortAnalyzer>(),
                 Container.GetRequiredService<BizTalk.Analyze.ConversionRules.RP002FileReceivePortAnalyzer>(),
                 Container.GetRequiredService<BizTalk.Analyze.ConversionRules.RP003HttpReceivePortAnalyzer>(),
+                Container.GetRequiredService<BizTalk.Analyze.ConversionRules.RP004SftpReceivePortAnalyzer>(),
+                Container.GetRequiredService<BizTalk.Analyze.ConversionRules.RP005MqReceivePortAnalyzer>(),
+                //Container.GetRequiredService<BizTalk.Analyze.ConversionRules.RP006SapReceivePortAnalyzer>(),
                 Container.GetRequiredService<BizTalk.Analyze.ConversionRules.SP001FtpSendPortAnalyzer>(),                
                 Container.GetRequiredService<BizTalk.Analyze.ConversionRules.SP002FileSendPortAnalyzer>(),
+                Container.GetRequiredService<BizTalk.Analyze.ConversionRules.SP003HttpSendPortAnalyzer>(),
+                Container.GetRequiredService<BizTalk.Analyze.ConversionRules.SP004SftpSendPortAnalyzer>(),
+                Container.GetRequiredService<BizTalk.Analyze.ConversionRules.SP005MqSendPortAnalyzer>(),
+                Container.GetRequiredService<BizTalk.Analyze.ConversionRules.SP006SapSendPortAnalyzer>(),
                 Container.GetRequiredService<BizTalk.Analyze.ConversionRules.MA001TransformAnalyzer>()
             };
 
