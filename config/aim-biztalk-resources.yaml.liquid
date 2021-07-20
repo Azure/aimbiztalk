@@ -378,6 +378,65 @@ resources:
 {%- for application in model.migration_target.message_bus.applications %}
   {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
   {%- for endpoint in application.endpoints -%}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "SFTP" and endpoint.message_exchange_pattern == "Accept" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - resource: sftpReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    targets:
+      - target: ['consumption']
+        templates:
+          - sftpReceiveAzureSftpConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
+          - sftpReceiveAzureServiceBusConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
+          - sftpReceiveAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}          
+          - receiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
+          - receiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
+          - receiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
+          - deploySftpReceiveAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
+          - deploySftpReceiveAdapterSftpApiConnection{{ app_name }}{{ endpoint_name }}
+          - deploySftpReceiveAdapterServiceBusApiConnection{{ app_name }}{{ endpoint_name }}
+          - deployReceiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
+          - deployReceiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
+          - deployReceiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
+      - target: ['standard']
+        templates:
+          - sftpReceiveAzureSftpConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
+          - sftpReceiveAzureServiceBusConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
+          - sftpReceiveAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
+          - receiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
+          - receiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
+          - receiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
+          - deploySftpReceiveAdapterSftpApiConnection{{ app_name }}{{ endpoint_name }}
+          - deploySftpReceiveAdapterServiceBusApiConnection{{ app_name }}{{ endpoint_name }}
+          - deployReceiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
+          - deployReceiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
+          - deployReceiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints -%}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "SFTP" and endpoint.message_exchange_pattern == "Send" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - resource: sftpSendAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    targets:
+      - target: ['consumption']
+        templates:
+          - deploySftpSendAdapterLogicApp{{ app_name }}{{ endpoint_name }}
+          - deploySftpSendAdapterApiConnection{{ app_name }}{{ endpoint_name }}
+          - sftpSendAzureConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
+          - sftpSendAzureAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+      - target: ['standard']
+        templates:
+          - deploySftpSendAdapterApiConnection{{ app_name }}{{ endpoint_name }}
+          - sftpSendAzureConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
+     {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints -%}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Accept" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   - resource: fileReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}

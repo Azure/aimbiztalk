@@ -81,7 +81,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                                     // Set conversion rating
                                     sftpAdapter.Rating = ConversionRating.FullConversionWithFidelityLoss;
 
-                                    // Change to Accept message exchange pattern as no ack can be delivered for SFTP
+                                    // We're using a Send pattern
                                     sftpAdapter.MessageExchangePattern = MessageExchangePattern.Send;
 
                                     // Set resource map key to hook into the configuration process
@@ -144,16 +144,14 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
             var supportedProperties = new Dictionary<string, (string, object)>()
             {
                 { "ServerAddress", ("serverAddress", "") },
-                { "Port", ("serverPort", 21) },
+                { "Port", ("serverPort", 22) },
                 { "UserName", ("userName", "") },
                 { "PrivateKey", ("sshPrivateKey", "") },
-                { "FolderPath", ("folderPath", "/") },
-                { "FileMask", ("fileMask", "*.*") },
-                { "PollingIntervalUnit", ("frequency", "Seconds") },
-                { "PollingInterval", ("recurrence", 60) },
                 { "AccessAnySSHServerHostKey", ("acceptAnySshHostKey", "false") },
                 { "SSHServerHostKey", ("sshHostKeyFingerprint", "") },
-                { "ClientAuthenticationMode", ("clientAuthenticationMode", "Password")}
+                { "ClientAuthenticationMode", ("clientAuthenticationMode", "Password")},
+                { "targetFolder", ("targetFolder", "/") },
+                { "targetFileName", ("targetFileName", "%MessageID%.xml") }
             };
 
             // Search through BizTalk adapter properties and match properties

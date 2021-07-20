@@ -73,7 +73,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                             {
                                 foreach (var receiveLocation in receivePort.ReceiveLocations)
                                 {
-                                    if (receiveLocation.ReceiveLocationTransportType.Name == "MQ")
+                                    if (receiveLocation.ReceiveLocationTransportType.Name == "MQS")
                                     {
                                         // Find adapter in target model
                                         var adapterKey = $"{ModelConstants.MessageBusLeafKey}:{application.Application.Name.FormatKey()}:{receivePort.Name.FormatKey()}:{receiveLocation.Name.FormatKey()}:{ModelConstants.AdapterEndpointLeafKey}";
@@ -142,8 +142,25 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
             // Set supported property names and defaults
             var supportedProperties = new Dictionary<string, (string, object)>()
             {
-                { "ServerAddress", ("serverAddress", "") },
-                { "UserName", ("userName", "") }
+                { "uri", ("uri", "") },
+                { "queueDetails", ("queueDetails", "") },
+                { "userName", ("userName", "") },
+                { "password", ("password", "") },
+                { "transactionSupported", ("transactionSupported", false) },
+                { "suspendAsNonResumable", ("suspendAsNonResumable", false) },
+                { "dataOffsetForHeaders", ("dataOffsetForHeaders", false) },
+                { "waitInterval", ("waitInterval", "3") },
+                { "pollingInterval", ("pollingInterval", "3") },
+                { "pollingUnit", ("pollingUnit", "seconds") },
+                { "maximumBatchSize", ("maximumBatchSize", "500000") },
+                { "maximumNumberOfMessages", ("maximumNumberOfMessages", "100") },
+                { "batchWaitInterval", ("batchWaitInterval", "0") },
+                { "threadCount", ("threadCount", "1") },
+                { "fragmentationSize", ("fragmentationSize", "500000") },
+                { "characterSet", ("characterSet", "utf8") },
+                { "errorThreshold", ("errorThreshold", "10") },
+                { "segmentation", ("segmentation", "none") },
+                { "ordered", ("ordered", false) }
             };
 
             // Search through BizTalk adapter properties and match properties
@@ -160,6 +177,29 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                     endpoint.Properties.Add(mappedProperty.mappedName, convertedValue);
 
                     _logger.LogDebug(TraceMessages.BizTalkMqReceiveAdapterBindingPropertyFound, RuleName, supportedProperty.Key, endpoint.Name, convertedValue);
+
+                    // If this is queuedetails, split into server, port, queuemaneger and queue
+                    if (supportedProperty.Key == "queueDetails" && !string.IsNullOrWhiteSpace(configItems[supportedProperty.Key]))
+                    {
+                        string[] queueDetailsParts = configItems[supportedProperty.Key].Split('/');
+                        if (queueDetailsParts.Length == 3)
+                        {
+                            // Check if server contains a port
+                            if (queueDetailsParts[0].Contains(":"))
+                            {
+                                string[] serverNameParts = queueDetailsParts[0].Split(':');
+                                endpoint.Properties.Add("serverAddress", serverNameParts[0]);
+                                endpoint.Properties.Add("serverPort", serverNameParts[1]);
+                            }
+                            else
+                            {
+                                endpoint.Properties.Add("serverAddress", queueDetailsParts[0]);
+                                endpoint.Properties.Add("serverPort", "");
+                            }
+                            endpoint.Properties.Add("queueManager", queueDetailsParts[1]);
+                            endpoint.Properties.Add("queue", queueDetailsParts[2]);
+                        }
+                    }
 
                     // Remove handled property from BizTalk adapter property list
                     configItems.Remove(supportedProperty.Key);
@@ -188,6 +228,16 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
         /// <returns>The new converted value.</returns>
         private static object ConvertAdapterProperty(string propertyName, object propertyValue)
         {
+            switch (propertyName)
+            {
+                case "transactionSupported":
+                case "suspendAsNonResumable":
+                case "dataOffsetForHeaders":
+                case "ordered":
+
+                    return propertyValue.ToString() == "yes" ? true : false;
+            }
+
             return propertyValue;
         }
 
@@ -203,7 +253,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
 #pragma warning disable CA3075 // Insecure DTD processing in XML
             docCustomProps.LoadXml(decodedCustomProps);
 #pragma warning restore CA3075 // Insecure DTD processing in XML
-            var node = docCustomProps.SelectSingleNode("/CustomProps");
+            var node = docCustomProps.SelectSingleNode("/CustomProps/AdapterConfig/Config");
 
             var items = new Dictionary<string, string>();
 

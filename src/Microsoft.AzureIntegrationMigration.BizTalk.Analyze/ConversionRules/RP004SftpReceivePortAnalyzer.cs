@@ -154,7 +154,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
             var supportedProperties = new Dictionary<string, (string, object)>()
             {
                 { "ServerAddress", ("serverAddress", "") },
-                { "Port", ("serverPort", 21) },
+                { "Port", ("serverPort", 22) },
                 { "UserName", ("userName", "") },
                 { "PrivateKey", ("sshPrivateKey", "") },
                 { "FolderPath", ("folderPath", "/") },

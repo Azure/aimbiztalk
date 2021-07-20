@@ -104,7 +104,6 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.StageRunners
             services.AddTransient<BizTalk.Analyze.ConversionRules.RP003HttpReceivePortAnalyzer>();
             services.AddTransient<BizTalk.Analyze.ConversionRules.RP004SftpReceivePortAnalyzer>();
             services.AddTransient<BizTalk.Analyze.ConversionRules.RP005MqReceivePortAnalyzer>();
-            //services.AddTransient<BizTalk.Analyze.ConversionRules.RP006SapReceivePortAnalyzer>();
             services.AddTransient<BizTalk.Analyze.ConversionRules.SP001FtpSendPortAnalyzer>();
             services.AddTransient<BizTalk.Analyze.ConversionRules.SP002FileSendPortAnalyzer>();
             services.AddTransient<BizTalk.Analyze.ConversionRules.SP003HttpSendPortAnalyzer>();

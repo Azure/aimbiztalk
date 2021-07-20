@@ -156,4 +156,7 @@
   <data name="SchemaReferencedByPipelineComponentIsMissing" xml:space="preserve">
     <value>The schema '{0}' referenced by pipeline component '{1}' is missing in the parsed BizTalk application.</value>
   </data>
+  <data name="SendPortAddressDataNotFound" xml:space="preserve">
+    <value>The PrimaryTransport Address for SendPort {0} was empty.</value>
+  </data>
 </root>
