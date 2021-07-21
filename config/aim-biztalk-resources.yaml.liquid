@@ -332,8 +332,8 @@ resources:
           - receiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
           - receiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
           - deployFtpReceiveAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
-          - deployFtpReceiveAdapterFtpApiConnection{{ app_name }}{{ endpoint_name }}
-          - deployFtpReceiveAdapterServiceBusApiConnection{{ app_name }}{{ endpoint_name }}
+          - deployFtpReceiveAdapterFtpApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
+          - deployFtpReceiveAdapterServiceBusApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
           - deployReceiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
           - deployReceiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
           - deployReceiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
@@ -345,8 +345,8 @@ resources:
           - receiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
           - receiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
           - receiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
-          - deployFtpReceiveAdapterFtpApiConnection{{ app_name }}{{ endpoint_name }}
-          - deployFtpReceiveAdapterServiceBusApiConnection{{ app_name }}{{ endpoint_name }}
+          - deployFtpReceiveAdapterFtpApiConnectionStandard{{ app_name }}{{ endpoint_name }}
+          - deployFtpReceiveAdapterServiceBusApiConnectionStandard{{ app_name }}{{ endpoint_name }}
           - deployReceiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
           - deployReceiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
           - deployReceiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
@@ -363,14 +363,15 @@ resources:
     targets:
       - target: ['consumption']
         templates:
-          - deployFtpSendAdapterLogicApp{{ app_name }}{{ endpoint_name }}
-          - deployFtpSendAdapterApiConnection{{ app_name }}{{ endpoint_name }}
+          - deployFtpSendAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
+          - deployFtpSendAdapterApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
           - ftpSendAzureConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
-          - ftpSendAzureAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+          - ftpSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
       - target: ['standard']
         templates:
-          - deployFtpSendAdapterApiConnection{{ app_name }}{{ endpoint_name }}
-          - ftpSendAzureConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
+          - deployFtpSendAdapterApiConnectionStandard{{ app_name }}{{ endpoint_name }}
+          - ftpSendAzureConnectionEndpointStandardStandard{{ app_name }}{{ endpoint_name }}
+          - ftpSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
      {%- endif %}
   {%- endfor %}
 {%- endfor %}
@@ -391,8 +392,8 @@ resources:
           - receiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
           - receiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
           - deploySftpReceiveAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
-          - deploySftpReceiveAdapterSftpApiConnection{{ app_name }}{{ endpoint_name }}
-          - deploySftpReceiveAdapterServiceBusApiConnection{{ app_name }}{{ endpoint_name }}
+          - deploySftpReceiveAdapterSftpApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
+          - deploySftpReceiveAdapterServiceBusApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
           - deployReceiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
           - deployReceiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
           - deployReceiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
@@ -404,8 +405,8 @@ resources:
           - receiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
           - receiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
           - receiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
-          - deploySftpReceiveAdapterSftpApiConnection{{ app_name }}{{ endpoint_name }}
-          - deploySftpReceiveAdapterServiceBusApiConnection{{ app_name }}{{ endpoint_name }}
+          - deploySftpReceiveAdapterSftpApiConnectionStandard{{ app_name }}{{ endpoint_name }}
+          - deploySftpReceiveAdapterServiceBusApiConnectionStandard{{ app_name }}{{ endpoint_name }}
           - deployReceiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
           - deployReceiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
           - deployReceiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
@@ -422,14 +423,15 @@ resources:
     targets:
       - target: ['consumption']
         templates:
-          - deploySftpSendAdapterLogicApp{{ app_name }}{{ endpoint_name }}
-          - deploySftpSendAdapterApiConnection{{ app_name }}{{ endpoint_name }}
+          - deploySftpSendAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
+          - deploySftpSendAdapterApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
           - sftpSendAzureConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
-          - sftpSendAzureAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+          - sftpSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
       - target: ['standard']
         templates:
-          - deploySftpSendAdapterApiConnection{{ app_name }}{{ endpoint_name }}
+          - deploySftpSendAdapterApiConnectionStandard{{ app_name }}{{ endpoint_name }}
           - sftpSendAzureConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
+          - sftpSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
      {%- endif %}
   {%- endfor %}
 {%- endfor %}
@@ -445,13 +447,13 @@ resources:
         templates:
           - fileReceiveAzureFileConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
           - fileReceiveAzureServiceBusConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
-          - fileReceiveAzureAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+          - fileReceiveAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
           - receiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
           - receiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
           - receiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
-          - deployFileReceiveAdapterLogicApp{{ app_name }}{{ endpoint_name }}
-          - deployFileReceiveAdapterFileApiConnection{{ app_name }}{{ endpoint_name }}
-          - deployFileReceiveAdapterServiceBusApiConnection{{ app_name }}{{ endpoint_name }}
+          - deployFileReceiveAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
+          - deployFileReceiveAdapterFileApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
+          - deployFileReceiveAdapterServiceBusApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
           - deployReceiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
           - deployReceiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
           - deployReceiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
@@ -459,13 +461,12 @@ resources:
         templates:
           - fileReceiveAzureFileConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
           - fileReceiveAzureServiceBusConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
-          - fileReceiveAzureAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+          - fileReceiveAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
           - receiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
           - receiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
           - receiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
-          - deployFileReceiveAdapterLogicApp{{ app_name }}{{ endpoint_name }}
-          - deployFileReceiveAdapterFileApiConnection{{ app_name }}{{ endpoint_name }}
-          - deployFileReceiveAdapterServiceBusApiConnection{{ app_name }}{{ endpoint_name }}
+          - deployFileReceiveAdapterFileApiConnectionStandard{{ app_name }}{{ endpoint_name }}
+          - deployFileReceiveAdapterServiceBusApiConnectionStandard{{ app_name }}{{ endpoint_name }}
           - deployReceiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
           - deployReceiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
           - deployReceiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
@@ -482,16 +483,15 @@ resources:
     targets:
       - target: ['consumption']
         templates:
-          - deployFileSendAdapterLogicApp{{ app_name }}{{ endpoint_name }}
-          - deployFileSendAdapterApiConnection{{ app_name }}{{ endpoint_name }}
+          - deployFileSendAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
+          - deployFileSendAdapterApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
           - fileSendAzureConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
-          - fileSendAzureAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+          - fileSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
       - target: ['standard']
         templates:
-          - deployFileSendAdapterLogicApp{{ app_name }}{{ endpoint_name }}
-          - deployFileSendAdapterApiConnection{{ app_name }}{{ endpoint_name }}
+          - deployFileSendAdapterApiConnectionStandard{{ app_name }}{{ endpoint_name }}
           - fileSendAzureConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
-          - fileSendAzureAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+          - fileSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
      {%- endif %}
   {%- endfor %}
 {%- endfor %}
@@ -503,16 +503,47 @@ resources:
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   - resource: httpReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
     targets:
-      - target: ['consumption', 'standard']
+      - target: ['consumption']
         templates:          
-          - httpReceiveAzureAdapterEndpoint{{ app_name }}{{ endpoint_name }}          
+          - httpReceiveAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
           - receiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
           - receiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
           - receiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
-          - deployHttpReceiveAdapterLogicApp{{ app_name }}{{ endpoint_name }}                    
+          - deployHttpReceiveAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
           - deployReceiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
           - deployReceiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
           - deployReceiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
+
+      - target: ['standard']
+        templates:          
+          - httpReceiveAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
+          - receiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
+          - receiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
+          - receiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
+          - deployHttpReceiveAdapterLogicAppStandard{{ app_name }}{{ endpoint_name }}
+          - deployReceiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
+          - deployReceiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
+          - deployReceiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints -%}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "HTTP" and endpoint.message_exchange_pattern == "Send" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - resource: httpSendAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    targets:
+      - target: ['consumption']
+        templates:          
+          - httpSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
+          - deployHttpSendAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
+
+      - target: ['standard']
+        templates:          
+          - httpSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
+          - deployHttpSendAdapterLogicAppStandard{{ app_name }}{{ endpoint_name }}
     {%- endif %}
   {%- endfor %}
 {%- endfor %}
@@ -526,7 +557,12 @@ resources:
         {% assign subscription_name = subscription.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   - resource: topicSubscription{{ app_name }}{{ channel_name }}{{ subscription_name }}
     targets:
-      - target: ['consumption', 'standard']
+      - target: ['consumption']
+        templates:
+          - deployTopicSubscription{{ app_name }}{{ channel_name }}{{ subscription_name }}
+          - topicSubscriptionAzureServiceBus{{ app_name }}{{ channel_name }}{{ subscription_name }}
+
+      - target: ['standard']
         templates:
           - deployTopicSubscription{{ app_name }}{{ channel_name }}{{ subscription_name }}
           - topicSubscriptionAzureServiceBus{{ app_name }}{{ channel_name }}{{ subscription_name }}
@@ -746,24 +782,23 @@ resources:
       - target: ['consumption']
         templates:
           - topicSubscriberAzureApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
-          - topicSubscriberAzureLogicApp{{ app_name }}{{ intermediary_name }}
+          - topicSubscriberAzureLogicAppConsumption{{ app_name }}{{ intermediary_name }}
           - sendRoutingSlipConfiguration{{ app_name }}{{ intermediary_name }}
           - sendConfigurationEntry{{ app_name }}{{ intermediary_name }}
           - sendRoutingPropertyConfiguration{{ app_name }}{{ intermediary_name }}
-          - deployTopicSubscriberApiConnection{{ app_name }}{{ intermediary_name }}
-          - deployTopicSubscriberLogicApp{{ app_name }}{{ intermediary_name }}
+          - deployTopicSubscriberApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
+          - deployTopicSubscriberLogicAppConsumption{{ app_name }}{{ intermediary_name }}
           - deploySendRoutingSlipConfiguration{{ app_name }}{{ intermediary_name }}
           - deploySendConfigurationEntry{{ app_name }}{{ intermediary_name }}
           - deploySendRoutingPropertyConfiguration{{ app_name }}{{ intermediary_name }}
       - target: ['standard']
         templates:
           - topicSubscriberAzureApiConnectionStandard{{ app_name }}{{ intermediary_name }}
-          - topicSubscriberAzureLogicApp{{ app_name }}{{ intermediary_name }}
+          - topicSubscriberAzureLogicAppStandard{{ app_name }}{{ intermediary_name }}
           - sendRoutingSlipConfiguration{{ app_name }}{{ intermediary_name }}
           - sendConfigurationEntry{{ app_name }}{{ intermediary_name }}
           - sendRoutingPropertyConfiguration{{ app_name }}{{ intermediary_name }}
-          - deployTopicSubscriberApiConnection{{ app_name }}{{ intermediary_name }}
-          - deployTopicSubscriberLogicApp{{ app_name }}{{ intermediary_name }}
+          - deployTopicSubscriberApiConnectionStandard{{ app_name }}{{ intermediary_name }}
           - deploySendRoutingSlipConfiguration{{ app_name }}{{ intermediary_name }}
           - deploySendConfigurationEntry{{ app_name }}{{ intermediary_name }}
           - deploySendRoutingPropertyConfiguration{{ app_name }}{{ intermediary_name }}

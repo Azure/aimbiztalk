@@ -819,7 +819,7 @@ resourceTemplates:
       - azure_system_resource_group_name: {{ system_application_group }}
       - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
       - workflow_name: {{ endpoint_name | downcase }}
-      - azure_ftp_scenario: {{ endpoint.properties.scenario }}
+      - azure_ftp_scenario: {{ endpoint.properties.scenario | downcase }}
       - azure_ftp_target_folder: {{ endpoint.properties.targetFolder }}
       - azure_ftp_file_mask: "{{ endpoint.properties.fileMask }}"
       - azure_ftp_max_file_count: {{ endpoint.properties.maxFileCount }}
@@ -973,6 +973,7 @@ resourceTemplates:
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
       - api_connector_name: {{ aim_user_prefix }}apic-aimftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
       - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
       - azure_ftp_target_folder: {{ endpoint.properties.targetFolder }}
       - azure_ftp_target_file_name: "{{ endpoint.properties.targetFileName }}"
@@ -1208,7 +1209,7 @@ resourceTemplates:
       - azure_system_resource_group_name: {{ system_application_group }}
       - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
       - workflow_name: {{ endpoint_name | downcase }}
-      - azure_sftp_scenario: {{ endpoint.properties.scenario }}
+      - azure_sftp_scenario: {{ endpoint.properties.scenario | downcase }}
       - azure_sftp_target_folder: {{ endpoint.properties.targetFolder }}
       - azure_sftp_file_mask: "{{ endpoint.properties.fileMask }}"
       - azure_sftp_recurrence: {{ endpoint.properties.recurrence }}
@@ -1367,6 +1368,7 @@ resourceTemplates:
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
       - api_connector_name: {{ aim_user_prefix }}apic-aimsftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
       - azure_sftp_target_folder: {{ endpoint.properties.targetFolder }}
       - azure_sftp_target_file_name: "{{ endpoint.properties.targetFileName }}"
       - apim_service_name: {{ api_management_service_name }}
@@ -1730,10 +1732,11 @@ resourceTemplates:
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
       - api_connector_name: {{ aim_user_prefix }}apic-aimfilesconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
       - workflow_name: {{ endpoint_name | downcase }}
       - apim_service_name: {{ api_management_service_name }}
       - scenario_step_name: {{ endpoint.properties.scenarioStep }}
-    outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ endpoint_name | to_safe_file_path | downcase }}
     files:
       - env: ['dev', 'prod']
         paths:
@@ -2106,6 +2109,7 @@ resourceTemplates:
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
       - api_connector_name: {{ aim_user_prefix }}apic-aimmqsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
       - azure_mq_target_folder: {{ endpoint.properties.targetFolder }}
       - azure_mq_target_file_name: "{{ endpoint.properties.targetFileName }}"
       - apim_service_name: {{ api_management_service_name }}
@@ -2346,7 +2350,7 @@ resourceTemplates:
       - apim_service_name: {{ api_management_service_name }}
       - scenario_name: {{ intermediary.properties.scenario }}
       - scenario_step_name: {{ intermediary.properties.scenarioStep }}
-    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ endpoint_name | to_safe_file_path | downcase }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/topicsubscriber{{ intermediary_name | to_safe_file_path | downcase }}
     files:
       - env: ['dev', 'prod']
         paths:
@@ -2965,7 +2969,7 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Accept" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployFileReceiveAdapterFileApiConnection{{ app_name }}{{ endpoint_name }}
+  - template: deployFileReceiveAdapterFileApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}apic-aimfilerconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -2982,6 +2986,26 @@ resourceTemplates:
           - endpoints/file/receive/New-FileReceiveAdapterFileSystem-ApiConnection.ps1
           - endpoints/file/receive/Remove-FileReceiveAdapterFileSystem-ApiConnection.ps1
           - endpoints/file/receive/TearDown-100-FileReceiveAdapterFileSystem-ApiConnection.ps1.liquid
+
+  - template: deployFileReceiveAdapterFileApiConnectionStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}apic-aimfilerconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}      
+    outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:                                       
+          - endpoints/file/receive/Deploy-100-FileReceiveAdapterFileSystem-ApiConnection.ps1.liquid
+          - endpoints/file/receive/Deploy-110-FileReceiveAdapterFileSystem-ApiConnectionAccessPolicy.ps1.liquid
+          - endpoints/file/receive/New-FileReceiveAdapterFileSystem-ApiConnection.ps1
+          - endpoints/file/receive/New-FileReceiveAdapterFileSystem-ApiConnectionAccessPolicy.ps1
+          - endpoints/file/receive/Remove-FileReceiveAdapterFileSystem-ApiConnection.ps1
+          - endpoints/file/receive/TearDown-100-FileReceiveAdapterFileSystem-ApiConnection.ps1.liquid
     {%- endif -%}
   {%- endfor -%}
 {%- endfor %}
@@ -2991,7 +3015,7 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Accept" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployFileReceiveAdapterServiceBusApiConnection{{ app_name }}{{ endpoint_name }}
+  - template: deployFileReceiveAdapterServiceBusApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -3006,6 +3030,26 @@ resourceTemplates:
         paths:
           - endpoints/file/receive/Deploy-100-FileReceiveAdapterServiceBus-ApiConnection.ps1.liquid
           - endpoints/file/receive/New-FileReceiveAdapterServiceBus-ApiConnection.ps1
+          - endpoints/file/receive/Remove-FileReceiveAdapterServiceBus-ApiConnection.ps1
+          - endpoints/file/receive/TearDown-100-FileReceiveAdapterServiceBus-ApiConnection.ps1.liquid
+
+  - template: deployFileReceiveAdapterServiceBusApiConnectionStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+    outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/file/receive/Deploy-100-FileReceiveAdapterServiceBus-ApiConnection.ps1.liquid
+          - endpoints/file/receive/Deploy-110-FileReceiveAdapterServiceBus-ApiConnectionAccessPolicy.ps1.liquid
+          - endpoints/file/receive/New-FileReceiveAdapterServiceBus-ApiConnection.ps1
+          - endpoints/file/receive/New-FileReceiveAdapterServiceBus-ApiConnectionAccessPolicy.ps1
           - endpoints/file/receive/Remove-FileReceiveAdapterServiceBus-ApiConnection.ps1
           - endpoints/file/receive/TearDown-100-FileReceiveAdapterServiceBus-ApiConnection.ps1.liquid
     {%- endif -%}
@@ -3050,7 +3094,7 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Send" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployFileSendAdapterApiConnection{{ app_name }}{{ endpoint_name }}
+  - template: deployFileSendAdapterApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}apic-aimfilesconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -3067,6 +3111,26 @@ resourceTemplates:
           - endpoints/file/send/New-FileSendAdapter-ApiConnection.ps1
           - endpoints/file/send/Remove-FileSendAdapter-ApiConnection.ps1
           - endpoints/file/send/TearDown-100-FileSendAdapter-ApiConnection.ps1.liquid
+
+  - template: deployFileSendAdapterApiConnectionStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}apic-aimfilesconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/file/send/Deploy-100-FileSendAdapter-ApiConnection.ps1.liquid
+          - endpoints/file/send/Deploy-110-FileSendAdapter-ApiConnectionAccessPolicy.ps1.liquid
+          - endpoints/file/send/New-FileSendAdapter-ApiConnection.ps1
+          - endpoints/file/send/New-FileSendAdapter-ApiConnectionAccessPolicy.ps1
+          - endpoints/file/send/Remove-FileSendAdapter-ApiConnection.ps1
+          - endpoints/file/send/TearDown-100-FileSendAdapter-ApiConnection.ps1.liquid
     {%- endif -%}
   {%- endfor -%}
 {%- endfor %}
@@ -3076,7 +3140,7 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Send" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployFileSendAdapterLogicApp{{ app_name }}{{ endpoint_name }}
+  - template: deployFileSendAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}logic-aimfilesadapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -3109,7 +3173,27 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FTP" and endpoint.message_exchange_pattern == "Accept" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployFtpReceiveAdapterFtpApiConnection{{ app_name }}{{ endpoint_name }}
+  - template: deployFtpReceiveAdapterFtpApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}apic-aimftprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}      
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:                                       
+          - endpoints/ftp/receive/Deploy-100-FtpReceiveAdapterFtp-ApiConnection.ps1.liquid
+          - endpoints/ftp/receive/New-FtpReceiveAdapterFtp-ApiConnection.ps1
+          - endpoints/ftp/receive/Remove-FtpReceiveAdapterFtp-ApiConnection.ps1
+          - endpoints/ftp/receive/TearDown-100-FtpReceiveAdapterFtp-ApiConnection.ps1.liquid
+
+  - template: deployFtpReceiveAdapterFtpApiConnectionStandard{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}apic-aimftprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -3139,7 +3223,25 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FTP" and endpoint.message_exchange_pattern == "Accept" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployFtpReceiveAdapterServiceBusApiConnection{{ app_name }}{{ endpoint_name }}
+  - template: deployFtpReceiveAdapterServiceBusApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+    outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/ftp/receive/Deploy-100-FtpReceiveAdapterServiceBus-ApiConnection.ps1.liquid
+          - endpoints/ftp/receive/New-FtpReceiveAdapterServiceBus-ApiConnection.ps1
+          - endpoints/ftp/receive/Remove-FtpReceiveAdapterServiceBus-ApiConnection.ps1
+          - endpoints/ftp/receive/TearDown-100-FtpReceiveAdapterServiceBus-ApiConnection.ps1.liquid
+
+  - template: deployFtpReceiveAdapterServiceBusApiConnectionStandard{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -3167,7 +3269,7 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FTP" and endpoint.message_exchange_pattern == "Accept" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployFtpReceiveAdapterLogicApp{{ app_name }}{{ endpoint_name }}
+  - template: deployFtpReceiveAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}logic-aimftpradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -3200,7 +3302,25 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FTP" and endpoint.message_exchange_pattern == "Send" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployFtpSendAdapterApiConnection{{ app_name }}{{ endpoint_name }}
+  - template: deployFtpSendAdapterApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}apic-aimftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/ftp/send/Deploy-100-FtpSendAdapter-ApiConnection.ps1.liquid
+          - endpoints/ftp/send/New-FtpSendAdapter-ApiConnection.ps1
+          - endpoints/ftp/send/Remove-FtpSendAdapter-ApiConnection.ps1
+          - endpoints/ftp/send/TearDown-100-FtpSendAdapter-ApiConnection.ps1.liquid
+
+  - template: deployFtpSendAdapterApiConnectionStandard{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}apic-aimftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -3228,7 +3348,7 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FTP" and endpoint.message_exchange_pattern == "Send" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployFtpSendAdapterLogicApp{{ app_name }}{{ endpoint_name }}
+  - template: deployFtpSendAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}logic-aimftpsadapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -3261,7 +3381,25 @@ resourceTemplates:
   {%- for intermediary in application.intermediaries %}
     {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "MessageSubscriber" %}
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployTopicSubscriberApiConnection{{ app_name }}{{ intermediary_name }}
+  - template: deployTopicSubscriberApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}apic-topicsubscriberconnector-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/topicsubscriber{{ intermediary_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/topicsubscriber/Deploy-100-TopicSubscriber-ApiConnection.ps1.liquid
+          - intermediaries/topicsubscriber/New-TopicSubscriber-ApiConnection.ps1
+          - intermediaries/topicsubscriber/Remove-TopicSubscriber-ApiConnection.ps1
+          - intermediaries/topicsubscriber/TearDown-100-TopicSubscriber-ApiConnection.ps1.liquid
+
+  - template: deployTopicSubscriberApiConnectionStandard{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}apic-topicsubscriberconnector-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -3289,7 +3427,7 @@ resourceTemplates:
   {%- for intermediary in application.intermediaries %}
     {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "MessageSubscriber" %}
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployTopicSubscriberLogicApp{{ app_name }}{{ intermediary_name }}
+  - template: deployTopicSubscriberLogicAppConsumption{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}logic-aimtopicsubscriber-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -3321,7 +3459,7 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "HTTP" and ( endpoint.message_exchange_pattern == "ReceiveResponse" or endpoint.message_exchange_pattern == "Receive" ) %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployHttpReceiveAdapterLogicApp{{ app_name }}{{ endpoint_name }}
+  - template: deployHttpReceiveAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}logic-aimhttpradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
