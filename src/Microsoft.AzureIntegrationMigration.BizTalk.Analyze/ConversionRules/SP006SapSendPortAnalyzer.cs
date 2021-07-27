@@ -67,11 +67,18 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                     var sendPorts = application.Application?.Bindings?.BindingInfo?.SendPortCollection;
                     if (sendPorts != null && sendPorts.Any())
                     {
-                        foreach(var sendPort in sendPorts)
+                        foreach (var sendPort in sendPorts)
                         {
                             // We're looking either for the WCF-SAP adapter, or WCF-Custom with a binding type of "sapBinding"
                             if (sendPort?.PrimaryTransport?.TransportType?.Name == "WCF-SAP" || (sendPort?.PrimaryTransport?.TransportType?.Name == "WCF-Custom" && GetBindingType(sendPort?.PrimaryTransport?.TransportTypeData) == "sapBinding"))
                             {
+                                // If we're using the sapBinding in a WCF-Custom adapter, then change the TrasportType to be WCF-SAP,
+                                // as this is the transport type we key against in the resource maps
+                                if (sendPort?.PrimaryTransport?.TransportType?.Name == "WCF-Custom")
+                                {
+                                    sendPort.PrimaryTransport.TransportType.Name = "WCF-SAP";
+                                }
+
                                 // Find adapter in target model
                                 var adapterKey = $"{ModelConstants.MessageBusLeafKey}:{application.Application.Name.FormatKey()}:{sendPort.Name.FormatKey()}:{ModelConstants.AdapterEndpointLeafKey}";
                                 var adapter = Model.FindMessagingObject(adapterKey);
@@ -233,7 +240,6 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
             var supportedProperties = new Dictionary<string, (string, object)>()
             {
                 { "UserName", ("userName", "") },
-                { "Password", ("password", "") },
                 { "EnableTransaction", ("enableTransaction", false) }
             };
 
@@ -327,69 +333,69 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                     if (addressPart.StartsWith("@"))
                     {
                         var uriParts = addressPart.Split('?');
+                        // First part is a path, containing the connection type and the server details
+                        // Second (optional) part is a query string, containing a set of KeyValue pairs, separated by "&"
+
+                        // Process First Part
+                        var pathParts = uriParts[0].Split('/');
+                        if (pathParts.Length > 1)
+                        {
+                            var connectionTypeCode = pathParts[0].Substring(1);
+                            switch (connectionTypeCode.ToLower())
+                            {
+                                case "a":
+                                    {
+                                        items.Add("ConnectionType", "ApplicationServer");
+                                        items.Add("ApplicationServerHost", pathParts[1]);
+                                        if (pathParts.Length == 3)
+                                        {
+                                            items.Add("SystemNumber", pathParts[2]);
+                                        }
+
+                                        // Add the other ConnectionType values so we don't get a warning about them
+                                        items.Add("MessageServerHost", string.Empty);
+                                        items.Add("R3SystemName", string.Empty);
+                                        items.Add("DestinationName", string.Empty);
+                                        break;
+                                    }
+                                case "b":
+                                    {
+                                        items.Add("ConnectionType", "MessageServer");
+                                        items.Add("MessageServerHost", pathParts[1]);
+                                        if (pathParts.Length == 3)
+                                        {
+                                            items.Add("R3SystemName", pathParts[2]);
+                                        }
+
+                                        // Add the other ConnectionType values so we don't get a warning about them
+                                        items.Add("ApplicationServerHost", string.Empty);
+                                        items.Add("SystemNumber", string.Empty);
+                                        items.Add("DestinationName", string.Empty);
+                                        break;
+                                    }
+                                case "d":
+                                    {
+                                        items.Add("ConnectionType", "MessageServer");
+                                        items.Add("DestinationName", pathParts[1]);
+
+                                        // Add the other ConnectionType values so we don't get a warning about them
+                                        items.Add("ApplicationServerHost", string.Empty);
+                                        items.Add("SystemNumber", string.Empty);
+                                        items.Add("MessageServerHost", string.Empty);
+                                        items.Add("R3SystemName", string.Empty);
+                                        break;
+                                    }
+                                default:
+                                    {
+                                        // Unsupported connection type
+                                        break;
+                                    }
+                            }
+                        }
+
+                        // Process second part
                         if (uriParts.Length == 2)
                         {
-                            // First part is a path, containing the connection type and the server details
-                            // Second part is a query string, containing a set of KeyValue pairs, separated by "&"
-
-                            // Process First Part
-                            var pathParts = uriParts[0].Split('/');
-                            if (pathParts.Length > 1)
-                            {
-                                var connectionTypeCode = pathParts[0].Substring(1);
-                                switch (connectionTypeCode.ToLower())
-                                {
-                                    case "a":
-                                        {
-                                            items.Add("ConnectionType", "ApplicationServer");
-                                            items.Add("ApplicationServerHost", pathParts[1]);
-                                            if (pathParts.Length == 3)
-                                            {
-                                                items.Add("SystemNumber", pathParts[2]);
-                                            }
-
-                                            // Add the other ConnectionType values so we don't get a warning about them
-                                            items.Add("MessageServerHost", string.Empty);
-                                            items.Add("R3SystemName", string.Empty);
-                                            items.Add("DestinationName", string.Empty);
-                                            break;
-                                        }
-                                    case "b":
-                                        {
-                                            items.Add("ConnectionType", "MessageServer");
-                                            items.Add("MessageServerHost", pathParts[1]);
-                                            if (pathParts.Length == 3)
-                                            {
-                                                items.Add("R3SystemName", pathParts[2]);
-                                            }
-
-                                            // Add the other ConnectionType values so we don't get a warning about them
-                                            items.Add("ApplicationServerHost", string.Empty);
-                                            items.Add("SystemNumber", string.Empty);
-                                            items.Add("DestinationName", string.Empty);
-                                            break;
-                                        }
-                                    case "d":
-                                        {
-                                            items.Add("ConnectionType", "MessageServer");
-                                            items.Add("DestinationName", pathParts[1]);
-
-                                            // Add the other ConnectionType values so we don't get a warning about them
-                                            items.Add("ApplicationServerHost", string.Empty);
-                                            items.Add("SystemNumber", string.Empty);
-                                            items.Add("MessageServerHost", string.Empty);
-                                            items.Add("R3SystemName", string.Empty);
-                                            break;
-                                        }
-                                    default:
-                                        {
-                                            // Unsupported connection type
-                                            break;
-                                        }
-                                }
-                            }
-
-                            // Process second part
                             var queryParts = uriParts[1].Split('&');
                             foreach (var queryPart in queryParts)
                             {

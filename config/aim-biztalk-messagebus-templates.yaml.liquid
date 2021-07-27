@@ -518,19 +518,30 @@ resourceTemplates:
     outputPath: 
     parameters: 
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - aim_unique_suffix: {{ aim_unique_suffix }}
     files:
-      - env: ['dev']
+      - env: ['dev', 'prod']
         paths:
           - deploy/consumption/Deploy-All.bat
           - deploy/consumption/TearDown-All.bat
           - deploy/consumption/Deploy-All.ps1.liquid
           - deploy/consumption/TearDown-All.ps1.liquid
-      - env: ['prod']
+
+  - template: deployConsumptionLiteResources
+    templateType: microsoft.template.powershell
+    resourceName: deploy-resources
+    resourceType: microsoft.scripts.powershell
+    outputPath: 
+    parameters: 
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - aim_unique_suffix: {{ aim_unique_suffix }}
+    files:
+      - env: ['dev', 'prod']
         paths:
-          - deploy/consumption/Deploy-All.bat
-          - deploy/consumption/TearDown-All.bat
-          - deploy/consumption/Deploy-All.ps1.liquid
-          - deploy/consumption/TearDown-All.ps1.liquid
+          - deploy/consumptionlite/Deploy-All.bat
+          - deploy/consumptionlite/TearDown-All.bat
+          - deploy/consumptionlite/Deploy-All.ps1.liquid
+          - deploy/consumptionlite/TearDown-All.ps1.liquid
 
   - template: deployStandardResources
     templateType: microsoft.template.powershell
@@ -539,19 +550,30 @@ resourceTemplates:
     outputPath: 
     parameters: 
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - aim_unique_suffix: {{ aim_unique_suffix }}
     files:
-      - env: ['dev']
+      - env: ['dev', 'prod']
         paths:
           - deploy/standard/Deploy-All.bat
           - deploy/standard/TearDown-All.bat
           - deploy/standard/Deploy-All.ps1.liquid
           - deploy/standard/TearDown-All.ps1.liquid
-      - env: ['prod']
+
+  - template: deployStandardLiteResources
+    templateType: microsoft.template.powershell
+    resourceName: deploy-resources
+    resourceType: microsoft.scripts.powershell
+    outputPath: 
+    parameters: 
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - aim_unique_suffix: {{ aim_unique_suffix }}
+    files:
+      - env: ['dev', 'prod']
         paths:
-          - deploy/standard/Deploy-All.bat
-          - deploy/standard/TearDown-All.bat
-          - deploy/standard/Deploy-All.ps1.liquid
-          - deploy/standard/TearDown-All.ps1.liquid
+          - deploy/standardlite/Deploy-All.bat
+          - deploy/standardlite/TearDown-All.bat
+          - deploy/standardlite/Deploy-All.ps1.liquid
+          - deploy/standardlite/TearDown-All.ps1.liquid
 
   - template: deployMessageBusGroup
     templateType: microsoft.template.powershell

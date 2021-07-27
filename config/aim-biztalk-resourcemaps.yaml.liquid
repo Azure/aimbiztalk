@@ -85,6 +85,30 @@ resourceMaps:
 {%- for application in model.migration_target.message_bus.applications %}
   {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
   {%- for endpoint in application.endpoints -%}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "SFTP" and endpoint.message_exchange_pattern == "Accept" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - map: sftpReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    resources:
+      - sftpReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints %}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "SFTP" and endpoint.message_exchange_pattern == "Send" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - map: sftpSendAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    resources:
+      - sftpSendAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints -%}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Accept" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   - map: fileReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
@@ -114,6 +138,30 @@ resourceMaps:
   - map: httpReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
     resources:
       - httpReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints -%}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "HTTP" and ( endpoint.message_exchange_pattern == "RequestReply" or endpoint.message_exchange_pattern == "Send" ) %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - map: httpSendAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    resources:
+      - httpSendAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints -%}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "WCF-SAP" and ( endpoint.message_exchange_pattern == "RequestReply" or endpoint.message_exchange_pattern == "Send" ) %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - map: sapSendAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    resources:
+      - sapSendAdapterEndpoint{{ app_name }}{{ endpoint_name }}
     {%- endif %}
   {%- endfor %}
 {%- endfor %}

@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.Collections.Generic;
@@ -168,11 +168,11 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
             // Set supported property names and defaults
             var supportedProperties = new Dictionary<string, (string, object)>()
             {
-                { "Address", ("rootFolder", "")},
+                { "Address", ("rootFolder", "C:/")},
                 { "BatchSize", ("maxFileCount", 10)},
                 { "FileMask", ("fileMask", "*.*")},
                 { "PollingInterval", ("recurrence", 60000)},
-                { "Username", ("userName", "")}
+                { "Username", ("userName", "temp.user")}
             };
 
             // Search through the BizTalk adapter properties and map them over to their AIS equivalents.

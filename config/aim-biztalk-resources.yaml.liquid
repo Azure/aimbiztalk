@@ -30,9 +30,15 @@ resources:
       - target: ['consumption']
         templates:
           - deployConsumptionResources
+      - target: ['consumptionlite']
+        templates:
+          - deployConsumptionLiteResources
       - target: ['standard']
         templates:
           - deployStandardResources
+      - target: ['standardlite']
+        templates:
+          - deployStandardLiteResources
 
   - resource: messageBusGroup
     targets:
@@ -135,7 +141,10 @@ resources:
         templates:
           - routingSlipRouterAzureLogicAppConsumption
           - deployRoutingSlipRouterAzureLogicAppConsumption
-      - target: ['standard']
+      - target: ['consumptionlite']
+        templates:
+          - routingSlipRouterAzureLogicAppConsumption
+      - target: ['standard', 'standardlite']
         templates:
           - routingSlipRouterAzureLogicAppStandard
 
@@ -145,7 +154,10 @@ resources:
         templates:
           - xmlEnvelopeWrapperAzureLogicAppConsumption
           - deployXmlEnvelopeWrapperAzureLogicAppConsumption
-      - target: ['standard']
+      - target: ['consumptionlite']
+        templates:
+          - xmlEnvelopeWrapperAzureLogicAppConsumption
+      - target: ['standard', 'standardlite']
         templates:
           - xmlEnvelopeWrapperAzureLogicAppStandard
 
@@ -155,7 +167,10 @@ resources:
         templates:
           - xmlMessageProcessorAzureLogicAppConsumption
           - deployXmlMessageProcessorAzureLogicAppConsumption
-      - target: ['standard']
+      - target: ['consumptionlite']
+        templates:
+          - xmlMessageProcessorAzureLogicAppConsumption
+      - target: ['standard', 'standardlite']
         templates:
           - xmlMessageProcessorAzureLogicAppStandard
 
@@ -165,7 +180,10 @@ resources:
         templates:
           - xmlMessageTranslatorAzureLogicAppConsumption
           - deployXmlMessageTranslatorAzureLogicAppConsumption
-      - target: ['standard']
+      - target: ['consumptionlite']
+        templates:
+          - xmlMessageTranslatorAzureLogicAppConsumption
+      - target: ['standard', 'standardlite']
         templates:
           - xmlMessageTranslatorAzureLogicAppStandard
 
@@ -175,7 +193,10 @@ resources:
         templates:
           - xmlMessageValidatorAzureLogicAppConsumption
           - deployXmlMessageValidatorAzureLogicAppConsumption
-      - target: ['standard']
+      - target: ['consumptionlite']
+        templates:
+          - xmlMessageValidatorAzureLogicAppConsumption
+      - target: ['standard', 'standardlite']
         templates:
           - xmlMessageValidatorAzureLogicAppStandard
 
@@ -185,7 +206,10 @@ resources:
         templates:
           - messageConstructorAzureLogicAppConsumption
           - deployMessageConstructorAzureLogicAppConsumption
-      - target: ['standard']
+      - target: ['consumptionlite']
+        templates:
+          - messageConstructorAzureLogicAppConsumption
+      - target: ['standard', 'standardlite']
         templates:
           - messageConstructorAzureLogicAppStandard
 
@@ -197,7 +221,11 @@ resources:
           - messageResponseHandlerAzureServiceBusApiConnection
           - deployMessageResponseHandlerAzureLogicAppConsumption
           - deployMessageResponseHandlerAzureServiceBusApiConnection
-      - target: ['standard']
+      - target: ['consumptionlite']
+        templates:
+          - messageResponseHandlerAzureLogicAppConsumption
+          - messageResponseHandlerAzureServiceBusApiConnection
+      - target: ['standard', 'standardlite']
         templates:
           - messageResponseHandlerAzureLogicAppStandard
  
@@ -209,7 +237,11 @@ resources:
           - messageSuspendProcessorAzureServiceBusApiConnection
           - deployMessageSuspendProcessorAzureLogicAppConsumption
           - deployMessageSuspendProcessorAzureServiceBusApiConnection
-      - target: ['standard']
+      - target: ['consumptionlite']
+        templates:
+          - messageSuspendProcessorAzureLogicAppConsumption
+          - messageSuspendProcessorAzureServiceBusApiConnection
+      - target: ['standard', 'standardlite']
         templates:
           - messageSuspendProcessorAzureLogicAppStandard
 
@@ -219,7 +251,10 @@ resources:
         templates:
           - jsonDecoderAzureLogicAppConsumption
           - deployJsonDecoderLogicAppConsumption
-      - target: ['standard']
+      - target: ['consumptionlite']
+        templates:
+          - jsonDecoderAzureLogicAppConsumption
+      - target: ['standard', 'standardlite']
         templates:
           - jsonDecoderAzureLogicAppStandard
 
@@ -229,7 +264,10 @@ resources:
         templates:
           - jsonEncoderAzureLogicAppConsumption
           - deployJsonEncoderLogicAppConsumption
-      - target: ['standard']
+      - target: ['consumptionlite']
+        templates:
+          - jsonEncoderAzureLogicAppConsumption
+      - target: ['standard', 'standardlite']
         templates:
           - jsonEncoderAzureLogicAppStandard
 
@@ -239,7 +277,10 @@ resources:
         templates:
           - flatFileMessageProcessorAzureLogicAppConsumption
           - deployFlatFileMessageProcessorAzureLogicAppConsumption
-      - target: ['standard']
+      - target: ['consumptionlite']
+        templates:
+          - flatFileMessageProcessorAzureLogicAppConsumption
+      - target: ['standard', 'standardlite']
         templates:
           - flatFileMessageProcessorAzureLogicAppStandard
 
@@ -274,7 +315,7 @@ resources:
   {% if application.name != 'System Application' %}
   - resource: applicationGroup{{ app_name }}
     targets:
-      - target: ['consumption', 'standard']
+      - target: ['consumption', 'standard', 'consumptionlite', 'standardlite']
         templates:
           - applicationAzureResourceGroup{{ app_name }}
           - deployApplicationGroup{{ app_name }}
@@ -282,7 +323,7 @@ resources:
 
   - resource: applicationService{{ app_name }}
     targets:
-      - target: ['standard']
+      - target: ['standard', 'standardlite']
         templates:
           - {{ app_name }}AzureLogicAppStandard
           - {{ app_name }}AzureLogicAppStandardWorkflows
@@ -299,7 +340,7 @@ resources:
     {% assign message_name = message.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   - resource: applicationMessage{{ app_name }}{{ message_name }}
     targets:
-      - target: ['consumption', 'standard']
+      - target: ['consumption', 'standard', 'consumptionlite', 'standardlite']
         templates:
           - deploySchema{{ app_name }}{{ message_name }}
           - messagesAzureIntegrationAccountSchema{{ app_name }}{{ message_name }}
@@ -323,7 +364,7 @@ resources:
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   - resource: ftpReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
     targets:
-      - target: ['consumption']
+      - target: ['consumption', 'consumptionlite']
         templates:
           - ftpReceiveAzureFtpConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
           - ftpReceiveAzureServiceBusConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
@@ -337,7 +378,7 @@ resources:
           - deployReceiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
           - deployReceiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
           - deployReceiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
-      - target: ['standard']
+      - target: ['standard', 'standardlite']
         templates:
           - ftpReceiveAzureFtpConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
           - ftpReceiveAzureServiceBusConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
@@ -361,13 +402,13 @@ resources:
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   - resource: ftpSendAdapterEndpoint{{ app_name }}{{ endpoint_name }}
     targets:
-      - target: ['consumption']
+      - target: ['consumption', 'consumptionlite']
         templates:
           - deployFtpSendAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
           - deployFtpSendAdapterApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
           - ftpSendAzureConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
           - ftpSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
-      - target: ['standard']
+      - target: ['standard', 'standardlite']
         templates:
           - deployFtpSendAdapterApiConnectionStandard{{ app_name }}{{ endpoint_name }}
           - ftpSendAzureConnectionEndpointStandardStandard{{ app_name }}{{ endpoint_name }}
@@ -383,7 +424,7 @@ resources:
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   - resource: sftpReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
     targets:
-      - target: ['consumption']
+      - target: ['consumption', 'consumptionlite']
         templates:
           - sftpReceiveAzureSftpConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
           - sftpReceiveAzureServiceBusConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
@@ -397,7 +438,7 @@ resources:
           - deployReceiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
           - deployReceiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
           - deployReceiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
-      - target: ['standard']
+      - target: ['standard', 'standardlite']
         templates:
           - sftpReceiveAzureSftpConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
           - sftpReceiveAzureServiceBusConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
@@ -421,13 +462,13 @@ resources:
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   - resource: sftpSendAdapterEndpoint{{ app_name }}{{ endpoint_name }}
     targets:
-      - target: ['consumption']
+      - target: ['consumption', 'consumptionlite']
         templates:
           - deploySftpSendAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
           - deploySftpSendAdapterApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
           - sftpSendAzureConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
           - sftpSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
-      - target: ['standard']
+      - target: ['standard', 'standardlite']
         templates:
           - deploySftpSendAdapterApiConnectionStandard{{ app_name }}{{ endpoint_name }}
           - sftpSendAzureConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
@@ -443,7 +484,7 @@ resources:
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   - resource: fileReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
     targets:
-      - target: ['consumption']
+      - target: ['consumption', 'consumptionlite']
         templates:
           - fileReceiveAzureFileConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
           - fileReceiveAzureServiceBusConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
@@ -457,7 +498,7 @@ resources:
           - deployReceiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
           - deployReceiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
           - deployReceiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
-      - target: ['standard']
+      - target: ['standard', 'standardlite']
         templates:
           - fileReceiveAzureFileConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
           - fileReceiveAzureServiceBusConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
@@ -481,13 +522,13 @@ resources:
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   - resource: fileSendAdapterEndpoint{{ app_name }}{{ endpoint_name }}
     targets:
-      - target: ['consumption']
+      - target: ['consumption', 'consumptionlite']
         templates:
           - deployFileSendAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
           - deployFileSendAdapterApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
           - fileSendAzureConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
           - fileSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
-      - target: ['standard']
+      - target: ['standard', 'standardlite']
         templates:
           - deployFileSendAdapterApiConnectionStandard{{ app_name }}{{ endpoint_name }}
           - fileSendAzureConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
@@ -503,7 +544,7 @@ resources:
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   - resource: httpReceiveAdapterEndpoint{{ app_name }}{{ endpoint_name }}
     targets:
-      - target: ['consumption']
+      - target: ['consumption', 'consumptionlite']
         templates:          
           - httpReceiveAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
           - receiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
@@ -514,7 +555,7 @@ resources:
           - deployReceiveConfigurationEntry{{ app_name }}{{ endpoint_name }}
           - deployReceiveRoutingPropertyConfiguration{{ app_name }}{{ endpoint_name }}
 
-      - target: ['standard']
+      - target: ['standard', 'standardlite']
         templates:          
           - httpReceiveAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
           - receiveRoutingSlipConfiguration{{ app_name }}{{ endpoint_name }}
@@ -531,16 +572,38 @@ resources:
 {%- for application in model.migration_target.message_bus.applications %}
   {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
   {%- for endpoint in application.endpoints -%}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "WCF-SAP" and endpoint.message_exchange_pattern == "Send" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - resource: sapSendAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+    targets:
+      - target: ['consumption', 'consumptionlite']
+        templates:
+          - deploySapSendAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
+          - deploySapSendAdapterApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
+          - sapSendAzureConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
+          - sapSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
+      - target: ['standard', 'standardlite']
+        templates:
+          - deploySapSendAdapterApiConnectionStandard{{ app_name }}{{ endpoint_name }}
+          - sapSendAzureConnectionEndpointStandardStandard{{ app_name }}{{ endpoint_name }}
+          - sapSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
+     {%- endif %}
+  {%- endfor %}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints -%}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "HTTP" and endpoint.message_exchange_pattern == "Send" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   - resource: httpSendAdapterEndpoint{{ app_name }}{{ endpoint_name }}
     targets:
-      - target: ['consumption']
+      - target: ['consumption', 'consumptionlite']
         templates:          
           - httpSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
           - deployHttpSendAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
 
-      - target: ['standard']
+      - target: ['standard', 'standardlite']
         templates:          
           - httpSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
           - deployHttpSendAdapterLogicAppStandard{{ app_name }}{{ endpoint_name }}
@@ -557,12 +620,12 @@ resources:
         {% assign subscription_name = subscription.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   - resource: topicSubscription{{ app_name }}{{ channel_name }}{{ subscription_name }}
     targets:
-      - target: ['consumption']
+      - target: ['consumption', 'consumptionlite']
         templates:
           - deployTopicSubscription{{ app_name }}{{ channel_name }}{{ subscription_name }}
           - topicSubscriptionAzureServiceBus{{ app_name }}{{ channel_name }}{{ subscription_name }}
 
-      - target: ['standard']
+      - target: ['standard', 'standardlite']
         templates:
           - deployTopicSubscription{{ app_name }}{{ channel_name }}{{ subscription_name }}
           - topicSubscriptionAzureServiceBus{{ app_name }}{{ channel_name }}{{ subscription_name }}
@@ -578,7 +641,7 @@ resources:
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   - resource: activatableProcessManager{{ app_name }}{{ intermediary_name }}
     targets:
-      - target: ['consumption', 'standard']
+      - target: ['consumption', 'standard', 'consumptionlite', 'standardlite']
         templates:
           - deployProcessManagerApiConnection{{ app_name }}{{ intermediary_name }}
           - deployProcessManagerConfigurationEntry{{ app_name }}{{ intermediary_name }}
@@ -653,7 +716,7 @@ resources:
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   - resource: invokableProcessManager{{ app_name }}{{ intermediary_name }}
     targets:
-      - target: ['consumption', 'standard']
+      - target: ['consumption', 'standard', 'consumptionlite', 'standardlite']
         templates:
           - deployProcessManagerApiConnection{{ app_name }}{{ intermediary_name }}
           - deployProcessManagerLogicApp{{ app_name }}{{ intermediary_name }}
@@ -738,6 +801,9 @@ resources:
         templates:
           - contentDemoterAzureLogicAppConsumption
           - deployContentDemoterConsumption
+      - target: ['consumptionlite', 'standardlite']
+        templates:
+          - contentDemoterAzureLogicAppConsumption
       - target: ['standard']
         templates:
           - contentDemoterAzureLogicAppStandard
@@ -748,7 +814,10 @@ resources:
         templates:
           - contentPromoterAzureLogicAppConsumption
           - deployContentPromoterConsumption
-      - target: ['standard']
+      - target: ['consumptionlite']
+        templates:
+          - contentPromoterAzureLogicAppConsumption
+      - target: ['standard', 'standardlite']
         templates:
           - contentPromoterAzureLogicAppStandard
 
@@ -758,7 +827,10 @@ resources:
         templates:
           - topicPublisherAzureApiConnectionConsumption
           - deployTopicPublisherApiConnectionConsumption
-      - target: ['standard']
+      - target: ['consumptionlite']
+        templates:
+          - topicPublisherAzureApiConnectionConsumption
+      - target: ['standard', 'standardlite']
         templates:
           - topicPublisherAzureApiConnectionStandard
 
@@ -768,7 +840,10 @@ resources:
         templates:
           - topicPublisherAzureLogicAppConsumption
           - deployTopicPublisherConsumption
-      - target: ['standard']
+      - target: ['consumptionlite']
+        templates:
+          - topicPublisherAzureLogicAppConsumption
+      - target: ['standard', 'standardlite']
         templates:
           - topicPublisherAzureLogicAppStandard
 
@@ -779,7 +854,7 @@ resources:
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   - resource: topicSubscriber{{ app_name }}{{ intermediary_name }}
     targets:
-      - target: ['consumption']
+      - target: ['consumption', 'consumptionlite']
         templates:
           - topicSubscriberAzureApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
           - topicSubscriberAzureLogicAppConsumption{{ app_name }}{{ intermediary_name }}
@@ -791,7 +866,7 @@ resources:
           - deploySendRoutingSlipConfiguration{{ app_name }}{{ intermediary_name }}
           - deploySendConfigurationEntry{{ app_name }}{{ intermediary_name }}
           - deploySendRoutingPropertyConfiguration{{ app_name }}{{ intermediary_name }}
-      - target: ['standard']
+      - target: ['standard', 'standardlite']
         templates:
           - topicSubscriberAzureApiConnectionStandard{{ app_name }}{{ intermediary_name }}
           - topicSubscriberAzureLogicAppStandard{{ app_name }}{{ intermediary_name }}
@@ -809,7 +884,7 @@ resources:
 {%- if deploy_data_gateway == true %}
   - resource: dataGateway
     targets:
-      - target: ['consumption', 'standard']
+      - target: ['consumption', 'standard', 'consumptionlite', 'standardlite']
         templates:
           - onPremiseDataGateway
           - deployOnPremiseDataGateway
