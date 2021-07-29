@@ -484,7 +484,7 @@ resourceTemplates:
   - template: routingSlipRouterAzureLogicAppConsumption
     templateType: microsoft.template.arm
     resourceName: {{ routing_slip_router_logicapp_name }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
       - Application: AIM-MessageBus
       - Env: {{ model.migration_target.deployment_environment | downcase }}

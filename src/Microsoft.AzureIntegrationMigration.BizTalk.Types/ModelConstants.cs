@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.Collections.Generic;
@@ -786,9 +786,14 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Types
         public const string ResourceTypeMicrosoftPrefix = "microsoft";
 
         /// <summary>
-        /// Defines an Azure logic app resources.
+        /// Defines an Azure consumption logic app resource.
         /// </summary>
-        public const string ResourceTypeAzureLogicApp = ResourceTypeWorkflows + ".azurelogicapp";
+        public const string ResourceTypeAzureLogicAppConsumption = ResourceTypeWorkflows + ".azurelogicapp.consumption";
+
+        /// <summary>
+        /// Defines an Azure standard logic app resource.
+        /// </summary>
+        public const string ResourceTypeAzureLogicAppStandard = ResourceTypeWorkflows + ".azurelogicapp.standard";
 
         /// <summary>
         /// Defines a configuration resources.
@@ -843,52 +848,52 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Types
         /// <summary>
         /// Defines a workflow definition resource.
         /// </summary>
-        public const string ResourceTypeWorkflowDefinition = ResourceTypeAzureLogicApp + ".workflowdefinition";
+        public const string ResourceTypeWorkflowDefinition = ResourceTypeAzureLogicAppConsumption + ".workflowdefinition";
 
         /// <summary>
         /// Defines a workflow parameters definition resource.
         /// </summary>
-        public const string ResourceTypeWorkflowParametersDefinition = ResourceTypeAzureLogicApp + ".parametersdefinition";
+        public const string ResourceTypeWorkflowParametersDefinition = ResourceTypeAzureLogicAppConsumption + ".parametersdefinition";
 
         /// <summary>
         /// Defines a workflow parameter resource.
         /// </summary>
-        public const string ResourceTypeWorkflowParameter = ResourceTypeAzureLogicApp + ".parameter";
+        public const string ResourceTypeWorkflowParameter = ResourceTypeAzureLogicAppConsumption + ".parameter";
 
         /// <summary>
         /// Defines a workflow property resource.
         /// </summary>
-        public const string ResourceTypeWorkflowProperty = ResourceTypeAzureLogicApp + ".property";
+        public const string ResourceTypeWorkflowProperty = ResourceTypeAzureLogicAppConsumption + ".property";
 
         /// <summary>
         /// Defines a workflow channel resource.
         /// </summary>
-        public const string ResourceTypeWorkflowChannel = ResourceTypeAzureLogicApp + ".channel";
+        public const string ResourceTypeWorkflowChannel = ResourceTypeAzureLogicAppConsumption + ".channel";
 
         /// <summary>
         /// Defines a workflow variable resource.
         /// </summary>
-        public const string ResourceTypeWorkflowVariable = ResourceTypeAzureLogicApp + ".variable";
+        public const string ResourceTypeWorkflowVariable = ResourceTypeAzureLogicAppConsumption + ".variable";
 
         /// <summary>
         /// Defines a workflow message resource.
         /// </summary>
-        public const string ResourceTypeWorkflowMessage = ResourceTypeAzureLogicApp + ".message";
+        public const string ResourceTypeWorkflowMessage = ResourceTypeAzureLogicAppConsumption + ".message";
 
         /// <summary>
         /// Defines a workflow activity container.
         /// </summary>
-        public const string ResourceTypeWorkflowActivityContainer = ResourceTypeAzureLogicApp + ".activitycontainer";
+        public const string ResourceTypeWorkflowActivityContainer = ResourceTypeAzureLogicAppConsumption + ".activitycontainer";
 
         /// <summary>
         /// Defines a workflow activity.
         /// </summary>
-        public const string ResourceTypeWorkflowActivity = ResourceTypeAzureLogicApp + ".activity";
+        public const string ResourceTypeWorkflowActivity = ResourceTypeAzureLogicAppConsumption + ".activity";
 
         /// <summary>
         /// Defines a workflow pre-built action.
         /// </summary>
-        public const string ResourceTypeWorkflowAction = ResourceTypeAzureLogicApp + ".action";
+        public const string ResourceTypeWorkflowAction = ResourceTypeAzureLogicAppConsumption + ".action";
 
         /// <summary>
         /// Defines a workflow placeholder activity container used when an activity container doesn't have a specific snippet.
@@ -943,6 +948,11 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Types
         /// Defines the resource template parameter for an Azure resource group name.
         /// </summary>
         public const string ResourceTemplateParameterAzureResourceGroupName = "azure_resource_group_name";
+
+        /// <summary>
+        /// Defines the resource template parameter for an Azure logic app name.
+        /// </summary>
+        public const string ResourceTemplateParameterAzureLogicAppName = "azure_logic_app_name";
 
         /// <summary>
         /// Defines the prefix used on resource template parameters for global config.

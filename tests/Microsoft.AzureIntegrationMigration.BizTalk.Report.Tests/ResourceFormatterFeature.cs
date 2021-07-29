@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.IO;
@@ -2344,10 +2344,10 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Report.Tests
         /// <param name="e">The thrown exception, if any.</param>
         [Scenario]
         [Trait(TestConstants.TraitCategory, TestConstants.CategoryUnitTest)]
-        public void GetTargetResourceFriendlyNameLogicApp(string type, string friendlyName, Exception e)
+        public void GetTargetResourceFriendlyNameLogicAppConsumption(string type, string friendlyName, Exception e)
         {
             "Given a target resource type"
-                .x(() => type = "microsoft.workflows.azurelogicapp");
+                .x(() => type = "microsoft.workflows.azurelogicapp.consumption");
 
             "And a blank friendly name"
                 .x(() => friendlyName.Should().BeNull());
@@ -2358,7 +2358,33 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Report.Tests
             "Then the method should NOT throw an exception"
                 .x(() => {
                     e.Should().BeNull();
-                    friendlyName.Should().Be("Logic App");
+                    friendlyName.Should().Be("Consumption Logic App");
+                });
+        }
+
+        /// <summary>
+        /// Scenario tests that the correct text is returned for formatting target resource types.
+        /// </summary>
+        /// <param name="type">The target resource type.</param>
+        /// <param name="friendlyName">The friendly name to generate.</param>
+        /// <param name="e">The thrown exception, if any.</param>
+        [Scenario]
+        [Trait(TestConstants.TraitCategory, TestConstants.CategoryUnitTest)]
+        public void GetTargetResourceFriendlyNameLogicAppStandard(string type, string friendlyName, Exception e)
+        {
+            "Given a target resource type"
+                .x(() => type = "microsoft.workflows.azurelogicapp.standard");
+
+            "And a blank friendly name"
+                .x(() => friendlyName.Should().BeNull());
+
+            "When translating the friendly name type"
+                .x(() => e = Record.Exception(() => friendlyName = ResourceFormatter.GetTargetResourceFriendlyName(type)));
+
+            "Then the method should NOT throw an exception"
+                .x(() => {
+                    e.Should().BeNull();
+                    friendlyName.Should().Be("Standard Logic App");
                 });
         }
 
@@ -2920,10 +2946,36 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Report.Tests
         /// <param name="e">The thrown exception, if any.</param>
         [Scenario]
         [Trait(TestConstants.TraitCategory, TestConstants.CategoryUnitTest)]
-        public void GetTargetResourceIconFromTypeLogicApp(string type, string icon, Exception e)
+        public void GetTargetResourceIconFromTypeLogicAppConsumption(string type, string icon, Exception e)
         {
             "Given a target resource type"
-                .x(() => type = "microsoft.workflows.azurelogicapp");
+                .x(() => type = "microsoft.workflows.azurelogicapp.consumption");
+
+            "And a blank icon"
+                .x(() => icon.Should().BeNull());
+
+            "When translating the icon from the type"
+                .x(() => e = Record.Exception(() => icon = ResourceFormatter.GetTargetResourceIconFromType(type)));
+
+            "Then the method should NOT throw an exception"
+                .x(() => {
+                    e.Should().BeNull();
+                    icon.Should().Contain("fas fa-project-diagram");
+                });
+        }
+
+        /// <summary>
+        /// Scenario tests that the correct text is returned for formatting target resource types.
+        /// </summary>
+        /// <param name="type">The target resource type.</param>
+        /// <param name="icon">The icon to generate.</param>
+        /// <param name="e">The thrown exception, if any.</param>
+        [Scenario]
+        [Trait(TestConstants.TraitCategory, TestConstants.CategoryUnitTest)]
+        public void GetTargetResourceIconFromTypeLogicAppStandard(string type, string icon, Exception e)
+        {
+            "Given a target resource type"
+                .x(() => type = "microsoft.workflows.azurelogicapp.standard");
 
             "And a blank icon"
                 .x(() => icon.Should().BeNull());

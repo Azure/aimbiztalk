@@ -148,8 +148,8 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                             }
                             else
                             {
-                                _logger.LogError(ErrorMessages.UnableToFindResourceWithTypeInTargetModelForScenarioStepName, ModelConstants.ResourceTypeAzureLogicApp, scenarioStepName);
-                                Context.Errors.Add(new ErrorMessage(string.Format(CultureInfo.CurrentCulture, ErrorMessages.UnableToFindResourceWithTypeInTargetModelForScenarioStepName, ModelConstants.ResourceTypeAzureLogicApp, scenarioStepName)));
+                                _logger.LogError(ErrorMessages.UnableToFindResourceWithTypeInTargetModelForScenarioStepName, GetLogicAppResourceType(), scenarioStepName);
+                                Context.Errors.Add(new ErrorMessage(string.Format(CultureInfo.CurrentCulture, ErrorMessages.UnableToFindResourceWithTypeInTargetModelForScenarioStepName, GetLogicAppResourceType(), scenarioStepName)));
                             }
                         }
 
@@ -227,23 +227,53 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         {
             var resourceGroup = resource.Parameters.TryGetValue(ModelConstants.ResourceTemplateParameterAzureResourceGroupName, out var value) ? value as string : string.Empty;
 
-
-            return JObject.FromObject(new
+            switch (resource.ResourceType)
             {
-                name = scenarioStepName,
-                routingSteps = new
-                {
-                    channelType = ModelConstants.TriggerChannelAzureApim
-                },
-                routingParameters = new
-                {
-                    messageReceiverType = resource.ResourceType,
-                    parameters = new
+                case ModelConstants.ResourceTypeAzureLogicAppConsumption:
                     {
-                        resourceId = $"/{resource?.Parameters[ModelConstants.ResourceTemplateParameterAzureResourceGroupName]}/{resource?.ResourceName}"
+                        return JObject.FromObject(new
+                        {
+                            name = scenarioStepName,
+                            routingSteps = new
+                            {
+                                channelType = ModelConstants.TriggerChannelAzureApim
+                            },
+                            routingParameters = new
+                            {
+                                messageReceiverType = resource.ResourceType,
+                                parameters = new
+                                {
+                                    resourceId = $"/{resourceGroup}/{resource?.ResourceName}"
+                                }
+                            }
+                        });
                     }
-                }
-            });
+
+                case ModelConstants.ResourceTypeAzureLogicAppStandard:
+                    {
+                        return JObject.FromObject(new
+                        {
+                            name = scenarioStepName,
+                            routingSteps = new
+                            {
+                                channelType = ModelConstants.TriggerChannelAzureApim
+                            },
+                            routingParameters = new
+                            {
+                                messageReceiverType = resource.ResourceType,
+                                parameters = new
+                                {
+                                    resourceId = $"/{resourceGroup}/{resource?.Parameters[ModelConstants.ResourceTemplateParameterAzureLogicAppName]}/{resource?.ResourceName}"
+                                }
+                            }
+                        });
+                    }
+
+                default:
+                    {
+                        return new JObject();
+                    }
+            }
         }
 
         /// <summary>
@@ -255,10 +285,10 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         /// <returns>The matching resource if one is found, otherwise null.</returns>
         private TargetResourceTemplate FindLogicAppResource(IEnumerable<TargetResourceTemplate> resources, string scope, string scenarioStepName)
         {
-            _logger.LogTrace(TraceMessages.FindingResourceTemplateByScenarioStepName, RuleName, ModelConstants.ResourceTypeAzureLogicApp, scenarioStepName, scope);
+            _logger.LogTrace(TraceMessages.FindingResourceTemplateByScenarioStepName, RuleName, GetLogicAppResourceType(), scenarioStepName, scope);
 
             var templates = resources.Where(r =>
-                r.ResourceType == ModelConstants.ResourceTypeAzureLogicApp &&
+                r.ResourceType == GetLogicAppResourceType() &&
                 r.Parameters.ContainsKey(ModelConstants.ResourceTemplateParameterScenarioStepName) &&
                 r.Parameters[ModelConstants.ResourceTemplateParameterScenarioStepName].ToString() == scenarioStepName);
 
@@ -270,15 +300,34 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                 }
                 else
                 {
-                    _logger.LogDebug(TraceMessages.FoundTooManyResourceTemplatesByScenarioStepName, RuleName, templates.Count(), ModelConstants.ResourceTypeAzureLogicApp, scenarioStepName, scope);
+                    _logger.LogDebug(TraceMessages.FoundTooManyResourceTemplatesByScenarioStepName, RuleName, templates.Count(), GetLogicAppResourceType(), scenarioStepName, scope);
                 }
             }
             else
             {
-                _logger.LogDebug(TraceMessages.FoundNoResourceTemplateByScenarioStepName, RuleName, ModelConstants.ResourceTypeAzureLogicApp, scenarioStepName, scope);
+                _logger.LogDebug(TraceMessages.FoundNoResourceTemplateByScenarioStepName, RuleName, GetLogicAppResourceType(), scenarioStepName, scope);
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Gets the ResourceType for a LogicApp, depending on the TargetEnvironment.
+        /// </summary>
+        /// <returns>ResourceType for a LogicApp</returns>
+        private string GetLogicAppResourceType()
+        {
+            var resourceType = "(unknown)";
+            if (Model.MigrationTarget.TargetEnvironment == AzureIntegrationServicesTargetEnvironment.Consumption || Model.MigrationTarget.TargetEnvironment == AzureIntegrationServicesTargetEnvironment.ConsumptionLite)
+            {
+                resourceType = ModelConstants.ResourceTypeAzureLogicAppConsumption;
+            }
+            else if (Model.MigrationTarget.TargetEnvironment == AzureIntegrationServicesTargetEnvironment.Standard || Model.MigrationTarget.TargetEnvironment == AzureIntegrationServicesTargetEnvironment.StandardLite)
+            {
+                resourceType = ModelConstants.ResourceTypeAzureLogicAppStandard;
+            }
+
+            return resourceType;
         }
     }
 }

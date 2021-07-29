@@ -174,7 +174,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                         }
 
                         // Find resource template for the process manager
-                        var resourceTemplate = processManager.Resources.Where(r => r.ResourceType == ModelConstants.ResourceTypeAzureLogicApp).SingleOrDefault();
+                        var resourceTemplate = processManager.Resources.Where(r => r.ResourceType == GetLogicAppResourceType()).SingleOrDefault();
                         if (resourceTemplate != null)
                         {
                             // Find snippet for workflow definition
@@ -254,7 +254,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                         }
                         else
                         {
-                            _logger.LogWarning(WarningMessages.ProcessManagerResourceTemplateNotFound, processManager.Name, ModelConstants.ResourceTypeAzureLogicApp);
+                            _logger.LogWarning(WarningMessages.ProcessManagerResourceTemplateNotFound, processManager.Name, GetLogicAppResourceType());
                         }
                     }
                     else
@@ -1455,6 +1455,25 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
             _fileRepository.WriteJsonFile(outputFilePath.FullName, workflowDefinition);
 
             _logger.LogDebug(TraceMessages.SavedWorkflow, RuleName, outputFilePath.FullName, processManager.Name);
+        }
+
+        /// <summary>
+        /// Gets the ResourceType for a LogicApp, depending on the TargetEnvironment.
+        /// </summary>
+        /// <returns>ResourceType for a LogicApp</returns>
+        private string GetLogicAppResourceType()
+        {
+            var resourceType = "(unknown)";
+            if (Model.MigrationTarget.TargetEnvironment == AzureIntegrationServicesTargetEnvironment.Consumption || Model.MigrationTarget.TargetEnvironment == AzureIntegrationServicesTargetEnvironment.ConsumptionLite)
+            {
+                resourceType = ModelConstants.ResourceTypeAzureLogicAppConsumption;
+            }
+            else if (Model.MigrationTarget.TargetEnvironment == AzureIntegrationServicesTargetEnvironment.Standard || Model.MigrationTarget.TargetEnvironment == AzureIntegrationServicesTargetEnvironment.StandardLite)
+            {
+                resourceType = ModelConstants.ResourceTypeAzureLogicAppStandard;
+            }
+
+            return resourceType;
         }
     }
 }

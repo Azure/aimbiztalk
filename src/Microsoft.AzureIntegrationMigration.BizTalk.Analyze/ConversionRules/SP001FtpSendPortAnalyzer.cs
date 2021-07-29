@@ -204,6 +204,10 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                 case "useSsl":
 
                     return propertyValue.ToString() == "False" ? false : true;
+
+                case "targetFolder":
+
+                    return propertyValue.ToString().StartsWith("/") ? propertyValue : "/" + propertyValue.ToString();
             }
 
             return propertyValue;

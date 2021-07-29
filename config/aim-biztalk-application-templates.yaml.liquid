@@ -140,7 +140,7 @@ resourceTemplates:
   - template: {{ app_name }}AzureLogicAppStandard
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.standard
     tags:
       - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
@@ -148,6 +148,7 @@ resourceTemplates:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
       - azure_storage_account_name: {{ storage_account_name }}
       - azure_app_service_plan_name: {{ standard_app_service_plan_name }}
@@ -173,7 +174,7 @@ resourceTemplates:
   - template: {{ app_name }}AzureLogicAppStandardWorkflows
     templateType: microsoft.template.arm
     resourceName: {{ app_name }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.standard
     tags:
       - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
@@ -181,6 +182,7 @@ resourceTemplates:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
       - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
       - azure_service_bus_response_topic_name: {{ messageBoxResponseTopicName }}
@@ -200,7 +202,7 @@ resourceTemplates:
   - template: {{ app_name }}AzureLogicAppStandardWorkflowsVsCode
     templateType: microsoft.template.arm
     resourceName: {{ app_name }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.standard
     tags:
       - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
@@ -208,6 +210,7 @@ resourceTemplates:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/.vscode
     files:
@@ -221,7 +224,7 @@ resourceTemplates:
   - template: {{ app_name }}AzureLogicAppStandardWorkflowsWorkflowDesigntime
     templateType: microsoft.template.arm
     resourceName: {{ app_name }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.standard
     tags:
       - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
@@ -229,6 +232,7 @@ resourceTemplates:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/workflow-designtime
     files:
@@ -757,7 +761,7 @@ resourceTemplates:
   - template: ftpReceiveAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimftpradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
       - Application: {{ app_name }}
       - Scenario: {{ endpoint.properties.scenario }}
@@ -803,8 +807,8 @@ resourceTemplates:
 
   - template: ftpReceiveAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
-    resourceName: {{ aim_user_prefix }}logic-aimftpradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
     tags:
       - Application: {{ app_name }}
       - Scenario: {{ endpoint.properties.scenario }}
@@ -813,6 +817,7 @@ resourceTemplates:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - app_name: {{ app_name | downcase }}
       - ftp_api_connector_name: {{ aim_user_prefix }}apic-aimftprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
@@ -932,7 +937,7 @@ resourceTemplates:
   - template: ftpSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimftpsadapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
       - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
@@ -941,7 +946,7 @@ resourceTemplates:
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - ftp_api_connector_name: {{ aim_user_prefix }}apic-aimftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
       - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
       - azure_ftp_target_folder: {{ endpoint.properties.targetFolder }}
@@ -962,8 +967,8 @@ resourceTemplates:
 
   - template: ftpSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
-    resourceName: {{ aim_user_prefix }}logic-aimftpsadapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
     tags:
       - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
@@ -971,13 +976,15 @@ resourceTemplates:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - ftp_api_connector_name: {{ aim_user_prefix }}apic-aimftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
       - azure_system_resource_group_name: {{ system_application_group }}
       - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
       - azure_ftp_target_folder: {{ endpoint.properties.targetFolder }}
       - azure_ftp_target_file_name: "{{ endpoint.properties.targetFileName }}"
+      - workflow_name: {{ endpoint_name | downcase }}
       - apim_service_name: {{ api_management_service_name }}
       - scenario_step_name: ftpSendAdapter
     outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ endpoint_name | to_safe_file_path | downcase }}
@@ -1148,7 +1155,7 @@ resourceTemplates:
   - template: sftpReceiveAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimsftpradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
       - Application: {{ app_name }}
       - Scenario: {{ endpoint.properties.scenario }}
@@ -1193,8 +1200,8 @@ resourceTemplates:
 
   - template: sftpReceiveAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
-    resourceName: {{ aim_user_prefix }}logic-aimsftpradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
     tags:
       - Application: {{ app_name }}
       - Scenario: {{ endpoint.properties.scenario }}
@@ -1203,6 +1210,7 @@ resourceTemplates:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - app_name: {{ app_name | downcase }}
       - sftp_api_connector_name: {{ aim_user_prefix }}apic-aimsftprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
@@ -1327,7 +1335,7 @@ resourceTemplates:
   - template: sftpSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimsftpsadapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
       - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
@@ -1336,7 +1344,7 @@ resourceTemplates:
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimsftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - sftp_api_connector_name: {{ aim_user_prefix }}apic-aimsftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
       - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
       - azure_sftp_target_folder: {{ endpoint.properties.targetFolder }}
@@ -1357,8 +1365,8 @@ resourceTemplates:
 
   - template: sftpSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
-    resourceName: {{ aim_user_prefix }}logic-aimsftpsadapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
     tags:
       - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
@@ -1366,12 +1374,14 @@ resourceTemplates:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimsftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - sftp_api_connector_name: {{ aim_user_prefix }}apic-aimsftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
       - azure_system_resource_group_name: {{ system_application_group }}
       - azure_sftp_target_folder: {{ endpoint.properties.targetFolder }}
       - azure_sftp_target_file_name: "{{ endpoint.properties.targetFileName }}"
+      - workflow_name: {{ endpoint_name | downcase }}
       - apim_service_name: {{ api_management_service_name }}
       - scenario_step_name: sftpSendAdapter
     outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ endpoint_name | to_safe_file_path | downcase }}
@@ -1534,7 +1544,7 @@ resourceTemplates:
   - template: fileReceiveAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimfileradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
       - Application: {{ app_name }}
       - Scenario: {{ endpoint.properties.scenario }}
@@ -1544,7 +1554,7 @@ resourceTemplates:
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - app_name: {{ app_name | downcase }}
-      - file_api_connector_name: {{ aim_user_prefix }}apic-aimfilerconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}      
+      - filesystem_api_connector_name: {{ aim_user_prefix }}apic-aimfilerconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}      
       - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_integration_account_name: {{ integration_account_name }}
       - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
@@ -1573,8 +1583,8 @@ resourceTemplates:
 
   - template: fileReceiveAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
-    resourceName: {{ aim_user_prefix }}logic-aimfileradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
     tags:
       - Application: {{ app_name }}
       - Scenario: {{ endpoint.properties.scenario }}
@@ -1583,8 +1593,9 @@ resourceTemplates:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - app_name: {{ app_name | downcase }}
-      - file_api_connector_name: {{ aim_user_prefix }}apic-aimfilerconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}      
+      - filesystem_api_connector_name: {{ aim_user_prefix }}apic-aimfilerconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}      
       - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
       - azure_system_resource_group_name: {{ system_application_group }}
@@ -1694,7 +1705,7 @@ resourceTemplates:
   - template: fileSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimfilesadapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
       - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
@@ -1703,7 +1714,7 @@ resourceTemplates:
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimfilesconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - filesystem_api_connector_name: {{ aim_user_prefix }}apic-aimfilesconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
       - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
       - apim_service_name: {{ api_management_service_name }}
@@ -1722,8 +1733,8 @@ resourceTemplates:
 
   - template: fileSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
-    resourceName: {{ aim_user_prefix }}logic-aimfilesadapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
     tags:
       - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
@@ -1731,8 +1742,9 @@ resourceTemplates:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimfilesconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - filesystem_api_connector_name: {{ aim_user_prefix }}apic-aimfilesconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
       - azure_system_resource_group_name: {{ system_application_group }}
       - workflow_name: {{ endpoint_name | downcase }}
@@ -1900,7 +1912,7 @@ resourceTemplates:
   - template: mqReceiveAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimmqradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
       - Application: {{ app_name }}
       - Scenario: {{ endpoint.properties.scenario }}
@@ -1943,8 +1955,8 @@ resourceTemplates:
 
   - template: mqReceiveAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
-    resourceName: {{ aim_user_prefix }}logic-aimmqradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
     tags:
       - Application: {{ app_name }}
       - Scenario: {{ endpoint.properties.scenario }}
@@ -1953,6 +1965,7 @@ resourceTemplates:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - app_name: {{ app_name | downcase }}
       - mq_api_connector_name: {{ aim_user_prefix }}apic-aimmqrconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
@@ -2069,7 +2082,7 @@ resourceTemplates:
   - template: mqSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimmqsadapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
       - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
@@ -2078,7 +2091,7 @@ resourceTemplates:
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimmqsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - mq_api_connector_name: {{ aim_user_prefix }}apic-aimmqsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
       - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
       - azure_mq_target_folder: {{ endpoint.properties.targetFolder }}
@@ -2099,8 +2112,8 @@ resourceTemplates:
 
   - template: mqSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
-    resourceName: {{ aim_user_prefix }}logic-aimmqsadapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
     tags:
       - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
@@ -2108,12 +2121,14 @@ resourceTemplates:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimmqsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - mq_api_connector_name: {{ aim_user_prefix }}apic-aimmqsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
       - azure_system_resource_group_name: {{ system_application_group }}
       - azure_mq_target_folder: {{ endpoint.properties.targetFolder }}
       - azure_mq_target_file_name: "{{ endpoint.properties.targetFileName }}"
+      - workflow_name: {{ endpoint_name | downcase }}
       - apim_service_name: {{ api_management_service_name }}
       - scenario_step_name: mqSendAdapter
     outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ endpoint_name | to_safe_file_path | downcase }}
@@ -2142,7 +2157,7 @@ resourceTemplates:
   - template: httpReceiveAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimhttpradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
       - Application: {{ app_name }}
       - Scenario: {{ endpoint.properties.scenario }}
@@ -2179,8 +2194,8 @@ resourceTemplates:
 
   - template: httpReceiveAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
-    resourceName: {{ aim_user_prefix }}logic-aimhttpradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
     tags:
       - Application: {{ app_name }}
       - Scenario: {{ endpoint.properties.scenario }}
@@ -2189,6 +2204,7 @@ resourceTemplates:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - app_name: {{ app_name | downcase }}
       - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_integration_account_name: {{ integration_account_name }}      
@@ -2228,7 +2244,7 @@ resourceTemplates:
   - template: httpSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimhttpradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
       - Application: {{ app_name }}
       - Scenario: {{ endpoint.properties.scenario }}
@@ -2266,8 +2282,8 @@ resourceTemplates:
 
   - template: httpSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
-    resourceName: {{ aim_user_prefix }}logic-aimhttpradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
     tags:
       - Application: {{ app_name }}
       - Scenario: {{ endpoint.properties.scenario }}
@@ -2276,6 +2292,7 @@ resourceTemplates:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - app_name: {{ app_name | downcase }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
       - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
@@ -2316,7 +2333,7 @@ resourceTemplates:
   - template: sapSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimsapradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
       - Application: {{ app_name }}
       - Scenario: {{ endpoint.properties.scenario }}
@@ -2354,8 +2371,8 @@ resourceTemplates:
 
   - template: sapSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
-    resourceName: {{ aim_user_prefix }}logic-aimsapradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
     tags:
       - Application: {{ app_name }}
       - Scenario: {{ endpoint.properties.scenario }}
@@ -2364,6 +2381,7 @@ resourceTemplates:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - app_name: {{ app_name | downcase }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
       - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
@@ -2470,7 +2488,7 @@ resourceTemplates:
   - template: topicSubscriberAzureLogicAppConsumption{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimtopicsubscriber-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
       - Application: {{ app_name }}
       - Scenario: {{ intermediary.properties.scenario }}
@@ -2506,8 +2524,8 @@ resourceTemplates:
 
   - template: topicSubscriberAzureLogicAppStandard{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.arm
-    resourceName: {{ aim_user_prefix }}logic-aimtopicsubscriber-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
     tags:
       - Application: {{ app_name }}
       - Scenario: {{ intermediary.properties.scenario }}
@@ -2516,6 +2534,7 @@ resourceTemplates:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_system_resource_group_name: {{ system_application_group }}
       - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
       - workflow_name: {{ endpoint_name | downcase }}
@@ -2588,7 +2607,7 @@ resourceTemplates:
   - template: activatableProcessManagerAzureLogicApp{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimprocessmanager-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
       - Application: {{ app_name }}
       - Scenario: {{ intermediary.properties.scenario }}
@@ -2677,7 +2696,7 @@ resourceTemplates:
   - template: invokableProcessManagerAzureLogicApp{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimprocessmanager-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
       - Application: {{ app_name }}
       - Scenario: {{ intermediary.properties.scenario }}
@@ -3248,7 +3267,7 @@ resourceTemplates:
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimfilerconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - filesystem_api_connector_name: {{ aim_user_prefix }}apic-aimfilerconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - key_vault_name: {{ key_vault_name }}
       - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
     outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
@@ -3327,7 +3346,7 @@ resourceTemplates:
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimfilesconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - filesystem_api_connector_name: {{ aim_user_prefix }}apic-aimfilesconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - key_vault_name: {{ key_vault_name }}
       - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
     outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
@@ -3456,7 +3475,7 @@ resourceTemplates:
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimftprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - ftp_api_connector_name: {{ aim_user_prefix }}apic-aimftprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - key_vault_name: {{ key_vault_name }}
       - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
     outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
@@ -3535,7 +3554,7 @@ resourceTemplates:
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - ftp_api_connector_name: {{ aim_user_prefix }}apic-aimftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - key_vault_name: {{ key_vault_name }}
       - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
     outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
@@ -3646,7 +3665,6 @@ resourceTemplates:
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimhttprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - key_vault_name: {{ key_vault_name }}
       - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
     outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
@@ -3679,7 +3697,6 @@ resourceTemplates:
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimhttprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - key_vault_name: {{ key_vault_name }}
       - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
     outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
@@ -3712,7 +3729,7 @@ resourceTemplates:
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimsaprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - sap_api_connector_name: {{ aim_user_prefix }}apic-aimsapsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - key_vault_name: {{ key_vault_name }}
       - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
     outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}

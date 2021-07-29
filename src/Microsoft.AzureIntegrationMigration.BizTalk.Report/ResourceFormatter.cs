@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.Collections.Generic;
@@ -285,8 +285,10 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Report
                     return HtmlResources.TargetResourceNameKeyVault;
                 case "microsoft.services.azurefunction":
                     return HtmlResources.TargetResourceNameAzureFunction;
-                case "microsoft.workflows.azurelogicapp":
-                    return HtmlResources.TargetResourceNameLogicApp;
+                case "microsoft.workflows.azurelogicapp.consumption":
+                    return HtmlResources.TargetResourceNameLogicAppConsumption;
+                case "microsoft.workflows.azurelogicapp.standard":
+                    return HtmlResources.TargetResourceNameLogicAppStandard;
                 case "microsoft.web.connections":
                     return HtmlResources.TargetResourceNameWebConnections;
                 case "microsoft.configuration.routingslip":
@@ -341,8 +343,10 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Report
                     return HtmlResources.TargetResourceIconKeyVault;
                 case "microsoft.services.azurefunction":
                     return HtmlResources.TargetResourceIconAzureFunction;
-                case "microsoft.workflows.azurelogicapp":
-                    return HtmlResources.TargetResourceIconLogicApp;
+                case "microsoft.workflows.azurelogicapp.consumption":
+                    return HtmlResources.TargetResourceIconLogicAppConsumption;
+                case "microsoft.workflows.azurelogicapp.standard":
+                    return HtmlResources.TargetResourceIconLogicAppStandard;
                 case "microsoft.web.connections":
                     return HtmlResources.TargetResourceIconWebConnections;
                 case "microsoft.configuration.routingslip":

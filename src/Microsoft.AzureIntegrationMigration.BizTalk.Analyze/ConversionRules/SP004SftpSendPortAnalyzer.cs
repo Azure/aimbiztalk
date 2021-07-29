@@ -216,6 +216,10 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
             {
                 case "AccessAnySSHServerHostKey":
                     return propertyValue.ToString() == "-1" ? "true" : "false";
+
+                case "targetFolder":
+
+                    return propertyValue.ToString().StartsWith("/") ? propertyValue : "/" + propertyValue.ToString();
             }
 
             return propertyValue;

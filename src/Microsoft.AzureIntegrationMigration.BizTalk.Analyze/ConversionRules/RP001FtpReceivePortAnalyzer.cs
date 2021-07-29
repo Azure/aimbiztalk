@@ -227,6 +227,11 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                     {
                         return 10;
                     }
+
+                case "targetFolder":
+
+                    return propertyValue.ToString().StartsWith("/") ? propertyValue : "/" + propertyValue.ToString();
+
             }
 
             return propertyValue;

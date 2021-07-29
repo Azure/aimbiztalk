@@ -218,32 +218,34 @@ resources:
       - target: ['consumption']
         templates:
           - messageResponseHandlerAzureLogicAppConsumption
-          - messageResponseHandlerAzureServiceBusApiConnection
+          - messageResponseHandlerAzureServiceBusApiConnectionConsumption
           - deployMessageResponseHandlerAzureLogicAppConsumption
           - deployMessageResponseHandlerAzureServiceBusApiConnection
       - target: ['consumptionlite']
         templates:
           - messageResponseHandlerAzureLogicAppConsumption
-          - messageResponseHandlerAzureServiceBusApiConnection
+          - messageResponseHandlerAzureServiceBusApiConnectionConsumption
       - target: ['standard', 'standardlite']
         templates:
           - messageResponseHandlerAzureLogicAppStandard
+          - messageResponseHandlerAzureServiceBusApiConnectionStandard
  
   - resource: messageSuspendProcessor
     targets:
       - target: ['consumption']
         templates:
           - messageSuspendProcessorAzureLogicAppConsumption
-          - messageSuspendProcessorAzureServiceBusApiConnection
+          - messageSuspendProcessorAzureServiceBusApiConnectionConsumption
           - deployMessageSuspendProcessorAzureLogicAppConsumption
           - deployMessageSuspendProcessorAzureServiceBusApiConnection
       - target: ['consumptionlite']
         templates:
           - messageSuspendProcessorAzureLogicAppConsumption
-          - messageSuspendProcessorAzureServiceBusApiConnection
+          - messageSuspendProcessorAzureServiceBusApiConnectionConsumption
       - target: ['standard', 'standardlite']
         templates:
           - messageSuspendProcessorAzureLogicAppStandard
+          - messageSuspendProcessorAzureServiceBusApiConnectionStandard
 
   - resource: jsonDecoder
     targets:
@@ -297,7 +299,7 @@ resources:
       - target: ['standard']
         templates:
           - systemApplicationAzureLogicAppStandard
-          - systemApplicationAzureServiceBusApiConnection
+          - systemApplicationAzureServiceBusApiConnectionStandard
           - systemApplicationAzureServiceBusApiConnectionAccessPolicy
           - systemApplicationAzureLogicAppStandardWorkflows
           - systemApplicationAzureLogicAppStandardWorkflowsVsCode
@@ -411,7 +413,7 @@ resources:
       - target: ['standard', 'standardlite']
         templates:
           - deployFtpSendAdapterApiConnectionStandard{{ app_name }}{{ endpoint_name }}
-          - ftpSendAzureConnectionEndpointStandardStandard{{ app_name }}{{ endpoint_name }}
+          - ftpSendAzureConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
           - ftpSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
      {%- endif %}
   {%- endfor %}
@@ -585,7 +587,7 @@ resources:
       - target: ['standard', 'standardlite']
         templates:
           - deploySapSendAdapterApiConnectionStandard{{ app_name }}{{ endpoint_name }}
-          - sapSendAzureConnectionEndpointStandardStandard{{ app_name }}{{ endpoint_name }}
+          - sapSendAzureConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
           - sapSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
      {%- endif %}
   {%- endfor %}
@@ -801,10 +803,10 @@ resources:
         templates:
           - contentDemoterAzureLogicAppConsumption
           - deployContentDemoterConsumption
-      - target: ['consumptionlite', 'standardlite']
+      - target: ['consumptionlite']
         templates:
           - contentDemoterAzureLogicAppConsumption
-      - target: ['standard']
+      - target: ['standard', 'standardlite']
         templates:
           - contentDemoterAzureLogicAppStandard
 
