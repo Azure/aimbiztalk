@@ -252,7 +252,7 @@ resourceTemplates:
   {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-"  -%}
   {%- for message in application.messages %}
     {% assign message_name = message.name | remove: " " | replace: ".", "-" | replace: "/" "-" | replace: ":", "-" %}
-  - template: messagesAzureIntegrationAccountSchema{{ app_name }}{{ message_name }}
+  - template: messagesXmlSchemaConsumption{{ app_name }}{{ message_name }}
     templateType: microsoft.template.json
     resourceName: {{ message_name }}
     resourceType: microsoft.schemas.xml
@@ -275,6 +275,24 @@ resourceTemplates:
       - env: ['prod']
         paths:
           - messages/schemas/requestbody.prod.json.liquid
+
+  - template: messagesXmlSchemaStandard{{ app_name }}{{ message_name }}
+    templateType: microsoft.template.json
+    resourceName: {{ message_name }}
+    resourceType: microsoft.schemas.xml
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_integration_account_name: {{ integration_account_name }}
+      - azure_message_schema_name : {{ message.properties.typeName }}
+      - message_type: {{ message.properties.messageType }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/workflows/systemapplication.logic.workflows/Artifacts/Schemas
+    files:
   {%- endfor %}
 {%- endfor %}
 
@@ -288,7 +306,7 @@ resourceTemplates:
     {% assign message_name = message.name | remove: " " | replace: ".", "-" | replace: "/" "-" | replace: ":", "-" %}
     {%- for transform in message.message_transforms %}
       {% assign transform_name = transform.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: messagesAzureIntegrationAccountMap{{ app_name }}{{ message_name }}{{ transform_name }}
+  - template: messagesXmlMapConsumption{{ app_name }}{{ message_name }}{{ transform_name }}
     templateType: microsoft.template.json
     resourceName: {{ transform_name }}
     resourceType: microsoft.schemas.xslt
@@ -318,6 +336,31 @@ resourceTemplates:
       - env: ['prod']
         paths:
           - messages/transforms/requestbody.prod.json.liquid
+
+  - template: messagesXmlMapStandard{{ app_name }}{{ message_name }}{{ transform_name }}
+    templateType: microsoft.template.json
+    resourceName: {{ transform_name }}
+    resourceType: microsoft.schemas.xslt
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_integration_account_name: {{ integration_account_name }}
+      - azure_message_map_name : {{ transform.properties.typeName }}
+      - azure_source_schema_message_types: {% for message_type in transform.properties.sourceSchemaMessageTypes -%}
+                                             {{ message_type }}
+                                             {%- if forloop.last == false -%}|{%- endif -%}
+                                           {%- endfor %}
+      - azure_target_schema_message_types: {% for message_type in transform.properties.targetSchemaMessageTypes -%}
+                                             {{ message_type }}
+                                             {%- if forloop.last == false -%}|{%- endif -%}
+                                           {%- endfor %}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/workflows/systemapplication.logic.workflows/Artifacts/Maps
+    files:
     {%- endfor %}
   {%- endfor -%}
 {%- endfor %}

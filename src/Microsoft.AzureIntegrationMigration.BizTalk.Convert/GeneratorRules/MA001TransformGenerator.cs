@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.Globalization;
@@ -94,13 +94,13 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                                 }
                                 else
                                 {
-                                    var integrationAccountSchemaResources = message.Resources.Where(r => r.ResourceType == ModelConstants.ResourceTypeXslt);
+                                    var xmlTransformResources = message.Resources.Where(r => r.ResourceType == ModelConstants.ResourceTypeXslt);
 
-                                    foreach (var integrationAccountSchemaResource in integrationAccountSchemaResources)
+                                    foreach (var xmlTransformResource in xmlTransformResources)
                                     {
                                         var fileName = $"{targetApplication.Name}.{messageResource.Name}".Replace(" ", string.Empty);
 
-                                        var outputPath = new FileInfo(Path.Combine(conversionPath, Path.Combine(integrationAccountSchemaResource.OutputPath, $"{fileName}.xslt")));
+                                        var outputPath = new FileInfo(Path.Combine(conversionPath, Path.Combine(xmlTransformResource.OutputPath, $"{fileName}.xslt")));
 
                                         _fileRepository.WriteXmlFile(outputPath.FullName, mapResourceDefinition.ResourceContent.ToString());
 

@@ -345,16 +345,26 @@ resources:
       - target: ['consumption', 'standard', 'consumptionlite', 'standardlite']
         templates:
           - deploySchema{{ app_name }}{{ message_name }}
-          - messagesAzureIntegrationAccountSchema{{ app_name }}{{ message_name }}
+          - messagesXmlSchemaConsumption{{ app_name }}{{ message_name }}
     {%- assign routing_property_count = message.routing_properties | size -%}
     {%- if routing_property_count > 0 %}
           - deployMessageRoutingPropertyConfiguration{{ app_name }}{{ message_name }}          
           - messageRoutingPropertyConfiguration{{ app_name }}{{ message_name }}
     {%- endif %}
+      - target: ['standard', 'standardlite']
+        templates:
+          - messagesXmlSchemaStandard{{ app_name }}{{ message_name }}
+      - target: ['consumption', 'standard', 'consumptionlite', 'standardlite']
+        templates:
     {%- for transform in message.message_transforms %}
       {% assign transform_name = transform.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-          - deployMap{{ app_name }}{{ message_name }}{{ transform_name }}    
-          - messagesAzureIntegrationAccountMap{{ app_name }}{{ message_name }}{{ transform_name }}
+      - target: ['consumption', 'standard', 'consumptionlite', 'standardlite']
+        templates:
+          - deployMap{{ app_name }}{{ message_name }}{{ transform_name }}
+          - messagesXmlMapConsumption{{ app_name }}{{ message_name }}{{ transform_name }}
+      - target: ['standard', 'standardlite']
+        templates:
+          - messagesXmlMapStandard{{ app_name }}{{ message_name }}{{ transform_name }}
     {%- endfor %}
   {%- endfor %}
 {%- endfor %}
