@@ -135,13 +135,32 @@ resources:
           - configManagerAzureApiManagement          
           - deployConfigManagerApi
 
+# -----------------------------
+# The built-in XSLT option Logic Apps Standard doesn't (yet) support BizTalk maps,
+# So we're using the existing Consumption offering to perform translation.
+# The xmlMessageTranslator has a dependency on the RoutingSlipRouter, so we need both
+# Standard and Consumption versions of this workflow.
+# -----------------------------
+#  - resource: routingSlipRouter
+#    targets:
+#      - target: ['consumption']
+#        templates:
+#          - routingSlipRouterAzureLogicAppConsumption
+#          - deployRoutingSlipRouterAzureLogicAppConsumption
+#      - target: ['consumptionlite']
+#        templates:
+#          - routingSlipRouterAzureLogicAppConsumption
+#      - target: ['standard', 'standardlite']
+#        templates:
+#          - routingSlipRouterAzureLogicAppStandard
+
   - resource: routingSlipRouter
     targets:
-      - target: ['consumption']
+      - target: ['consumption', 'standard']
         templates:
           - routingSlipRouterAzureLogicAppConsumption
           - deployRoutingSlipRouterAzureLogicAppConsumption
-      - target: ['consumptionlite']
+      - target: ['consumptionlite', 'standardlite']
         templates:
           - routingSlipRouterAzureLogicAppConsumption
       - target: ['standard', 'standardlite']
@@ -174,18 +193,32 @@ resources:
         templates:
           - xmlMessageProcessorAzureLogicAppStandard
 
+# -----------------------------
+# The built-in XSLT option Logic Apps Standard doesn't (yet) support BizTalk maps,
+# So we're using the existing Consumption offering to perform translation.
+# -----------------------------
+# - resource: xmlMessageTranslator
+#    targets:
+#      - target: ['consumption']
+#        templates:
+#          - xmlMessageTranslatorAzureLogicAppConsumption
+#          - deployXmlMessageTranslatorAzureLogicAppConsumption
+#      - target: ['consumptionlite']
+#        templates:
+#          - xmlMessageTranslatorAzureLogicAppConsumption
+#      - target: ['standard', 'standardlite']
+#        templates:
+#          - xmlMessageTranslatorAzureLogicAppStandard
+
   - resource: xmlMessageTranslator
     targets:
-      - target: ['consumption']
+      - target: ['consumption', 'standard']
         templates:
           - xmlMessageTranslatorAzureLogicAppConsumption
           - deployXmlMessageTranslatorAzureLogicAppConsumption
-      - target: ['consumptionlite']
+      - target: ['consumptionlite', 'standardlite']
         templates:
           - xmlMessageTranslatorAzureLogicAppConsumption
-      - target: ['standard', 'standardlite']
-        templates:
-          - xmlMessageTranslatorAzureLogicAppStandard
 
   - resource: xmlMessageValidator
     targets:
@@ -220,15 +253,18 @@ resources:
           - messageResponseHandlerAzureLogicAppConsumption
           - messageResponseHandlerAzureServiceBusApiConnectionConsumption
           - deployMessageResponseHandlerAzureLogicAppConsumption
-          - deployMessageResponseHandlerAzureServiceBusApiConnection
+          - deployMessageResponseHandlerAzureServiceBusApiConnectionConsumption
       - target: ['consumptionlite']
         templates:
           - messageResponseHandlerAzureLogicAppConsumption
-          - messageResponseHandlerAzureServiceBusApiConnectionConsumption
       - target: ['standard', 'standardlite']
         templates:
           - messageResponseHandlerAzureLogicAppStandard
           - messageResponseHandlerAzureServiceBusApiConnectionStandard
+          - deployMessageResponseHandlerAzureServiceBusApiConnectionStandard
+      - target: ['standardlite']
+        templates:
+          - messageResponseHandlerAzureLogicAppStandard
  
   - resource: messageSuspendProcessor
     targets:
@@ -241,11 +277,9 @@ resources:
       - target: ['consumptionlite']
         templates:
           - messageSuspendProcessorAzureLogicAppConsumption
-          - messageSuspendProcessorAzureServiceBusApiConnectionConsumption
       - target: ['standard', 'standardlite']
         templates:
           - messageSuspendProcessorAzureLogicAppStandard
-          - messageSuspendProcessorAzureServiceBusApiConnectionStandard
 
   - resource: jsonDecoder
     targets:
@@ -653,70 +687,86 @@ resources:
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   - resource: activatableProcessManager{{ app_name }}{{ intermediary_name }}
     targets:
-      - target: ['consumption', 'standard', 'consumptionlite', 'standardlite']
+      - target: ['consumption', 'consumptionlite']
         templates:
-          - deployProcessManagerApiConnection{{ app_name }}{{ intermediary_name }}
+          - deployProcessManagerApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
           - deployProcessManagerConfigurationEntry{{ app_name }}{{ intermediary_name }}
-          - deployProcessManagerLogicApp{{ app_name }}{{ intermediary_name }}
+          - deployProcessManagerLogicAppConsumption{{ app_name }}{{ intermediary_name }}
           - deployProcessManagerRoutingSlip{{ app_name }}{{ intermediary_name }}
-          - activatableProcessManagerAzureApiConnection{{ app_name }}{{ intermediary_name }}
+          - activatableProcessManagerAzureApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
           - activatableProcessManagerAzureConfigurationEntry{{ app_name }}{{ intermediary_name }}
-          - activatableProcessManagerAzureLogicApp{{ app_name }}{{ intermediary_name }}
-          - activatableProcessManagerRoutingSlip{{ app_name }}{{ intermediary_name }}          
+          - activatableProcessManagerAzureLogicAppConsumption{{ app_name }}{{ intermediary_name }}
+          - activatableProcessManagerRoutingSlip{{ app_name }}{{ intermediary_name }}
         snippets:
-          - activatableWorkflowDefinition{{ app_name }}{{ intermediary_name }}
-          - activatableWorkflowParametersDefinition{{ app_name }}{{ intermediary_name }}
-          - parameterMessageBusResourceGroup{{ app_name }}{{ intermediary_name }}
-          - parameterSystemApplicationResourceGroup{{ app_name }}{{ intermediary_name }}
-          - parameterApimService{{ app_name }}{{ intermediary_name }}
-          - parameterApimRetryPolicy{{ app_name }}{{ intermediary_name }}
-          - parameterApimSubscriptionKey{{ app_name }}{{ intermediary_name }}
-          - parameterMessageSuspendProcessorLogicApp{{ app_name }}{{ intermediary_name }}
-          - parameterSuspendQueueTopic{{ app_name }}{{ intermediary_name }}
-          - parameterRoutingSlipRouterLogicApp{{ app_name }}{{ intermediary_name }}
-          - parameterRoutingSlipRouterRetryPolicy{{ app_name }}{{ intermediary_name }}
-          - parameterIntegrationAccount{{ app_name }}{{ intermediary_name }}
-          - parameterServiceBusTopic{{ app_name }}{{ intermediary_name }}
-          - parameterServiceBusTopicSubscribeApiConnection{{ app_name }}{{ intermediary_name }}
-          - parameterServiceBusTopicPublishApiConnection{{ app_name }}{{ intermediary_name }}
-          - parameterServiceBusTopicSubscription{{ app_name }}{{ intermediary_name }}
-          - parameterServiceBusRecurrenceFrequency{{ app_name }}{{ intermediary_name }}
-          - parameterServiceBusRecurrenceInterval{{ app_name }}{{ intermediary_name }}
-          - parameterScenario{{ app_name }}{{ intermediary_name }}
-          - parameterScenarioStep{{ app_name }}{{ intermediary_name }}
-          - parameterTags{{ app_name }}{{ intermediary_name }}
-          - propertyTags{{ app_name }}{{ intermediary_name }}
-          - propertyIntegrationAccount{{ app_name }}{{ intermediary_name }}
-          - variableApimService{{ app_name }}{{ intermediary_name }}
-          - variableConfigurationManager{{ app_name }}{{ intermediary_name }}
-          - variableIntegrationAccount{{ app_name }}{{ intermediary_name }}
-          - variableMessagingManager{{ app_name }}{{ intermediary_name }}
-          - variableRoutingManager{{ app_name }}{{ intermediary_name }}
-          - variableRoutingSlipRouterLogicApp{{ app_name }}{{ intermediary_name }}
-          - variableMessageSuspendProcessorLogicApp{{ app_name }}{{ intermediary_name }}
-          - variableServiceBusSubscribeApiConnection{{ app_name }}{{ intermediary_name }}
-          - variableServiceBusPublishApiConnection{{ app_name }}{{ intermediary_name }}
-          - channelServiceBusTopicTrigger{{ app_name }}{{ intermediary_name }}
-          - channelServiceBusTopicSend{{ app_name }}{{ intermediary_name }}
-          - variablePlaceHolder{{ app_name }}{{ intermediary_name }}
-          - variableInitializeConfiguration{{ app_name }}{{ intermediary_name }}
-          - variableInitializeErrorMessage{{ app_name }}{{ intermediary_name }}
-          - variableInitializeFaultMessage{{ app_name }}{{ intermediary_name }}
-          - variableInitializeMessageType{{ app_name }}{{ intermediary_name }}
-          - variableInitializeStatusCode{{ app_name }}{{ intermediary_name }}
-          - messagePlaceHolder{{ app_name }}{{ intermediary_name }}
-          - activityContainerPlaceHolder{{ app_name }}{{ intermediary_name }}
-          - activityContainerWorkflow{{ app_name }}{{ intermediary_name }}
-          - activityContainerTask{{ app_name }}{{ intermediary_name }}
-          - activityContainerDecision{{ app_name }}{{ intermediary_name }}
-          - activityContainerDecisionBranch{{ app_name }}{{ intermediary_name }}
-          - activityPlaceHolder{{ app_name }}{{ intermediary_name }}
-          - activityCodeExpression{{ app_name }}{{ intermediary_name }}
-          - activityMessageTransform{{ app_name }}{{ intermediary_name }}
-          - activityMessageConstruction{{ app_name }}{{ intermediary_name }}
-          - activityInvokeWorkflow{{ app_name }}{{ intermediary_name }}
-          - actionDecodeServiceBusMessage{{ app_name }}{{ intermediary_name }}
-          - actionGetConfiguration{{ app_name }}{{ intermediary_name }}
+          - activatableWorkflowDefinitionConsumption{{ app_name }}{{ intermediary_name }}
+          - activatableWorkflowParametersDefinitionConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterMessageBusResourceGroupConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterSystemApplicationResourceGroupConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterApimServiceConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterApimRetryPolicyConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterApimSubscriptionKeyConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterMessageSuspendProcessorLogicAppConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterSuspendQueueTopicConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterRoutingSlipRouterLogicAppConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterRoutingSlipRouterRetryPolicyConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterIntegrationAccountConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterServiceBusTopicConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterServiceBusTopicSubscribeApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterServiceBusTopicPublishApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterServiceBusTopicSubscriptionConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterServiceBusRecurrenceFrequencyConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterServiceBusRecurrenceIntervalConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterScenarioConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterScenarioStepConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterTagsConsumption{{ app_name }}{{ intermediary_name }}
+          - propertyTagsConsumption{{ app_name }}{{ intermediary_name }}
+          - propertyIntegrationAccountConsumption{{ app_name }}{{ intermediary_name }}
+          - variableApimServiceConsumption{{ app_name }}{{ intermediary_name }}
+          - variableConfigurationManagerConsumption{{ app_name }}{{ intermediary_name }}
+          - variableIntegrationAccountConsumption{{ app_name }}{{ intermediary_name }}
+          - variableMessagingManagerConsumption{{ app_name }}{{ intermediary_name }}
+          - variableRoutingManagerConsumption{{ app_name }}{{ intermediary_name }}
+          - variableRoutingSlipRouterLogicAppConsumption{{ app_name }}{{ intermediary_name }}
+          - variableMessageSuspendProcessorLogicAppConsumption{{ app_name }}{{ intermediary_name }}
+          - variableServiceBusSubscribeApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
+          - variableServiceBusPublishApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
+          - channelServiceBusTopicTriggerConsumption{{ app_name }}{{ intermediary_name }}
+          - channelServiceBusTopicSendConsumption{{ app_name }}{{ intermediary_name }}
+          - variablePlaceHolderConsumption{{ app_name }}{{ intermediary_name }}
+          - variableInitializeConfigurationConsumption{{ app_name }}{{ intermediary_name }}
+          - variableInitializeErrorMessageConsumption{{ app_name }}{{ intermediary_name }}
+          - variableInitializeFaultMessageConsumption{{ app_name }}{{ intermediary_name }}
+          - variableInitializeMessageTypeConsumption{{ app_name }}{{ intermediary_name }}
+          - variableInitializeStatusCodeConsumption{{ app_name }}{{ intermediary_name }}
+          - messagePlaceHolderConsumption{{ app_name }}{{ intermediary_name }}
+          - activityContainerPlaceHolderConsumption{{ app_name }}{{ intermediary_name }}
+          - activityContainerWorkflowConsumption{{ app_name }}{{ intermediary_name }}
+          - activityContainerTaskConsumption{{ app_name }}{{ intermediary_name }}
+          - activityContainerDecisionConsumption{{ app_name }}{{ intermediary_name }}
+          - activityContainerDecisionBranchConsumption{{ app_name }}{{ intermediary_name }}
+          - activityPlaceHolderConsumption{{ app_name }}{{ intermediary_name }}
+          - activityCodeExpressionConsumption{{ app_name }}{{ intermediary_name }}
+          - activityMessageTransformConsumption{{ app_name }}{{ intermediary_name }}
+          - activityMessageConstructionConsumption{{ app_name }}{{ intermediary_name }}
+          - activityInvokeWorkflowConsumption{{ app_name }}{{ intermediary_name }}
+          - actionDecodeServiceBusMessageConsumption{{ app_name }}{{ intermediary_name }}
+          - actionGetConfigurationConsumption{{ app_name }}{{ intermediary_name }}
+
+      - target: ['standard', 'standardlite']
+        templates:
+          - deployProcessManagerConfigurationEntry{{ app_name }}{{ intermediary_name }}
+          - deployProcessManagerRoutingSlip{{ app_name }}{{ intermediary_name }}
+          - activatableProcessManagerAzureConfigurationEntry{{ app_name }}{{ intermediary_name }}
+          - activatableProcessManagerRoutingSlip{{ app_name }}{{ intermediary_name }}
+          - activatableProcessManagerAzureLogicAppStandard{{ app_name }}{{ intermediary_name }}
+        snippets:
+          - activatableWorkflowDefinitionStandard{{ app_name }}{{ intermediary_name }}
+          - activatableWorkflowParametersDefinitionStandard{{ app_name }}{{ intermediary_name }}
+          - activatableWorkflowLocalParametersDefinitionStandard{{ app_name }}{{ intermediary_name }}
+          - activatableWorkflowAppSettingsDefinitionStandard{{ app_name }}{{ intermediary_name }}
+          - activatableWorkflowLocalAppSettingsDefinitionStandard{{ app_name }}{{ intermediary_name }}
+          - activatableWorkflowConnectionsDefinitionStandard{{ app_name }}{{ intermediary_name }}
+
     {%- endif %}
   {%- endfor %}
 {%- endfor %}
@@ -728,54 +778,67 @@ resources:
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   - resource: invokableProcessManager{{ app_name }}{{ intermediary_name }}
     targets:
-      - target: ['consumption', 'standard', 'consumptionlite', 'standardlite']
+      - target: ['consumption', 'consumptionlite']
         templates:
-          - deployProcessManagerApiConnection{{ app_name }}{{ intermediary_name }}
-          - deployProcessManagerLogicApp{{ app_name }}{{ intermediary_name }}
-          - invokableProcessManagerAzureApiConnection{{ app_name }}{{ intermediary_name }}
-          - invokableProcessManagerAzureLogicApp{{ app_name }}{{ intermediary_name }}
+          - deployProcessManagerApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
+          - deployProcessManagerLogicAppConsumption{{ app_name }}{{ intermediary_name }}
+          - invokableProcessManagerAzureApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
+          - invokableProcessManagerAzureLogicAppConsumption{{ app_name }}{{ intermediary_name }}
         snippets:
-          - invokableWorkflowDefinition{{ app_name }}{{ intermediary_name }}
-          - invokableWorkflowParametersDefinition{{ app_name }}{{ intermediary_name }}
-          - parameterMessageBusResourceGroup{{ app_name }}{{ intermediary_name }}
-          - parameterApimService{{ app_name }}{{ intermediary_name }}
-          - parameterApimRetryPolicy{{ app_name }}{{ intermediary_name }}
-          - parameterApimSubscriptionKey{{ app_name }}{{ intermediary_name }}
-          - parameterRoutingSlipRouterLogicApp{{ app_name }}{{ intermediary_name }}
-          - parameterRoutingSlipRouterRetryPolicy{{ app_name }}{{ intermediary_name }}
-          - parameterIntegrationAccount{{ app_name }}{{ intermediary_name }}
-          - parameterServiceBusTopicPublishApiConnection{{ app_name }}{{ intermediary_name }}
-          - parameterScenario{{ app_name }}{{ intermediary_name }}
-          - parameterScenarioStep{{ app_name }}{{ intermediary_name }}
-          - parameterTags{{ app_name }}{{ intermediary_name }}
-          - propertyTags{{ app_name }}{{ intermediary_name }}
-          - propertyIntegrationAccount{{ app_name }}{{ intermediary_name }}
-          - variableApimService{{ app_name }}{{ intermediary_name }}
-          - variableConfigurationManager{{ app_name }}{{ intermediary_name }}
-          - variableIntegrationAccount{{ app_name }}{{ intermediary_name }}
-          - variableMessagingManager{{ app_name }}{{ intermediary_name }}
-          - variableRoutingManager{{ app_name }}{{ intermediary_name }}
-          - variableRoutingSlipRouterLogicApp{{ app_name }}{{ intermediary_name }}
-          - variableServiceBusPublishApiConnection{{ app_name }}{{ intermediary_name }}
-          - channelHttpTrigger{{ app_name }}{{ intermediary_name }}
-          - channelServiceBusTopicSend{{ app_name }}{{ intermediary_name }}
-          - variablePlaceHolder{{ app_name }}{{ intermediary_name }}
-          - variableInitializeConfiguration{{ app_name }}{{ intermediary_name }}
-          - variableInitializeErrorMessage{{ app_name }}{{ intermediary_name }}
-          - variableInitializeFaultMessage{{ app_name }}{{ intermediary_name }}
-          - variableInitializeMessageType{{ app_name }}{{ intermediary_name }}
-          - variableInitializeStatusCode{{ app_name }}{{ intermediary_name }}
-          - messagePlaceHolder{{ app_name }}{{ intermediary_name }}
-          - activityContainerPlaceHolder{{ app_name }}{{ intermediary_name }}
-          - activityContainerTask{{ app_name }}{{ intermediary_name }}
-          - activityContainerDecision{{ app_name }}{{ intermediary_name }}
-          - activityContainerDecisionBranch{{ app_name }}{{ intermediary_name }}
-          - activityPlaceHolder{{ app_name }}{{ intermediary_name }}
-          - activityCodeExpression{{ app_name }}{{ intermediary_name }}
-          - activityMessageTransform{{ app_name }}{{ intermediary_name }}
-          - activityMessageConstruction{{ app_name }}{{ intermediary_name }}
-          - activityInvokeWorkflow{{ app_name }}{{ intermediary_name }}
-          - actionGetConfiguration{{ app_name }}{{ intermediary_name }}
+          - invokableWorkflowDefinitionConsumption{{ app_name }}{{ intermediary_name }}
+          - invokableWorkflowParametersDefinitionConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterMessageBusResourceGroupConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterApimServiceConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterApimRetryPolicyConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterApimSubscriptionKeyConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterRoutingSlipRouterLogicAppConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterRoutingSlipRouterRetryPolicyConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterIntegrationAccountConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterServiceBusTopicPublishApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterScenarioConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterScenarioStepConsumption{{ app_name }}{{ intermediary_name }}
+          - parameterTagsConsumption{{ app_name }}{{ intermediary_name }}
+          - propertyTagsConsumption{{ app_name }}{{ intermediary_name }}
+          - propertyIntegrationAccountConsumption{{ app_name }}{{ intermediary_name }}
+          - variableApimServiceConsumption{{ app_name }}{{ intermediary_name }}
+          - variableConfigurationManagerConsumption{{ app_name }}{{ intermediary_name }}
+          - variableIntegrationAccountConsumption{{ app_name }}{{ intermediary_name }}
+          - variableMessagingManagerConsumption{{ app_name }}{{ intermediary_name }}
+          - variableRoutingManagerConsumption{{ app_name }}{{ intermediary_name }}
+          - variableRoutingSlipRouterLogicAppConsumption{{ app_name }}{{ intermediary_name }}
+          - variableServiceBusPublishApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
+          - channelHttpTriggerConsumption{{ app_name }}{{ intermediary_name }}
+          - channelServiceBusTopicSendConsumption{{ app_name }}{{ intermediary_name }}
+          - variablePlaceHolderConsumption{{ app_name }}{{ intermediary_name }}
+          - variableInitializeConfigurationConsumption{{ app_name }}{{ intermediary_name }}
+          - variableInitializeErrorMessageConsumption{{ app_name }}{{ intermediary_name }}
+          - variableInitializeFaultMessageConsumption{{ app_name }}{{ intermediary_name }}
+          - variableInitializeMessageTypeConsumption{{ app_name }}{{ intermediary_name }}
+          - variableInitializeStatusCodeConsumption{{ app_name }}{{ intermediary_name }}
+          - messagePlaceHolderConsumption{{ app_name }}{{ intermediary_name }}
+          - activityContainerPlaceHolderConsumption{{ app_name }}{{ intermediary_name }}
+          - activityContainerTaskConsumption{{ app_name }}{{ intermediary_name }}
+          - activityContainerDecisionConsumption{{ app_name }}{{ intermediary_name }}
+          - activityContainerDecisionBranchConsumption{{ app_name }}{{ intermediary_name }}
+          - activityPlaceHolderConsumption{{ app_name }}{{ intermediary_name }}
+          - activityCodeExpressionConsumption{{ app_name }}{{ intermediary_name }}
+          - activityMessageTransformConsumption{{ app_name }}{{ intermediary_name }}
+          - activityMessageConstructionConsumption{{ app_name }}{{ intermediary_name }}
+          - activityInvokeWorkflowConsumption{{ app_name }}{{ intermediary_name }}
+          - actionGetConfigurationConsumption{{ app_name }}{{ intermediary_name }}
+
+      - target: ['standard', 'standardlite']
+        templates:
+          - invokableProcessManagerAzureLogicAppStandard{{ app_name }}{{ intermediary_name }}
+        snippets:
+          - invokableWorkflowDefinitionStandard{{ app_name }}{{ intermediary_name }}
+          - invokableWorkflowParametersDefinitionStandard{{ app_name }}{{ intermediary_name }}
+          - invokableWorkflowLocalParametersDefinitionStandard{{ app_name }}{{ intermediary_name }}
+          - invokableWorkflowAppSettingsDefinitionStandard{{ app_name }}{{ intermediary_name }}
+          - invokableWorkflowLocalAppSettingsDefinitionStandard{{ app_name }}{{ intermediary_name }}
+          - invokableWorkflowConnectionsDefinitionStandard{{ app_name }}{{ intermediary_name }}
+          - channelHttpTriggerStandard{{ app_name }}{{ intermediary_name }}
+          - channelServiceBusTopicSendStandard{{ app_name }}{{ intermediary_name }}
     {%- endif %}
   {%- endfor %}
 {%- endfor %}
@@ -839,12 +902,6 @@ resources:
         templates:
           - topicPublisherAzureApiConnectionConsumption
           - deployTopicPublisherApiConnectionConsumption
-      - target: ['consumptionlite']
-        templates:
-          - topicPublisherAzureApiConnectionConsumption
-      - target: ['standard', 'standardlite']
-        templates:
-          - topicPublisherAzureApiConnectionStandard
 
   - resource: topicPublisher
     targets:

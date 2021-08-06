@@ -165,6 +165,9 @@
   <data name="BindingActions" xml:space="preserve">
     <value>{RuleId}: Binding actions for process manager {ProcessManagerName}.</value>
   </data>
+  <data name="BuildRoutingSlipAddRoute" xml:space="preserve">
+    <value>Adding route for scenario {ScenarioName} and resource {ResourceName}</value>
+  </data>
   <data name="CheckingInputChannels" xml:space="preserve">
     <value>{RuleId}: Finding messaging objects in the route with input channels {InputChannels}.</value>
   </data>

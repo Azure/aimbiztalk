@@ -153,7 +153,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                             else
                             {
                                 // Log failure to parse the route.
-                                _logger.LogDebug(TraceMessages.UnableToFindResourceWithTypeInTargetModelForScenarioStepName, RuleName, GetLogicAppResourceType(), configurationRoutingObject.ScenarioStepName);
+                                _logger.LogDebug(TraceMessages.UnableToFindResourceWithTypeInTargetModelForScenarioStepName, RuleName, ModelConstants.ResourceTypeAzureLogicApp, configurationRoutingObject.ScenarioStepName);
                                 buildRoutingSlipConfig = false;
                             }
                         }
@@ -285,10 +285,10 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         private TargetResourceTemplate FindLogicAppResource(IEnumerable<TargetResourceTemplate> resources, string scope, string scenarioStepName)
         {
             
-            _logger.LogTrace(TraceMessages.FindingResourceTemplateByScenarioStepName, RuleName, GetLogicAppResourceType(), scenarioStepName, scope);
+            _logger.LogTrace(TraceMessages.FindingResourceTemplateByScenarioStepName, RuleName, ModelConstants.ResourceTypeAzureLogicApp, scenarioStepName, scope);
 
             var templates = resources.Where(r =>
-                r.ResourceType == GetLogicAppResourceType() &&
+                r.ResourceType.StartsWith(ModelConstants.ResourceTypeAzureLogicApp) &&
                 r.Parameters.ContainsKey(ModelConstants.ResourceTemplateParameterScenarioStepName) &&
                 r.Parameters[ModelConstants.ResourceTemplateParameterScenarioStepName].ToString() == scenarioStepName);
 
@@ -300,34 +300,15 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                 }
                 else
                 {
-                    _logger.LogDebug(TraceMessages.FoundTooManyResourceTemplatesByScenarioStepName, RuleName, templates.Count(), GetLogicAppResourceType(), scenarioStepName, scope);
+                    _logger.LogDebug(TraceMessages.FoundTooManyResourceTemplatesByScenarioStepName, RuleName, templates.Count(), ModelConstants.ResourceTypeAzureLogicApp, scenarioStepName, scope);
                 }
             }
             else
             {
-                _logger.LogDebug(TraceMessages.FoundNoResourceTemplateByScenarioStepName, RuleName, GetLogicAppResourceType(), scenarioStepName, scope);
+                _logger.LogDebug(TraceMessages.FoundNoResourceTemplateByScenarioStepName, RuleName, ModelConstants.ResourceTypeAzureLogicApp, scenarioStepName, scope);
             }
 
             return null;
-        }
-
-        /// <summary>
-        /// Gets the ResourceType for a LogicApp, depending on the TargetEnvironment.
-        /// </summary>
-        /// <returns>ResourceType for a LogicApp</returns>
-        private string GetLogicAppResourceType()
-        {
-            var resourceType = "(unknown)";
-            if (Model.MigrationTarget.TargetEnvironment == AzureIntegrationServicesTargetEnvironment.Consumption || Model.MigrationTarget.TargetEnvironment == AzureIntegrationServicesTargetEnvironment.ConsumptionLite)
-            {
-                resourceType = ModelConstants.ResourceTypeAzureLogicAppConsumption;
-            }
-            else if (Model.MigrationTarget.TargetEnvironment == AzureIntegrationServicesTargetEnvironment.Standard || Model.MigrationTarget.TargetEnvironment == AzureIntegrationServicesTargetEnvironment.StandardLite)
-            {
-                resourceType = ModelConstants.ResourceTypeAzureLogicAppStandard;
-            }
-
-            return resourceType;
         }
     }
 }

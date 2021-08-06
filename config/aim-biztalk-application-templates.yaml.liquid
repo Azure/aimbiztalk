@@ -2613,7 +2613,7 @@ resourceTemplates:
   {%- for intermediary in application.intermediaries %}
     {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "ProcessManager" and intermediary.activator == true %}
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: activatableProcessManagerAzureApiConnection{{ app_name }}{{ intermediary_name }}
+  - template: activatableProcessManagerAzureApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}apic-aimsbconnector-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.web.connections
@@ -2624,6 +2624,7 @@ resourceTemplates:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V1
       - azure_service_bus_resource_group_name: {{ system_application_group }}
       - azure_service_bus_namespace: {{ service_bus_namespace_name }}
       - azure_service_bus_policy_name: RootManageSharedAccessKey
@@ -2631,7 +2632,7 @@ resourceTemplates:
     files:
       - env: ['dev', 'prod']
         paths:
-          - intermediaries/processmanager/processmanagerservicebus.apiconnection.json
+          - intermediaries/processmanager/processmanagerservicebus.apiconnection.json.liquid
       - env: ['dev']
         paths:
           - intermediaries/processmanager/processmanagerservicebus.apiconnection.dev.parameters.json.liquid
@@ -2647,7 +2648,7 @@ resourceTemplates:
   {%- for intermediary in application.intermediaries %}
     {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "ProcessManager" and intermediary.activator == true %}
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: activatableProcessManagerAzureLogicApp{{ app_name }}{{ intermediary_name }}
+  - template: activatableProcessManagerAzureLogicAppConsumption{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimprocessmanager-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.workflows.azurelogicapp.consumption
@@ -2688,6 +2689,40 @@ resourceTemplates:
       - env: ['prod']
         paths:
           - applications/{{ app_name | downcase }}/intermediaries/{{ intermediary_name | downcase }}/processmanager.logicapp.prod.parameters.json.liquid
+
+  - template: activatableProcessManagerAzureLogicAppStandard{{ app_name }}{{ intermediary_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}logic-aimprocessmanager-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ app_name }}
+      - Scenario: {{ intermediary.properties.scenario }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_application_resource_group_name: {{ system_application_group }}
+      - azure_integration_account_name: {{ integration_account_name }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+      - azure_topic_subscriber_api_connection_name: {{ aim_user_prefix }}apic-aimsbconnector-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_topic_publisher_api_connection_name: {{ aim_user_prefix }}apic-aimsbconnector-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_service_bus_topic_name: {% for channel in intermediary.workflow_model.channels %}{% if channel.activator %}{{ channel.subscription.topic }}{% endif %}{% endfor %}
+      - azure_service_bus_subscription_name: {{ aim_user_prefix }}sbs-{% for channel in intermediary.workflow_model.channels %}{% if channel.activator %}{{ channel.subscription.name | remove: " " | replace: ".", "-" | replace: "/", "-" | downcase }}{% endif %}{% endfor %}
+      - azure_service_bus_recurrence_frequency: Second
+      - azure_service_bus_recurrence_interval: 10
+      - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
+      - scenario_name: {{ intermediary.properties.scenario }}
+      - scenario_step_name: {{ intermediary.properties.scenarioStep }}
+      - workflow_definition_file: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/workflow.json.liquid
+      - workflow_parameters_file: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.logicapp.{{ model.migration_target.deployment_environment | to_safe_file_path | downcase }}.parameters.json.liquid
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/workflow.json.liquid
     {%- endif %}
   {%- endfor %}
 {%- endfor %}
@@ -2701,7 +2736,7 @@ resourceTemplates:
   {%- for intermediary in application.intermediaries %}
     {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "ProcessManager" and intermediary.activator == false %}
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: invokableProcessManagerAzureApiConnection{{ app_name }}{{ intermediary_name }}
+  - template: invokableProcessManagerAzureApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}apic-aimsbconnector-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.web.connections
@@ -2712,6 +2747,7 @@ resourceTemplates:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V1
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
       - azure_service_bus_resource_group_name: {{ system_application_group }}
       - azure_service_bus_namespace: {{ service_bus_namespace_name }}
@@ -2720,7 +2756,7 @@ resourceTemplates:
     files:
       - env: ['dev', 'prod']
         paths:
-          - intermediaries/processmanager/processmanagerservicebus.apiconnection.json
+          - intermediaries/processmanager/processmanagerservicebus.apiconnection.json.liquid
       - env: ['dev']
         paths:
           - intermediaries/processmanager/processmanagerservicebus.apiconnection.dev.parameters.json.liquid
@@ -2736,7 +2772,7 @@ resourceTemplates:
   {%- for intermediary in application.intermediaries %}
     {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "ProcessManager" and intermediary.activator == false %}
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: invokableProcessManagerAzureLogicApp{{ app_name }}{{ intermediary_name }}
+  - template: invokableProcessManagerAzureLogicAppConsumption{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimprocessmanager-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.workflows.azurelogicapp.consumption
@@ -2772,6 +2808,32 @@ resourceTemplates:
       - env: ['prod']
         paths:
           - applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.logicapp.prod.parameters.json.liquid
+
+  - template: invokableProcessManagerAzureLogicAppStandard{{ app_name }}{{ intermediary_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}logic-aimprocessmanager-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.workflow
+    tags:
+      - Application: {{ app_name }}
+      - Scenario: {{ intermediary.properties.scenario }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+      - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_name: {{ intermediary.properties.scenario }}
+      - scenario_step_name: {{ intermediary.properties.scenarioStep }}
+      - workflow_definition_file: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/workflow.json.liquid
+      - workflow_parameters_file: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.logicapp.{{ model.migration_target.deployment_environment | to_safe_file_path | downcase }}.parameters.json.liquid
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/workflow.json.liquid
     {%- endif %}
   {%- endfor %}
 {%- endfor %}
@@ -3796,7 +3858,7 @@ resourceTemplates:
   {%- for intermediary in application.intermediaries %}
     {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "ProcessManager" %}
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployProcessManagerApiConnection{{ app_name }}{{ intermediary_name }}
+  - template: deployProcessManagerApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}apic-aimsbconnector-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -3822,7 +3884,7 @@ resourceTemplates:
   {%- for intermediary in application.intermediaries %}
     {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "ProcessManager" %}
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployProcessManagerLogicApp{{ app_name }}{{ intermediary_name }}
+  - template: deployProcessManagerLogicAppConsumption{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}logic-aimprocessmanager-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell

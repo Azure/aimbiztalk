@@ -786,14 +786,19 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Types
         public const string ResourceTypeMicrosoftPrefix = "microsoft";
 
         /// <summary>
+        /// Defines an Azure logic app resource.
+        /// </summary>
+        public const string ResourceTypeAzureLogicApp = ResourceTypeWorkflows + ".azurelogicapp";
+
+        /// <summary>
         /// Defines an Azure consumption logic app resource.
         /// </summary>
-        public const string ResourceTypeAzureLogicAppConsumption = ResourceTypeWorkflows + ".azurelogicapp.consumption";
+        public const string ResourceTypeAzureLogicAppConsumption = ResourceTypeAzureLogicApp + ".consumption";
 
         /// <summary>
         /// Defines an Azure standard logic app resource.
         /// </summary>
-        public const string ResourceTypeAzureLogicAppStandard = ResourceTypeWorkflows + ".azurelogicapp.standard";
+        public const string ResourceTypeAzureLogicAppStandard = ResourceTypeAzureLogicApp + ".standard";
 
         /// <summary>
         /// Defines a configuration resources.
@@ -848,97 +853,97 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Types
         /// <summary>
         /// Defines a workflow definition resource.
         /// </summary>
-        public const string ResourceTypeWorkflowDefinition = ResourceTypeAzureLogicAppConsumption + ".workflowdefinition";
+        public const string ResourceTypeSuffixWorkflowDefinition = ".workflowdefinition";
 
         /// <summary>
         /// Defines a workflow parameters definition resource.
         /// </summary>
-        public const string ResourceTypeWorkflowParametersDefinition = ResourceTypeAzureLogicAppConsumption + ".parametersdefinition";
+        public const string ResourceTypeSuffixWorkflowParametersDefinition = ".parametersdefinition";
 
         /// <summary>
         /// Defines a workflow parameter resource.
         /// </summary>
-        public const string ResourceTypeWorkflowParameter = ResourceTypeAzureLogicAppConsumption + ".parameter";
+        public const string ResourceTypeSuffixWorkflowParameter = ".parameter";
 
         /// <summary>
         /// Defines a workflow property resource.
         /// </summary>
-        public const string ResourceTypeWorkflowProperty = ResourceTypeAzureLogicAppConsumption + ".property";
+        public const string ResourceTypeSuffixWorkflowProperty = ".property";
 
         /// <summary>
         /// Defines a workflow channel resource.
         /// </summary>
-        public const string ResourceTypeWorkflowChannel = ResourceTypeAzureLogicAppConsumption + ".channel";
+        public const string ResourceTypeSuffixWorkflowChannel = ".channel";
 
         /// <summary>
         /// Defines a workflow variable resource.
         /// </summary>
-        public const string ResourceTypeWorkflowVariable = ResourceTypeAzureLogicAppConsumption + ".variable";
+        public const string ResourceTypeSuffixWorkflowVariable = ".variable";
 
         /// <summary>
         /// Defines a workflow message resource.
         /// </summary>
-        public const string ResourceTypeWorkflowMessage = ResourceTypeAzureLogicAppConsumption + ".message";
+        public const string ResourceTypeSuffixWorkflowMessage = ".message";
 
         /// <summary>
         /// Defines a workflow activity container.
         /// </summary>
-        public const string ResourceTypeWorkflowActivityContainer = ResourceTypeAzureLogicAppConsumption + ".activitycontainer";
+        public const string ResourceTypeSuffixWorkflowActivityContainer = ".activitycontainer";
 
         /// <summary>
         /// Defines a workflow activity.
         /// </summary>
-        public const string ResourceTypeWorkflowActivity = ResourceTypeAzureLogicAppConsumption + ".activity";
+        public const string ResourceTypeSuffixWorkflowActivity = ".activity";
 
         /// <summary>
         /// Defines a workflow pre-built action.
         /// </summary>
-        public const string ResourceTypeWorkflowAction = ResourceTypeAzureLogicAppConsumption + ".action";
+        public const string ResourceTypeSuffixWorkflowAction = ".action";
 
         /// <summary>
         /// Defines a workflow placeholder activity container used when an activity container doesn't have a specific snippet.
         /// </summary>
-        public const string ResourceTypeWorkflowActivityContainerPlaceHolder = ResourceTypeWorkflowActivityContainer + ".placeholder";
+        public const string ResourceTypeSuffixWorkflowActivityContainerPlaceHolder = ResourceTypeSuffixWorkflowActivityContainer + ".placeholder";
 
         /// <summary>
         /// Defines a workflow placeholder activity used when an activity doesn't have a specific snippet.
         /// </summary>
-        public const string ResourceTypeWorkflowActivityPlaceHolder = ResourceTypeWorkflowActivity + ".placeholder";
+        public const string ResourceTypeSuffixWorkflowActivityPlaceHolder = ResourceTypeSuffixWorkflowActivity + ".placeholder";
 
         /// <summary>
         /// Defines a workflow placeholder variable used for arbitrary variables defined in the workflow model.
         /// </summary>
-        public const string ResourceTypeWorkflowVariablePlaceHolder = ResourceTypeWorkflowVariable + ".placeholder";
+        public const string ResourceTypeSuffixWorkflowVariablePlaceHolder = ResourceTypeSuffixWorkflowVariable + ".placeholder";
 
         /// <summary>
         /// Defines a workflow placeholder message used for arbitrary messages defined in the workflow model.
         /// </summary>
-        public const string ResourceTypeWorkflowMessagePlaceHolder = ResourceTypeWorkflowMessage + ".placeholder";
+        public const string ResourceTypeSuffixWorkflowMessagePlaceHolder = ResourceTypeSuffixWorkflowMessage + ".placeholder";
 
         /// <summary>
         /// Defines a pre-built action to get configuration from configuration store for the step.
         /// </summary>
-        public const string ResourceTypeWorkflowActionGetConfiguration = ResourceTypeWorkflowAction + ".getconfiguration";
+        public const string ResourceTypeSuffixWorkflowActionGetConfiguration = ResourceTypeSuffixWorkflowAction + ".getconfiguration";
 
         /// <summary>
         /// Defines a pre-built action to call the routing slip router when invoking the next step in the route.
         /// </summary>
-        public const string ResourceTypeWorkflowActionCallRoutingSlipRouter = ResourceTypeWorkflowAction + ".callroutingsliprouter";
+        public const string ResourceTypeSuffixWorkflowActionCallRoutingSlipRouter = ResourceTypeSuffixWorkflowAction + ".callroutingsliprouter";
 
         /// <summary>
         /// Defines a trigger channel.
         /// </summary>
-        public const string ResourceTypeWorkflowChannelTrigger = ResourceTypeWorkflowChannel + ".trigger";
+        public const string ResourceTypeSuffixWorkflowChannelTrigger = ResourceTypeSuffixWorkflowChannel + ".trigger";
 
         /// <summary>
         /// Defines a receive channel.
         /// </summary>
-        public const string ResourceTypeWorkflowChannelReceive = ResourceTypeWorkflowChannel + ".receive";
+        public const string ResourceTypeSuffixWorkflowChannelReceive = ResourceTypeSuffixWorkflowChannel + ".receive";
 
         /// <summary>
         /// Defines a send channel.
         /// </summary>
-        public const string ResourceTypeWorkflowChannelSend = ResourceTypeWorkflowChannel + ".send";
+        public const string ResourceTypeSuffixWorkflowChannelSend = ResourceTypeSuffixWorkflowChannel + ".send";
 
         #endregion
 

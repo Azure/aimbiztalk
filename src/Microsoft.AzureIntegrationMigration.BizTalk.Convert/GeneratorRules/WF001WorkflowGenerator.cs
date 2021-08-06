@@ -178,7 +178,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                         if (resourceTemplate != null)
                         {
                             // Find snippet for workflow definition
-                            var workflowResource = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowDefinition).FirstOrDefault();
+                            var workflowResource = processManager.Snippets.Where(s => s.ResourceType == GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowDefinition)).FirstOrDefault();
                             if (workflowResource != null)
                             {
                                 _logger.LogDebug(TraceMessages.GeneratingWorkflow, RuleName, processManager.Name);
@@ -228,11 +228,11 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                             }
                             else
                             {
-                                _logger.LogWarning(WarningMessages.ProcessManagerSnippetNotFound, processManager.Name, ModelConstants.ResourceTypeWorkflowDefinition);
+                                _logger.LogWarning(WarningMessages.ProcessManagerSnippetNotFound, processManager.Name, GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowDefinition));
                             }
 
                             // Find snippet for parameters definition
-                            var parametersResource = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowParametersDefinition).FirstOrDefault();
+                            var parametersResource = processManager.Snippets.Where(s => s.ResourceType == GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowParametersDefinition)).FirstOrDefault();
                             if (parametersResource != null)
                             {
                                 // Generate skeleton Logic App ARM Parameters file to add parameters
@@ -249,7 +249,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                             }
                             else
                             {
-                                _logger.LogWarning(WarningMessages.ProcessManagerSnippetNotFound, processManager.Name, ModelConstants.ResourceTypeWorkflowParametersDefinition);
+                                _logger.LogWarning(WarningMessages.ProcessManagerSnippetNotFound, processManager.Name, GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowParametersDefinition));
                             }
                         }
                         else
@@ -284,7 +284,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         /// <param name="generationPathRoot">The root path for all generated files.</param>
         private async Task AddParameters(ProcessManager processManager, JObject workflowDefinition, TargetResourceTemplate resourceTemplate, IEnumerable<DirectoryInfo> snippetPaths, DirectoryInfo generationPathRoot)
         {
-            var parameterSnippets = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowParameter).ToList();
+            var parameterSnippets = processManager.Snippets.Where(s => s.ResourceType == GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowParameter)).ToList();
             if (parameterSnippets != null && parameterSnippets.Any())
             {
                 foreach (var parameterSnippet in parameterSnippets)
@@ -404,7 +404,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         /// <param name="generationPathRoot">The root path for all generated files.</param>
         private async Task AddArmParameters(ProcessManager processManager, JObject parametersDefinition, TargetResourceTemplate resourceTemplate, IEnumerable<DirectoryInfo> snippetPaths, DirectoryInfo generationPathRoot)
         {
-            var parameterSnippets = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowParameter).ToList();
+            var parameterSnippets = processManager.Snippets.Where(s => s.ResourceType == GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowParameter)).ToList();
             if (parameterSnippets != null && parameterSnippets.Any())
             {
                 var parametersPath = "$.parameters";
@@ -448,7 +448,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         /// <param name="generationPathRoot">The root path for all generated files.</param>
         private async Task AddProperties(ProcessManager processManager, JObject workflowDefinition, TargetResourceTemplate resourceTemplate, IEnumerable<DirectoryInfo> snippetPaths, DirectoryInfo generationPathRoot)
         {
-            var propertySnippets = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowProperty).ToList();
+            var propertySnippets = processManager.Snippets.Where(s => s.ResourceType == GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowProperty)).ToList();
             if (propertySnippets != null && propertySnippets.Any())
             {
                 foreach (var propertySnippet in propertySnippets)
@@ -521,12 +521,12 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
             {
                 foreach (var channel in channels)
                 {
-                    var channelSnippets = processManager.Snippets.Where(s => s.ResourceType.StartsWith($"{ModelConstants.ResourceTypeWorkflowChannel}.", StringComparison.CurrentCultureIgnoreCase)).ToList();
+                    var channelSnippets = processManager.Snippets.Where(s => s.ResourceType.StartsWith($"{GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowChannel)}.", StringComparison.CurrentCultureIgnoreCase)).ToList();
                     if (channelSnippets != null && channelSnippets.Any())
                     {
                         // For triggers, messages are received into a new activate instance, whether that is via
                         // a topic channel (message subscription) or a trigger channel (invoked workflow).
-                        var triggerSnippets = channelSnippets.Where(s => s.ResourceType.StartsWith($"{ModelConstants.ResourceTypeWorkflowChannelTrigger}.", StringComparison.CurrentCultureIgnoreCase));
+                        var triggerSnippets = channelSnippets.Where(s => s.ResourceType.StartsWith($"{GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowChannelTrigger)}.", StringComparison.CurrentCultureIgnoreCase));
                         if (triggerSnippets != null && triggerSnippets.Any())
                         {
                             foreach (var triggerSnippet in triggerSnippets)
@@ -582,7 +582,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         private async Task AddVariables(ProcessManager processManager, JObject workflowDefinition, TargetResourceTemplate resourceTemplate, IEnumerable<DirectoryInfo> snippetPaths, DirectoryInfo generationPathRoot)
         {
             // Find any statically declared variables defined as snippets against the process manager
-            var variableSnippets = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowVariable && s.ResourceType != ModelConstants.ResourceTypeWorkflowVariablePlaceHolder).ToList();
+            var variableSnippets = processManager.Snippets.Where(s => s.ResourceType == GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowVariable) && s.ResourceType != GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowVariablePlaceHolder)).ToList();
             if (variableSnippets != null && variableSnippets.Any())
             {
                 foreach (var variableSnippet in variableSnippets)
@@ -660,7 +660,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                 {
                     foreach (var variable in activityContainer.Variables)
                     {
-                        var variableSnippet = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowVariablePlaceHolder).SingleOrDefault();
+                        var variableSnippet = processManager.Snippets.Where(s => s.ResourceType == GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowVariablePlaceHolder)).SingleOrDefault();
                         if (variableSnippet != null)
                         {
                             var renderedVariableSnippet = await LoadSnippet(processManager, variable, resourceTemplate, variableSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
@@ -677,7 +677,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                         }
                         else
                         {
-                            _logger.LogDebug(TraceMessages.WorkflowVariablePlaceHolderSnippetNotFound, RuleName, ModelConstants.ResourceTypeWorkflowVariablePlaceHolder);
+                            _logger.LogDebug(TraceMessages.WorkflowVariablePlaceHolderSnippetNotFound, RuleName, GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowVariablePlaceHolder));
                         }
                     }
                 }
@@ -710,7 +710,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         private async Task AddMessages(ProcessManager processManager, JObject workflowDefinition, TargetResourceTemplate resourceTemplate, IEnumerable<DirectoryInfo> snippetPaths, DirectoryInfo generationPathRoot)
         {
             // Find any statically declared messages defined as snippets against the process manager
-            var messageSnippets = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowMessage && s.ResourceType != ModelConstants.ResourceTypeWorkflowMessagePlaceHolder).ToList();
+            var messageSnippets = processManager.Snippets.Where(s => s.ResourceType == GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowMessage) && s.ResourceType != GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowMessagePlaceHolder)).ToList();
             if (messageSnippets != null && messageSnippets.Any())
             {
                 foreach (var messageSnippet in messageSnippets)
@@ -769,7 +769,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                 {
                     foreach (var message in activityContainer.Messages)
                     {
-                        var messageSnippet = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowMessagePlaceHolder).SingleOrDefault();
+                        var messageSnippet = processManager.Snippets.Where(s => s.ResourceType == GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowMessagePlaceHolder)).SingleOrDefault();
                         if (messageSnippet != null)
                         {
                             var renderedMessageSnippet = await LoadSnippet(processManager, message, resourceTemplate, messageSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
@@ -786,7 +786,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                         }
                         else
                         {
-                            _logger.LogDebug(TraceMessages.WorkflowMessagePlaceHolderSnippetNotFound, RuleName, ModelConstants.ResourceTypeWorkflowMessagePlaceHolder);
+                            _logger.LogDebug(TraceMessages.WorkflowMessagePlaceHolderSnippetNotFound, RuleName, GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowMessagePlaceHolder));
                         }
                     }
                 }
@@ -878,7 +878,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
             var count = 0;
 
             // Build key to find snippet based on the activity container type
-            var containerSnippetResourceType = $"{ModelConstants.ResourceTypeWorkflowActivityContainer}.{activityContainer.Type.ToLower(CultureInfo.CurrentCulture)}";
+            var containerSnippetResourceType = $"{GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowActivityContainer)}.{activityContainer.Type.ToLower(CultureInfo.CurrentCulture)}";
             var containerSnippets = processManager.Snippets.Where(s => s.ResourceType.StartsWith($"{containerSnippetResourceType}.", StringComparison.CurrentCultureIgnoreCase) && s.ResourceType != containerSnippetResourceType);
             if (containerSnippets != null && containerSnippets.Any())
             {
@@ -1103,7 +1103,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
 
             var converted = false;
 
-            var actionSnippets = processManager.Snippets.Where(s => s.ResourceType.StartsWith($"{ModelConstants.ResourceTypeWorkflowChannelReceive}.", StringComparison.CurrentCultureIgnoreCase));
+            var actionSnippets = processManager.Snippets.Where(s => s.ResourceType.StartsWith($"{GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowChannelReceive)}.", StringComparison.CurrentCultureIgnoreCase));
             if (actionSnippets != null && actionSnippets.Any())
             {
                 foreach (var actionSnippet in actionSnippets)
@@ -1147,7 +1147,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
 
             var converted = false;
 
-            var actionSnippets = processManager.Snippets.Where(s => s.ResourceType.StartsWith($"{ModelConstants.ResourceTypeWorkflowChannelSend}.", StringComparison.CurrentCultureIgnoreCase));
+            var actionSnippets = processManager.Snippets.Where(s => s.ResourceType.StartsWith($"{GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowChannelSend)}.", StringComparison.CurrentCultureIgnoreCase));
             if (actionSnippets != null && actionSnippets.Any())
             {
                 foreach (var actionSnippet in actionSnippets)
@@ -1191,7 +1191,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
             string actionPath = null;
 
             // Build key to find snippet based on the activity container type
-            var containerSnippetResourceType = $"{ModelConstants.ResourceTypeWorkflowActivityContainer}.{activityContainer.Type.ToLower(CultureInfo.CurrentCulture)}";
+            var containerSnippetResourceType = $"{GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowActivityContainer)}.{activityContainer.Type.ToLower(CultureInfo.CurrentCulture)}";
             var containerSnippet = processManager.Snippets.Where(s => s.ResourceType == containerSnippetResourceType).SingleOrDefault();
 
             // If not found, try getting the placeholder container
@@ -1199,7 +1199,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
             {
                 _logger.LogTrace(TraceMessages.WorkflowActivityContainerSnippetNotFound, RuleName, containerSnippetResourceType);
 
-                containerSnippet = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowActivityContainerPlaceHolder).SingleOrDefault();
+                containerSnippet = processManager.Snippets.Where(s => s.ResourceType == GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowActivityContainerPlaceHolder)).SingleOrDefault();
             }
 
             if (containerSnippet != null)
@@ -1222,7 +1222,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
             }
             else
             {
-                _logger.LogDebug(TraceMessages.WorkflowActivityContainerPlaceHolderSnippetNotFound, RuleName, ModelConstants.ResourceTypeWorkflowActivityContainerPlaceHolder);
+                _logger.LogDebug(TraceMessages.WorkflowActivityContainerPlaceHolderSnippetNotFound, RuleName, GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowActivityContainerPlaceHolder));
             }
 
             return (actions, actionPath);
@@ -1242,7 +1242,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
             IEnumerable<JProperty> actions = null;
 
             // Build key to find snippet based on the activity type
-            var activitySnippetResourceType = $"{ModelConstants.ResourceTypeWorkflowActivity}.{activity.Type.ToLower(CultureInfo.CurrentCulture)}";
+            var activitySnippetResourceType = $"{GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowActivity)}.{activity.Type.ToLower(CultureInfo.CurrentCulture)}";
             var activitySnippet = processManager.Snippets.Where(s => s.ResourceType == activitySnippetResourceType).SingleOrDefault();
 
             // If not found, try getting the placeholder activity
@@ -1250,7 +1250,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
             {
                 _logger.LogTrace(TraceMessages.WorkflowActivitySnippetNotFound, RuleName, activitySnippetResourceType);
 
-                activitySnippet = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowActivityPlaceHolder).SingleOrDefault();
+                activitySnippet = processManager.Snippets.Where(s => s.ResourceType == GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowActivityPlaceHolder)).SingleOrDefault();
             }
 
             if (activitySnippet != null)
@@ -1266,7 +1266,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
             }
             else
             {
-                _logger.LogDebug(TraceMessages.WorkflowActivityPlaceHolderSnippetNotFound, RuleName, ModelConstants.ResourceTypeWorkflowActivityPlaceHolder);
+                _logger.LogDebug(TraceMessages.WorkflowActivityPlaceHolderSnippetNotFound, RuleName, GetLogicAppResourceTypeByTarget(ModelConstants.ResourceTypeSuffixWorkflowActivityPlaceHolder));
             }
 
             return actions;
@@ -1460,7 +1460,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         /// <summary>
         /// Gets the ResourceType for a LogicApp, depending on the TargetEnvironment.
         /// </summary>
-        /// <returns>ResourceType for a LogicApp</returns>
+        /// <returns>ResourceType for a LogicApp.</returns>
         private string GetLogicAppResourceType()
         {
             var resourceType = "(unknown)";
@@ -1474,6 +1474,16 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
             }
 
             return resourceType;
+        }
+
+        /// <summary>
+        /// Gets a LogicApp resource type by combining the base ResourceType (dependent on Target) and a specified suffix.
+        /// </summary>
+        /// <param name="resourceTypeSuffix">Suffix for the LogicApp resource.</param>
+        /// <returns>ResourceType for a LogicApp resource.</returns>
+        private string GetLogicAppResourceTypeByTarget(string resourceTypeSuffix)
+        {
+            return GetLogicAppResourceType() + resourceTypeSuffix;
         }
     }
 }
