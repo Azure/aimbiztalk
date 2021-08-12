@@ -31,6 +31,9 @@ systemapplication
 {%- capture message_suspend_processor_logicapp_name -%}
 {{ aim_user_prefix }}logic-aimmessagesuspendprocessor-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
 {%- endcapture -%}
+{%- capture xml_message_translator_lite_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimxmlmessagetranslatorlite-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
 {%- capture service_bus_namespace_name -%}
 {{ aim_user_prefix }}sb-aimmsgbox-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
 {%- endcapture -%}
@@ -185,8 +188,6 @@ resourceTemplates:
       - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
       - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
-      - azure_service_bus_response_topic_name: {{ messageBoxResponseTopicName }}
-      - azure_service_bus_response_subscription_name: {{ aim_user_prefix }}sbs-{{ endpoint.properties.responseSubscription | remove: " " | replace: ".", "-" | replace: "/", "-" | downcase }}
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows
     files:
       - env: ['dev', 'prod']
@@ -2705,24 +2706,30 @@ resourceTemplates:
       - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
       - azure_system_application_resource_group_name: {{ system_application_group }}
-      - azure_integration_account_name: {{ integration_account_name }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - azure_topic_subscriber_api_connection_name: {{ aim_user_prefix }}apic-aimsbconnector-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-      - azure_topic_publisher_api_connection_name: {{ aim_user_prefix }}apic-aimsbconnector-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_service_bus_topic_name: {% for channel in intermediary.workflow_model.channels %}{% if channel.activator %}{{ channel.subscription.topic }}{% endif %}{% endfor %}
       - azure_service_bus_subscription_name: {{ aim_user_prefix }}sbs-{% for channel in intermediary.workflow_model.channels %}{% if channel.activator %}{{ channel.subscription.name | remove: " " | replace: ".", "-" | replace: "/", "-" | downcase }}{% endif %}{% endfor %}
-      - azure_service_bus_recurrence_frequency: Second
-      - azure_service_bus_recurrence_interval: 10
+      - azure_xml_translator_lite_logic_app_name: {{ xml_message_translator_lite_logicapp_name }}
       - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
+      - workflow_name: {{ intermediary_name | to_safe_file_path | downcase }}
       - scenario_name: {{ intermediary.properties.scenario }}
       - scenario_step_name: {{ intermediary.properties.scenarioStep }}
-      - workflow_definition_file: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/workflow.json.liquid
-      - workflow_parameters_file: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.logicapp.{{ model.migration_target.deployment_environment | to_safe_file_path | downcase }}.parameters.json.liquid
+      - workflow_definition_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/workflow.json.liquid
+      - workflow_parameters_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.parameters.json.liquid
+      - workflow_local_parameters_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.parameters.local.json.liquid
+      - workflow_connections_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.connections.json.liquid
+      - workflow_appsettings_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.appsettings.json.liquid
+      - workflow_local_appsettings_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.appsettings.local.json.liquid
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}
     files:
       - env: ['dev', 'prod']
         paths:
           - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/workflow.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.parameters.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.parameters.local.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.connections.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.appsettings.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.appsettings.local.json.liquid
     {%- endif %}
   {%- endfor %}
 {%- endfor %}
@@ -2824,16 +2831,26 @@ resourceTemplates:
       - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
       - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
+      - azure_xml_translator_lite_logic_app_name: {{ xml_message_translator_lite_logicapp_name }}
       - apim_service_name: {{ api_management_service_name }}
       - scenario_name: {{ intermediary.properties.scenario }}
       - scenario_step_name: {{ intermediary.properties.scenarioStep }}
-      - workflow_definition_file: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/workflow.json.liquid
-      - workflow_parameters_file: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.logicapp.{{ model.migration_target.deployment_environment | to_safe_file_path | downcase }}.parameters.json.liquid
+      - workflow_definition_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/workflow.json.liquid
+      - workflow_parameters_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.parameters.json.liquid
+      - workflow_local_parameters_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.parameters.local.json.liquid
+      - workflow_connections_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.connections.json.liquid
+      - workflow_appsettings_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.appsettings.json.liquid
+      - workflow_local_appsettings_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.appsettings.local.json.liquid
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}
     files:
       - env: ['dev', 'prod']
         paths:
           - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/workflow.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.parameters.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.parameters.local.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.connections.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.appsettings.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.appsettings.local.json.liquid
     {%- endif %}
   {%- endfor %}
 {%- endfor %}

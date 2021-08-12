@@ -219,6 +219,10 @@ resources:
       - target: ['consumptionlite', 'standardlite']
         templates:
           - xmlMessageTranslatorAzureLogicAppConsumption
+      - target: ['standard']
+        templates:
+          - xmlMessageTranslatorLiteAzureLogicAppConsumption
+          - deployXmlMessageTranslatorLiteAzureLogicAppConsumption
 
   - resource: xmlMessageValidator
     targets:
@@ -257,7 +261,7 @@ resources:
       - target: ['consumptionlite']
         templates:
           - messageResponseHandlerAzureLogicAppConsumption
-      - target: ['standard', 'standardlite']
+      - target: ['standard']
         templates:
           - messageResponseHandlerAzureLogicAppStandard
           - messageResponseHandlerAzureServiceBusApiConnectionStandard
@@ -766,7 +770,31 @@ resources:
           - activatableWorkflowAppSettingsDefinitionStandard{{ app_name }}{{ intermediary_name }}
           - activatableWorkflowLocalAppSettingsDefinitionStandard{{ app_name }}{{ intermediary_name }}
           - activatableWorkflowConnectionsDefinitionStandard{{ app_name }}{{ intermediary_name }}
-
+          - parameterServiceBusTopicStandard{{ app_name }}{{ intermediary_name }}
+          - parameterServiceBusTopicSubscriptionStandard{{ app_name }}{{ intermediary_name }}
+          - parameterScenarioStandard{{ app_name }}{{ intermediary_name }}
+          - parameterScenarioStepStandard{{ app_name }}{{ intermediary_name }}
+          - channelServiceBusTopicTriggerStandard{{ app_name }}{{ intermediary_name }}
+          - channelServiceBusTopicSendStandard{{ app_name }}{{ intermediary_name }}
+          - variablePlaceHolderStandard{{ app_name }}{{ intermediary_name }}
+          - variableInitializeConfigurationStandard{{ app_name }}{{ intermediary_name }}
+          - variableInitializeErrorMessageStandard{{ app_name }}{{ intermediary_name }}
+          - variableInitializeFaultMessageStandard{{ app_name }}{{ intermediary_name }}
+          - variableInitializeMessageTypeStandard{{ app_name }}{{ intermediary_name }}
+          - variableInitializeStatusCodeStandard{{ app_name }}{{ intermediary_name }}
+          - messagePlaceHolderStandard{{ app_name }}{{ intermediary_name }}
+          - activityContainerPlaceHolderStandard{{ app_name }}{{ intermediary_name }}
+          - activityContainerWorkflowStandard{{ app_name }}{{ intermediary_name }}
+          - activityContainerTaskStandard{{ app_name }}{{ intermediary_name }}
+          - activityContainerDecisionStandard{{ app_name }}{{ intermediary_name }}
+          - activityContainerDecisionBranchStandard{{ app_name }}{{ intermediary_name }}
+          - activityPlaceHolderStandard{{ app_name }}{{ intermediary_name }}
+          - activityCodeExpressionStandard{{ app_name }}{{ intermediary_name }}
+          - activityMessageTransformStandard{{ app_name }}{{ intermediary_name }}
+          - activityMessageConstructionStandard{{ app_name }}{{ intermediary_name }}
+          - activityInvokeWorkflowStandard{{ app_name }}{{ intermediary_name }}
+          - actionDecodeServiceBusMessageStandard{{ app_name }}{{ intermediary_name }}
+          - actionGetConfigurationStandard{{ app_name }}{{ intermediary_name }}
     {%- endif %}
   {%- endfor %}
 {%- endfor %}
@@ -937,12 +965,10 @@ resources:
           - deploySendRoutingPropertyConfiguration{{ app_name }}{{ intermediary_name }}
       - target: ['standard', 'standardlite']
         templates:
-          - topicSubscriberAzureApiConnectionStandard{{ app_name }}{{ intermediary_name }}
           - topicSubscriberAzureLogicAppStandard{{ app_name }}{{ intermediary_name }}
           - sendRoutingSlipConfiguration{{ app_name }}{{ intermediary_name }}
           - sendConfigurationEntry{{ app_name }}{{ intermediary_name }}
           - sendRoutingPropertyConfiguration{{ app_name }}{{ intermediary_name }}
-          - deployTopicSubscriberApiConnectionStandard{{ app_name }}{{ intermediary_name }}
           - deploySendRoutingSlipConfiguration{{ app_name }}{{ intermediary_name }}
           - deploySendConfigurationEntry{{ app_name }}{{ intermediary_name }}
           - deploySendRoutingPropertyConfiguration{{ app_name }}{{ intermediary_name }}

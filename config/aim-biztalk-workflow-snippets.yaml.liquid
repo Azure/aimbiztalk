@@ -147,7 +147,7 @@ resourceSnippets:
   - snippet: activatableWorkflowParametersDefinitionStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
     resourceName: workflow-{{ app_name | downcase }}{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}
-    resourceType: microsoft.workflows.azurelogicapp.standard.parametersdefinition
+    resourceType: microsoft.workflows.azurelogicapp.standard.parameters
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
@@ -164,7 +164,7 @@ resourceSnippets:
   - snippet: activatableWorkflowLocalParametersDefinitionStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
     resourceName: workflow-{{ app_name | downcase }}{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}
-    resourceType: microsoft.workflows.azurelogicapp.standard.localparametersdefinition
+    resourceType: microsoft.workflows.azurelogicapp.standard.localparameters
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
@@ -181,7 +181,7 @@ resourceSnippets:
   - snippet: activatableWorkflowAppSettingsDefinitionStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
     resourceName: workflow-{{ app_name | downcase }}{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}
-    resourceType: microsoft.workflows.azurelogicapp.standard.appsettingsdefinition
+    resourceType: microsoft.workflows.azurelogicapp.standard.appsettings
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
@@ -198,7 +198,7 @@ resourceSnippets:
   - snippet: activatableWorkflowLocalAppSettingsDefinitionStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
     resourceName: workflow-{{ app_name | downcase }}{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}
-    resourceType: microsoft.workflows.azurelogicapp.standard.localappsettingsdefinition
+    resourceType: microsoft.workflows.azurelogicapp.standard.localappsettings
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
@@ -215,7 +215,7 @@ resourceSnippets:
   - snippet: activatableWorkflowConnectionsDefinitionStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
     resourceName: workflow-{{ app_name | downcase }}{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}
-    resourceType: microsoft.workflows.azurelogicapp.standard.connectionsdefinition
+    resourceType: microsoft.workflows.azurelogicapp.standard.connections
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
@@ -354,7 +354,7 @@ resourceSnippets:
   - snippet: invokableWorkflowParametersDefinitionStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
     resourceName: workflow-{{ app_name | downcase }}{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}
-    resourceType: microsoft.workflows.azurelogicapp.standard.parametersdefinition
+    resourceType: microsoft.workflows.azurelogicapp.standard.parameters
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
@@ -371,7 +371,7 @@ resourceSnippets:
   - snippet: invokableWorkflowLocalParametersDefinitionStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
     resourceName: workflow-{{ app_name | downcase }}{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}
-    resourceType: microsoft.workflows.azurelogicapp.standard.localparametersdefinition
+    resourceType: microsoft.workflows.azurelogicapp.standard.localparameters
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
@@ -388,7 +388,7 @@ resourceSnippets:
   - snippet: invokableWorkflowAppSettingsDefinitionStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
     resourceName: workflow-{{ app_name | downcase }}{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}
-    resourceType: microsoft.workflows.azurelogicapp.standard.appsettingsdefinition
+    resourceType: microsoft.workflows.azurelogicapp.standard.appsettings
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
@@ -405,7 +405,7 @@ resourceSnippets:
   - snippet: invokableWorkflowLocalAppSettingsDefinitionStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
     resourceName: workflow-{{ app_name | downcase }}{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}
-    resourceType: microsoft.workflows.azurelogicapp.standard.localappsettingsdefinition
+    resourceType: microsoft.workflows.azurelogicapp.standard.localappsettings
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
@@ -422,7 +422,7 @@ resourceSnippets:
   - snippet: invokableWorkflowConnectionsDefinitionStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
     resourceName: workflow-{{ app_name | downcase }}{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}
-    resourceType: microsoft.workflows.azurelogicapp.standard.connectionsdefinition
+    resourceType: microsoft.workflows.azurelogicapp.standard.connections
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
@@ -448,7 +448,7 @@ resourceSnippets:
   - snippet: channelHttpTriggerStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
     resourceName: workflow-channel-httptrigger-{{ model.migration_target.deployment_environment | downcase }}
-    resourceType: microsoft.workflows.azurelogicapp.consumption.channel.trigger.http
+    resourceType: microsoft.workflows.azurelogicapp.standard.channel.trigger.http
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
@@ -467,7 +467,7 @@ resourceSnippets:
     {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "ProcessManager" %}
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
   # ------------------------------------------------------------------------------
-  # Workflow Parameters
+  # Workflow Parameters - Consumption
   # ------------------------------------------------------------------------------
 
   - snippet: parameterMessageBusResourceGroupConsumption{{ app_name }}{{ intermediary_name }}
@@ -642,7 +642,47 @@ resourceSnippets:
         path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.tags.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
-  # Workflow Properties
+  # Workflow Parameters - Standard
+  # ------------------------------------------------------------------------------
+
+  - snippet: parameterServiceBusTopicStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-parameter-servicebustopic-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.parameter
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.parameter.servicebustopic.snippet.json
+
+  - snippet: parameterServiceBusTopicSubscriptionStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-parameter-servicebustopicsubscription-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.parameter
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.parameter.servicebustopicsubscription.snippet.json
+
+  - snippet: parameterScenarioStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-parameter-scenario-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.parameter
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.parameter.scenario.snippet.json
+
+  - snippet: parameterScenarioStepStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-parameter-scenariostep-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.parameter
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.parameter.scenariostep.snippet.json
+
+  # ------------------------------------------------------------------------------
+  # Workflow Properties - Consumption
   # ------------------------------------------------------------------------------
 
   - snippet: propertyTagsConsumption{{ app_name }}{{ intermediary_name }}
@@ -664,7 +704,7 @@ resourceSnippets:
         path: intermediaries/processmanager/snippets/consumption/common/processmanager.property.integrationaccount.snippet.json
 
   # ------------------------------------------------------------------------------
-  # Workflow Channels
+  # Workflow Channels - Consumption
   # ------------------------------------------------------------------------------
 
   - snippet: channelServiceBusTopicSendConsumption{{ app_name }}{{ intermediary_name }}
@@ -677,7 +717,20 @@ resourceSnippets:
         path: intermediaries/processmanager/snippets/consumption/common/processmanager.channel.send.servicebustopic.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
-  # Workflow Variables
+  # Workflow Channels - Standard
+  # ------------------------------------------------------------------------------
+
+  - snippet: channelServiceBusTopicSendStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-channel-servicebustopicsend-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.channel.send.servicebustopic
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.channel.send.servicebustopic.snippet.json.liquid
+
+  # ------------------------------------------------------------------------------
+  # Workflow ARM Template Variables - Consumption
   # ------------------------------------------------------------------------------
 
   - snippet: variableApimServiceConsumption{{ app_name }}{{ intermediary_name }}
@@ -761,6 +814,10 @@ resourceSnippets:
       - env: ['dev', 'prod']
         path: intermediaries/processmanager/snippets/consumption/common/processmanager.variable.messagesuspendprocessorlogicapp.snippet.json
 
+  # ------------------------------------------------------------------------------
+  # Workflow Variables - Consumption
+  # ------------------------------------------------------------------------------
+
   - snippet: variableInitializeConfigurationConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
     resourceName: workflow-variable-initializeconfiguration-{{ model.migration_target.deployment_environment | downcase }}
@@ -816,7 +873,65 @@ resourceSnippets:
         path: intermediaries/processmanager/snippets/consumption/common/processmanager.variable.placeholder.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
-  # Workflow Messages
+  # Workflow Variables - Standard
+  # ------------------------------------------------------------------------------
+
+  - snippet: variableInitializeConfigurationStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-variable-initializeconfiguration-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.variable
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.variable.initialize.configuration.snippet.json
+
+  - snippet: variableInitializeErrorMessageStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-variable-initializeerrormessage-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.variable
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.variable.initialize.errormessage.snippet.json
+
+  - snippet: variableInitializeFaultMessageStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-variable-initializefaultmessage-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.variable
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.variable.initialize.faultmessage.snippet.json
+
+  - snippet: variableInitializeMessageTypeStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-variable-initializemessagetype-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.variable
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.variable.initialize.messagetype.snippet.json
+
+  - snippet: variableInitializeStatusCodeStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-variable-initializestatuscode-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.variable
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.variable.initialize.statuscode.snippet.json
+
+  - snippet: variablePlaceHolderStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-variable-placeholder-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.variable.placeholder
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.variable.placeholder.snippet.json.liquid
+
+  # ------------------------------------------------------------------------------
+  # Workflow Messages - Consumption
   # ------------------------------------------------------------------------------
 
   - snippet: messagePlaceHolderConsumption{{ app_name }}{{ intermediary_name }}
@@ -829,7 +944,20 @@ resourceSnippets:
         path: intermediaries/processmanager/snippets/consumption/common/processmanager.message.placeholder.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
-  # Workflow Activity Containers
+  # Workflow Messages - Standard
+  # ------------------------------------------------------------------------------
+
+  - snippet: messagePlaceHolderStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-variable-placeholder-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.message.placeholder
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.message.placeholder.snippet.json.liquid
+
+  # ------------------------------------------------------------------------------
+  # Workflow Activity Containers - Consumption
   # ------------------------------------------------------------------------------
 
   - snippet: activityContainerTaskConsumption{{ app_name }}{{ intermediary_name }}
@@ -869,7 +997,47 @@ resourceSnippets:
         path: intermediaries/processmanager/snippets/consumption/common/processmanager.activitycontainer.placeholder.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
-  # Workflow Activities
+  # Workflow Activity Containers - Standard
+  # ------------------------------------------------------------------------------
+
+  - snippet: activityContainerTaskStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-activitycontainer-task-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.activitycontainer.task
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.activitycontainer.task.snippet.json.liquid
+
+  - snippet: activityContainerDecisionStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-activitycontainer-decision-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.activitycontainer.decision
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.activitycontainer.decision.snippet.json.liquid
+
+  - snippet: activityContainerDecisionBranchStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-activitycontainer-decisionbranch-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.activitycontainer.decisionbranch
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.activitycontainer.decisionbranch.snippet.json.liquid
+
+  - snippet: activityContainerPlaceHolderStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-activitycontainer-placeholder-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.activitycontainer.placeholder
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.activitycontainer.placeholder.snippet.json.liquid
+
+  # ------------------------------------------------------------------------------
+  # Workflow Activities - Consumption
   # ------------------------------------------------------------------------------
 
   - snippet: activityPlaceHolderConsumption{{ app_name }}{{ intermediary_name }}
@@ -918,7 +1086,56 @@ resourceSnippets:
         path: intermediaries/processmanager/snippets/consumption/common/processmanager.activity.invokeworkflow.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
-  # Pre-Built Actions
+  # Workflow Activities - Standard
+  # ------------------------------------------------------------------------------
+
+  - snippet: activityPlaceHolderStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-activity-placeholder-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.activity.placeholder
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.activity.placeholder.snippet.json.liquid
+
+  - snippet: activityCodeExpressionStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-activity-codeexpression-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.activity.codeexpression
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.activity.codeexpression.snippet.json.liquid
+
+  - snippet: activityMessageTransformStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-activity-messagetransform-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.activity.messagetransform
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.activity.messagetransform.snippet.json.liquid
+
+  - snippet: activityMessageConstructionStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-activity-messageconstruction-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.activity.messageconstruction
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.activity.messageconstruction.snippet.json.liquid
+
+  - snippet: activityInvokeWorkflowStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-activity-invokeworkflow-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.activity.invokeworkflow
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.activity.invokeworkflow.snippet.json.liquid
+
+  # ------------------------------------------------------------------------------
+  # Pre-Built Actions - Consumption
   # ------------------------------------------------------------------------------
 
   - snippet: actionGetConfigurationConsumption{{ app_name }}{{ intermediary_name }}
@@ -929,6 +1146,19 @@ resourceSnippets:
     files:
       - env: ['dev', 'prod']
         path: intermediaries/processmanager/snippets/consumption/common/processmanager.activitycontainer.workflow.getconfiguration.snippet.json
+
+  # ------------------------------------------------------------------------------
+  # Pre-Built Actions - Standard
+  # ------------------------------------------------------------------------------
+
+  - snippet: actionGetConfigurationStandard{{ app_name }}{{ intermediary_name }}
+    snippetType: microsoft.snippet.json
+    resourceName: workflow-activitycontainer-workflow-getconfiguration-{{ model.migration_target.deployment_environment | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.activitycontainer.workflow.getconfiguration
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
+    files:
+      - env: ['dev', 'prod']
+        path: intermediaries/processmanager/snippets/standard/common/processmanager.activitycontainer.workflow.getconfiguration.snippet.json.liquid
     {%- endif %}
   {%- endfor %}
 {%- endfor %}

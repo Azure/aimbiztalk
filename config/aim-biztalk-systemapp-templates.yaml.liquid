@@ -79,6 +79,9 @@ aim-apim-subscriptionkey-unlimited
 {%- capture xml_message_translator_logicapp_name -%}
 {{ aim_user_prefix }}logic-aimxmlmessagetranslator-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
 {%- endcapture -%}
+{%- capture xml_message_translator_lite_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimxmlmessagetranslatorlite-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
 {%- capture xml_message_validator_logicapp_name -%}
 {{ aim_user_prefix }}logic-aimxmlmessagevalidator-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
 {%- endcapture -%}
@@ -1137,6 +1140,33 @@ resourceTemplates:
         paths:
           - intermediaries/xmlmessagetranslator/xmlmessagetranslator.logicapp.prod.parameters.json.liquid
 
+  - template: xmlMessageTranslatorLiteAzureLogicAppConsumption
+    templateType: microsoft.template.arm
+    resourceName: {{ xml_message_translator_lite_logicapp_name }}
+    resourceType: microsoft.workflows.azurelogicapp.consumption
+    tags:
+      - Application: {{ system_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_integration_account_name: {{ integration_account_name }}
+      - scenario_step_name: xmlMessageTranslatorLite
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/xmlmessagetranslatorlite
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/xmlmessagetranslatorlite/xmlmessagetranslatorlite.logicapp.json
+      - env: ['dev']
+        paths:
+          - intermediaries/xmlmessagetranslatorlite/xmlmessagetranslatorlite.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - intermediaries/xmlmessagetranslatorlite/xmlmessagetranslatorlite.logicapp.prod.parameters.json.liquid
+
   - template: xmlMessageValidatorAzureLogicAppConsumption
     templateType: microsoft.template.arm
     resourceName: {{ xml_message_validator_logicapp_name }}
@@ -1712,6 +1742,24 @@ resourceTemplates:
           - intermediaries/xmlmessagetranslator/New-XmlMessageTranslator-LogicApp.ps1
           - intermediaries/xmlmessagetranslator/TearDown-85-XmlMessageTranslator-LogicApp.ps1.liquid
           - intermediaries/xmlmessagetranslator/Remove-XmlMessageTranslator-LogicApp.ps1
+
+  - template: deployXmlMessageTranslatorLiteAzureLogicAppConsumption
+    templateType: microsoft.template.powershell
+    resourceName: {{ xml_message_translator_lite_logicapp_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ system_application_group }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/intermediaries/xmlmessagetranslatorlite
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/xmlmessagetranslatorlite/Deploy-85-XmlMessageTranslatorLite-LogicApp.ps1.liquid
+          - intermediaries/xmlmessagetranslatorlite/New-XmlMessageTranslatorLite-LogicApp.ps1
+          - intermediaries/xmlmessagetranslatorlite/TearDown-85-XmlMessageTranslatorLite-LogicApp.ps1.liquid
+          - intermediaries/xmlmessagetranslatorlite/Remove-XmlMessageTranslatorLite-LogicApp.ps1
 
   - template: deployXmlMessageValidatorAzureLogicAppConsumption
     templateType: microsoft.template.powershell

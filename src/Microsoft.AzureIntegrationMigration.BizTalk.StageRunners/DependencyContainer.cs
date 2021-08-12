@@ -130,7 +130,8 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.StageRunners
             services.AddTransient<BizTalk.Convert.GeneratorRules.SC001DocumentSchemaGenerator>();
             services.AddTransient<BizTalk.Convert.GeneratorRules.SC002PropertySchemaGenerator>();
             services.AddTransient<BizTalk.Convert.GeneratorRules.MA001TransformGenerator>();
-            services.AddTransient<BizTalk.Convert.GeneratorRules.WF001WorkflowGenerator>();
+            services.AddTransient<BizTalk.Convert.GeneratorRules.WF001ConsumptionWorkflowGenerator>();
+            services.AddTransient<BizTalk.Convert.GeneratorRules.WF002StandardWorkflowGenerator>();
 
             // Build provider
             var provider = services.BuildServiceProvider();

@@ -79,6 +79,15 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {RuleId}: Added parameter {ParameterName} to logic app parameters definition..
+        /// </summary>
+        internal static string AddedParameterToLogicAppParameters {
+            get {
+                return ResourceManager.GetString("AddedParameterToLogicAppParameters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {RuleId}: Added {ActionCount} pre-built actions to workflow activity container {ContainerName}..
         /// </summary>
         internal static string AddedPreBuiltActionsToWorkflowActivityContainer {
@@ -462,6 +471,15 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.Resources {
         internal static string SkippingRuleAsMigrationTargetMessageBusMissing {
             get {
                 return ResourceManager.GetString("SkippingRuleAsMigrationTargetMessageBusMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {RuleId}: The target {TargetName} is not supproted by this converter. No work will be performed..
+        /// </summary>
+        internal static string TargetNotSupportedByConverter {
+            get {
+                return ResourceManager.GetString("TargetNotSupportedByConverter", resourceCulture);
             }
         }
         

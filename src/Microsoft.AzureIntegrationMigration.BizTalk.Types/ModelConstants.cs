@@ -861,6 +861,31 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Types
         public const string ResourceTypeSuffixWorkflowParametersDefinition = ".parametersdefinition";
 
         /// <summary>
+        /// Defines a workflow parameters resource.
+        /// </summary>
+        public const string ResourceTypeSuffixWorkflowParameters = ".parameters";
+
+        /// <summary>
+        /// Defines a workflow local parameters resource.
+        /// </summary>
+        public const string ResourceTypeSuffixWorkflowLocalParameters = ".localparameters";
+
+        /// <summary>
+        /// Defines a workflow appsettings resource.
+        /// </summary>
+        public const string ResourceTypeSuffixWorkflowAppSettings = ".appsettings";
+
+        /// <summary>
+        /// Defines a workflow local appsettings resource.
+        /// </summary>
+        public const string ResourceTypeSuffixWorkflowLocalAppSettings = ".localappsettings";
+
+        /// <summary>
+        /// Defines a workflow connections resource.
+        /// </summary>
+        public const string ResourceTypeSuffixWorkflowConnections = ".connections";
+
+        /// <summary>
         /// Defines a workflow parameter resource.
         /// </summary>
         public const string ResourceTypeSuffixWorkflowParameter = ".parameter";
@@ -968,6 +993,36 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Types
         /// Defines the resource template parameter for a scenario step name.
         /// </summary>
         public const string ResourceTemplateParameterScenarioStepName = "scenario_step_name";
+
+        /// <summary>
+        /// Defines the resource template parameter for a workflow definition file.
+        /// </summary>
+        public const string ResourceTemplateParameterWorkflowDefinitionFile = "workflow_definition_file";
+
+        /// <summary>
+        /// Defines the resource template parameter for a workflow parameters file.
+        /// </summary>
+        public const string ResourceTemplateParameterWorkflowParametersFile = "workflow_parameters_file";
+
+        /// <summary>
+        /// Defines the resource template parameter for a workflow local parameters file.
+        /// </summary>
+        public const string ResourceTemplateParameterWorkflowLocalParametersFile = "workflow_local_parameters_file";
+
+        /// <summary>
+        /// Defines the resource template parameter for a workflow connections file.
+        /// </summary>
+        public const string ResourceTemplateParameterWorkflowConnectionsFile = "workflow_connections_file";
+
+        /// <summary>
+        /// Defines the resource template parameter for a workflow appsettings file.
+        /// </summary>
+        public const string ResourceTemplateParameterWorkflowAppSettingsFile = "workflow_appsettings_file";
+
+        /// <summary>
+        /// Defines the resource template parameter for a workflow local appsettings file.
+        /// </summary>
+        public const string ResourceTemplateParameterWorkflowLocalAppSettingsFile = "workflow_local_appsettings_file";
 
         #endregion
     }
