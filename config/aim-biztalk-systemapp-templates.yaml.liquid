@@ -329,35 +329,6 @@ resourceTemplates:
         paths:
           - application/workflows/messageresponsehandler/messageresponsehandlerservicebus.apiconnection.prod.parameters.json.liquid
 
-  - template: messageResponseHandlerAzureServiceBusApiConnectionStandard
-    templateType: microsoft.template.arm
-    resourceName: {{ aim_user_prefix }}apic-aimmessageresponsehandler-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.web.connections
-    tags:
-      - Application: {{ system_application_name }}
-      - Env: {{ model.migration_target.deployment_environment | downcase }}
-    parameters:
-      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
-      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
-      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
-      - azure_api_connection_version: V2
-      - azure_service_bus_resource_group_name: {{ system_application_group }}
-      - azure_service_bus_namespace : {{ service_bus_namespace_name }}      
-    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/apiconnections
-    files:
-      - env: ['dev', 'prod']
-        paths:
-          - application/workflows/messageresponsehandler/messageresponsehandlerservicebus.apiconnection.json.liquid
-          - application/workflows/messageresponsehandler/messageresponsehandlerservicebus.apiconnectionaccesspolicy.json
-      - env: ['dev']
-        paths:
-          - application/workflows/messageresponsehandler/messageresponsehandlerservicebus.apiconnection.dev.parameters.json.liquid
-          - application/workflows/messageresponsehandler/messageresponsehandlerservicebus.apiconnectionaccesspolicy.dev.parameters.json.liquid
-      - env: ['prod']
-        paths:
-          - application/workflows/messageresponsehandler/messageresponsehandlerservicebus.apiconnection.prod.parameters.json.liquid
-          - application/workflows/messageresponsehandler/messageresponsehandlerservicebus.apiconnectionaccesspolicy.prod.parameters.json.liquid
-
   - template: messageSuspendProcessorAzureServiceBusApiConnectionConsumption
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}apic-aimmessagesuspendprocessor-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
@@ -1583,26 +1554,6 @@ resourceTemplates:
         paths:                                       
           - application/workflows/messageresponsehandler/Deploy-80-MessageResponseHandlerServiceBus-ApiConnection.ps1.liquid
           - application/workflows/messageresponsehandler/New-MessageResponseHandlerServiceBus-ApiConnection.ps1
-          - application/workflows/messageresponsehandler/Remove-MessageResponseHandlerServiceBus-ApiConnection.ps1
-          - application/workflows/messageresponsehandler/TearDown-80-MessageResponseHandlerServiceBus-ApiConnection.ps1.liquid
-
-  - template: deployMessageResponseHandlerAzureServiceBusApiConnectionStandard
-    templateType: microsoft.template.powershell
-    resourceName: {{ aim_user_prefix }}apic-aimmessageresponsehandler-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.scripts.powershell
-    parameters:
-      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
-      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
-      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
-      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}      
-    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/apiconnections
-    files:
-      - env: ['dev', 'prod']
-        paths:                                       
-          - application/workflows/messageresponsehandler/Deploy-80-MessageResponseHandlerServiceBus-ApiConnection.ps1.liquid
-          - application/workflows/messageresponsehandler/Deploy-90-MessageResponseHandlerServiceBus-ApiConnectionAccessPolicy.ps1.liquid
-          - application/workflows/messageresponsehandler/New-MessageResponseHandlerServiceBus-ApiConnection.ps1
-          - application/workflows/messageresponsehandler/New-MessageResponseHandlerServiceBus-ApiConnectionAccessPolicy.ps1
           - application/workflows/messageresponsehandler/Remove-MessageResponseHandlerServiceBus-ApiConnection.ps1
           - application/workflows/messageresponsehandler/TearDown-80-MessageResponseHandlerServiceBus-ApiConnection.ps1.liquid
 

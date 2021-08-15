@@ -261,12 +261,7 @@ resources:
       - target: ['consumptionlite']
         templates:
           - messageResponseHandlerAzureLogicAppConsumption
-      - target: ['standard']
-        templates:
-          - messageResponseHandlerAzureLogicAppStandard
-          - messageResponseHandlerAzureServiceBusApiConnectionStandard
-          - deployMessageResponseHandlerAzureServiceBusApiConnectionStandard
-      - target: ['standardlite']
+      - target: ['standard', 'standardlite']
         templates:
           - messageResponseHandlerAzureLogicAppStandard
  
