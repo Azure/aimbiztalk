@@ -60,6 +60,11 @@ resources:
           - deployMessageBusServiceAppService
           - deployMessageBusServiceStorage
           - deployMessageBusGroupApimRoleAssignment
+          - configCacheUpdaterAzureLogicAppConsumption
+          - configCacheUpdaterEventGridApiConnectionConsumption
+          - deployConfigCacheUpdaterAzureLogicAppConsumption
+          - deployConfigCacheUpdaterEventGridApiConnectionConsumption
+          - deployConfigCacheUpdaterAppConfigRoleAssignmentConsumption
       - target: ['standard']
         templates:
           - messageBusServiceAzureRole
@@ -67,12 +72,28 @@ resources:
           - messageBusServiceAzureAppServiceConsumption
           - messageBusServiceLogicAppServicePlanStandard
           - messageBusServiceAzureStorageAccount
+          - messageBusApplicationAzureLogicAppStandard
+          - messageBusApplicationAzureLogicAppStandardWorkflows
+          - messageBusApplicationAzureLogicAppStandardWorkflowsVsCode
+          - messageBusApplicationAzureLogicAppStandardWorkflowsWorkflowDesigntime
+          - messageBusApplicationAzureEventGridApiConnectionStandard
+          - messageBusApplicationAzureEventGridApiConnectionAccessPolicy
+          - configCacheUpdaterAzureLogicAppStandard
           - deployMessageBusServiceRole
           - deployMessageBusServiceApiManagement
           - deployMessageBusServiceAppService
           - deployMessageBusServiceLogicAppServicePlanStandard
           - deployMessageBusServiceStorage
           - deployMessageBusGroupApimRoleAssignment
+          - deployMessageBusAzureLogicAppStandard
+          - deployMessageBusAzureEventGridApiConnectionStandard
+          - deployMessageBusAzureEventGridApiConnectionAccessPolicyStandard
+          - deployMessageBusAppConfigStoreRoleAssignmentStandard
+          - configCacheUpdaterAzureLogicAppConsumption
+          - configCacheUpdaterEventGridApiConnectionConsumption
+          - deployConfigCacheUpdaterAzureLogicAppConsumption
+          - deployConfigCacheUpdaterEventGridApiConnectionConsumption
+          - deployConfigCacheUpdaterAppConfigRoleAssignmentConsumption
   
   - resource: messageBusOps
     targets:

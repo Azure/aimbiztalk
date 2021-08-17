@@ -4,6 +4,12 @@
   {%- assign aim_user_prefix = "" -%}
 {%- endif -%}
 {%- assign formatted_azure_primary_region = format_region(model.migration_target.azure_primary_region) | downcase -%}
+{%- capture message_bus_application -%}
+messagebusservice
+{%- endcapture -%}
+{%- capture message_bus_application_name -%}
+AIM-MessageBus
+{%- endcapture -%}
 {%- capture message_bus_resource_group_name -%}
 {{ aim_user_prefix }}rg-aimmsgbus-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
 {%- endcapture -%}
@@ -28,7 +34,7 @@ aim-apim-subscriptionkey-unlimited
 {%- capture app_service_name -%}
 {{ aim_user_prefix }}plan-aimmsgbussvc-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
 {%- endcapture -%}
-{%- capture func_storage_account_name -%}
+{%- capture storage_account_name -%}
 {{ aim_user_prefix }}staimmsgbussvc{{ model.migration_target.deployment_environment | downcase }}01{{ aim_unique_suffix }}
 {%- endcapture -%}
 {%- capture func_routing_manager_name -%}
@@ -40,8 +46,20 @@ aim-apim-subscriptionkey-unlimited
 {%- capture app_insights_name -%}
 {{ aim_user_prefix }}appi-aimmsgbusops-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
 {%- endcapture -%}
+{%- capture messagebus_logic_app_name -%}
+{{ aim_user_prefix }}logic-aimmsgbussvc-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
 {%- capture routing_slip_router_logicapp_name -%}
 {{ aim_user_prefix }}logic-aimroutingsliprouter-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture config_cache_updater_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimconfigcacheupdater-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture event_grid_subscribe_api_connection_name -%}
+{{ aim_user_prefix }}apic-eventgridsubscribe-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture messagebus_event_grid_api_connection_name -%}
+{{ aim_user_prefix }}apic-messagebuseventgrid-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
 {%- endcapture -%}
 {%- capture get_logic_app_callback_url_role_name -%}
 {{ aim_user_prefix | append: ' ' }}{{ 'Get Logic App Callback Url' | append: ' ' }}{{ aim_unique_suffix }}
@@ -83,7 +101,7 @@ resourceTemplates:
     resourceName: {{ message_bus_resource_group_name }}
     resourceType: microsoft.groups.azureresourcegroup
     tags:
-      - Application: AIM-MessageBus
+      - Application: {{ message_bus_application_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -109,7 +127,7 @@ resourceTemplates:
     resourceName: {{ app_insights_name }}
     resourceType: microsoft.services.azureappinsights
     tags:
-      - Application: AIM-MessageBus
+      - Application: {{ message_bus_application_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -136,7 +154,7 @@ resourceTemplates:
     resourceName: {{ app_config_name }}
     resourceType: microsoft.stores.azureappconfiguration
     tags:
-      - Application: AIM-MessageBus
+      - Application: {{ message_bus_application_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -159,7 +177,7 @@ resourceTemplates:
     resourceName: {{ key_vault_name }}
     resourceType: microsoft.stores.azurekeyvault
     tags:
-      - Application: AIM-MessageBus
+      - Application: {{ message_bus_application_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -183,7 +201,7 @@ resourceTemplates:
     resourceName: {{ integration_account_name }}
     resourceType: microsoft.stores.azureintegrationaccount
     tags:
-      - Application: AIM-MessageBus
+      - Application: {{ message_bus_application_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -224,7 +242,7 @@ resourceTemplates:
     resourceName: {{ api_management_service_name }}
     resourceType: microsoft.services.azureapimanagement
     tags:
-      - Application: AIM-MessageBus
+      - Application: {{ message_bus_application_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -251,7 +269,7 @@ resourceTemplates:
     resourceName: {{ api_management_service_name }}
     resourceType: microsoft.services.azureapimanagement
     tags:
-      - Application: AIM-MessageBus
+      - Application: {{ message_bus_application_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -277,7 +295,7 @@ resourceTemplates:
     resourceName: {{ api_management_service_name }}
     resourceType: microsoft.services.azureapimanagement
     tags:
-      - Application: AIM-MessageBus
+      - Application: {{ message_bus_application_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -304,7 +322,7 @@ resourceTemplates:
     resourceName: {{ app_service_name }}
     resourceType: microsoft.services.azureappservice
     tags:
-      - Application: AIM-MessageBus
+      - Application: {{ message_bus_application_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -329,7 +347,7 @@ resourceTemplates:
     resourceName: {{ standard_app_service_plan_name }}
     resourceType: microsoft.services.azureappservice
     tags:
-      - Application: AIM-MessageBus
+      - Application: {{ message_bus_application_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -352,10 +370,10 @@ resourceTemplates:
   
   - template: messageBusServiceAzureStorageAccount
     templateType: microsoft.template.json
-    resourceName: {{ func_storage_account_name }}
+    resourceName: {{ storage_account_name }}
     resourceType: microsoft.services.azurestorage
     tags:
-      - Application: AIM-MessageBus
+      - Application: {{ message_bus_application_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -378,13 +396,13 @@ resourceTemplates:
     resourceName: {{ func_routing_manager_name }}
     resourceType: microsoft.services.azurefunction
     tags:
-      - Application: AIM-MessageBus
+      - Application: {{ message_bus_application_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
-      - azure_storage_account_name: {{ func_storage_account_name }}
+      - azure_storage_account_name: {{ storage_account_name }}
       - azure_app_insights_name: {{ app_insights_name }}
       - azure_app_service_plan_name: {{ app_service_name }}
       - azure_api_management_service_name: {{ api_management_service_name }}
@@ -405,7 +423,7 @@ resourceTemplates:
     resourceName: {{ api_management_service_name }}
     resourceType: microsoft.services.azureapimanagement
     tags:
-      - Application: AIM-MessageBus
+      - Application: {{ message_bus_application_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -430,13 +448,13 @@ resourceTemplates:
     resourceName: {{ func_messaging_manager_name }}
     resourceType: microsoft.services.azurefunction
     tags:
-      - Application: AIM-MessageBus
+      - Application: {{ message_bus_application_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
-      - azure_storage_account_name: {{ func_storage_account_name }}
+      - azure_storage_account_name: {{ storage_account_name }}
       - azure_app_insights_name: {{ app_insights_name }}
       - azure_app_service_plan_name: {{ app_service_name }}
       - azure_api_management_service_name: {{ api_management_service_name }}
@@ -457,7 +475,7 @@ resourceTemplates:
     resourceName: {{ api_management_service_name }}
     resourceType: microsoft.services.azureapimanagement
     tags:
-      - Application: AIM-MessageBus
+      - Application: {{ message_bus_application_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -486,7 +504,7 @@ resourceTemplates:
     resourceName: {{ routing_slip_router_logicapp_name }}
     resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
-      - Application: AIM-MessageBus
+      - Application: {{ message_bus_application_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -506,6 +524,227 @@ resourceTemplates:
       - env: ['prod']
         paths:
           - messagebus/workflows/routingsliprouter/routingsliprouter.logicapp.prod.parameters.json.liquid
+
+  - template: configCacheUpdaterAzureLogicAppConsumption
+    templateType: microsoft.template.arm
+    resourceName: {{ config_cache_updater_logicapp_name }}
+    resourceType: microsoft.workflows.azurelogicapp.consumption
+    tags:
+      - Application: {{ message_bus_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - apim_service_name: {{ api_management_service_name }}
+      - app_config_store_name: {{ app_config_name }}
+      - event_grid_api_connection_name: {{ event_grid_subscribe_api_connection_name }}
+    outputPath: messagebus/workflows/configcacheupdater
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/workflows/configcacheupdater/configcacheupdater.logicapp.json
+      - env: ['dev']
+        paths:
+          - messagebus/workflows/configcacheupdater/configcacheupdater.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/workflows/configcacheupdater/configcacheupdater.logicapp.prod.parameters.json.liquid
+
+  - template: configCacheUpdaterEventGridApiConnectionConsumption
+    templateType: microsoft.template.arm
+    resourceName: {{ event_grid_subscribe_api_connection_name }}
+    resourceType: microsoft.workflows.azurelogicapp.consumption
+    tags:
+      - Application: {{ message_bus_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+    outputPath: messagebus/workflows/configcacheupdater
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/workflows/configcacheupdater/eventgridsubscribe.apiconnection.json
+      - env: ['dev']
+        paths:
+          - messagebus/workflows/configcacheupdater/eventgridsubscribe.apiconnection.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/workflows/configcacheupdater/eventgridsubscribe.apiconnection.prod.parameters.json.liquid
+
+  # ------------------------------------------------------------------------------
+  # Standard Workflows
+  # ------------------------------------------------------------------------------
+
+  - template: messageBusApplicationAzureLogicAppStandard
+    templateType: microsoft.template.arm
+    resourceName: {{ messagebus_logic_app_name }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ message_bus_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ messagebus_logic_app_name }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_storage_account_name: {{ storage_account_name }}
+      - azure_app_service_plan_name: {{ standard_app_service_plan_name }}
+      - app_insights_name: {{ app_insights_name }}
+      - apim_service_name: {{ api_management_service_name }}
+      - messagebus_event_grid_api_connection_name: {{ messagebus_event_grid_api_connection_name }}
+      - app_config_store_name: {{ app_config_name }}
+    outputPath: messagebus/workflows
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/standard/messagebus.logic.json
+      - env: ['dev']
+        paths:
+          - messagebus/standard/messagebus.logic.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/standard/messagebus.logic.prod.parameters.json.liquid
+
+  - template: messageBusApplicationAzureLogicAppStandardWorkflows
+    templateType: microsoft.template.arm
+    resourceName: {{ messagebus_logic_app_name }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ message_bus_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ messagebus_logic_app_name }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+    outputPath: messagebus/workflows/messagebus.logic.workflows
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/standard/messagebus.logic.workflows/.funcignore
+          - messagebus/standard/messagebus.logic.workflows/.gitignore
+          - messagebus/standard/messagebus.logic.workflows/connections.json
+          - messagebus/standard/messagebus.logic.workflows/host.json
+          - messagebus/standard/messagebus.logic.workflows/local.settings.json
+          - messagebus/standard/messagebus.logic.workflows/parameters.json
+          - messagebus/standard/messagebus.logic.workflows/parameters.local.json
+
+  - template: messageBusApplicationAzureLogicAppStandardWorkflowsVsCode
+    templateType: microsoft.template.arm
+    resourceName: {{ messagebus_logic_app_name }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ message_bus_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ messagebus_logic_app_name }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+    outputPath: messagebus/workflows/messagebus.logic.workflows/.vscode
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/standard/messagebus.logic.workflows/.vscode/extensions.json
+          - messagebus/standard/messagebus.logic.workflows/.vscode/launch.json
+          - messagebus/standard/messagebus.logic.workflows/.vscode/settings.json
+          - messagebus/standard/messagebus.logic.workflows/.vscode/tasks.json
+
+  - template: messageBusApplicationAzureLogicAppStandardWorkflowsWorkflowDesigntime
+    templateType: microsoft.template.arm
+    resourceName: {{ messagebus_logic_app_name }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ message_bus_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ messagebus_logic_app_name }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+    outputPath: messagebus/workflows/messagebus.logic.workflows/workflow-designtime
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/standard/messagebus.logic.workflows/workflow-designtime/host.json
+          - messagebus/standard/messagebus.logic.workflows/workflow-designtime/local.settings.json
+
+  - template: messageBusApplicationAzureEventGridApiConnectionStandard
+    templateType: microsoft.template.arm
+    resourceName: {{ messagebus_event_grid_api_connection_name }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ message_bus_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V2
+    outputPath: messagebus/workflows
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/standard/messagebuseventgrid.apiconnection.json
+      - env: ['dev']
+        paths:
+          - messagebus/standard/messagebuseventgrid.apiconnection.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/standard/messagebuseventgrid.apiconnection.prod.parameters.json.liquid
+
+  - template: messageBusApplicationAzureEventGridApiConnectionAccessPolicy
+    templateType: microsoft.template.arm
+    resourceName: {{ messagebus_event_grid_api_connection_name }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ message_bus_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - messagebus_logic_app_name: {{ messagebus_logic_app_name }}
+    outputPath: messagebus/workflows
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/standard/messagebuseventgrid.apicaccesspolicy.json
+      - env: ['dev']
+        paths:
+          - messagebus/standard/messagebuseventgrid.apicaccesspolicy.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - messagebus/standard/messagebuseventgrid.apicaccesspolicy.prod.parameters.json.liquid
+
+  - template: configCacheUpdaterAzureLogicAppStandard
+    templateType: microsoft.template.arm
+    resourceName: configcacheupdater
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ message_bus_application_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_logic_app_name: {{ messagebus_logic_app_name }}
+    outputPath: messagebus/workflows/messagebus.logic.workflows/configcacheupdater
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/standard/messagebus.logic.workflows/configcacheupdater/workflow.json
 
   # ------------------------------------------------------------------------------
   # Scripts
@@ -732,7 +971,7 @@ resourceTemplates:
 
   - template: deployMessageBusServiceStorage
     templateType: microsoft.template.powershell
-    resourceName: {{ func_storage_account_name }}
+    resourceName: {{ storage_account_name }}
     resourceType: microsoft.scripts.powershell
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -947,4 +1186,139 @@ resourceTemplates:
           - messagebus/workflows/routingsliprouter/Deploy-80-RoutingSlipRouter-LogicApp.ps1.liquid
           - messagebus/workflows/routingsliprouter/New-RoutingSlipRouter-LogicApp.ps1
           - messagebus/workflows/routingsliprouter/TearDown-80-RoutingSlipRouter-LogicApp.ps1.liquid
-          - messagebus/workflows/routingsliprouter/Remove-RoutingSlipRouter-LogicApp.ps1  
+          - messagebus/workflows/routingsliprouter/Remove-RoutingSlipRouter-LogicApp.ps1
+
+  - template: deployConfigCacheUpdaterAzureLogicAppConsumption
+    templateType: microsoft.template.powershell
+    resourceName: {{ config_cache_updater_logicapp_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath: messagebus/workflows/configcacheupdater
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/workflows/configcacheupdater/Deploy-90-ConfigCacheUpdater-LogicApp-Disabled.ps1.liquid
+          - messagebus/workflows/configcacheupdater/Deploy-110-ConfigCacheUpdater-LogicApp-Enabled.ps1.liquid
+          - messagebus/workflows/configcacheupdater/New-ConfigCacheUpdater-LogicApp.ps1
+          - messagebus/workflows/configcacheupdater/TearDown-90-ConfigCacheUpdater-LogicApp.ps1.liquid
+          - messagebus/workflows/configcacheupdater/Remove-ConfigCacheUpdater-LogicApp.ps1
+
+  - template: deployConfigCacheUpdaterEventGridApiConnectionConsumption
+    templateType: microsoft.template.powershell
+    resourceName: {{ event_grid_subscribe_api_connection_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+    outputPath: messagebus/workflows/configcacheupdater
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/workflows/configcacheupdater/Deploy-80-EventGridSubscribe-ApiConnection.ps1.liquid
+          - messagebus/workflows/configcacheupdater/New-EventGridSubscribe-ApiConnection.ps1
+          - messagebus/workflows/configcacheupdater/TearDown-80-EventGridSubscribe-ApiConnection.ps1.liquid
+          - messagebus/workflows/configcacheupdater/Remove-EventGridSubscribe-ApiConnection.ps1
+
+  - template: deployConfigCacheUpdaterAppConfigRoleAssignmentConsumption
+    templateType: microsoft.template.powershell
+    resourceName: {{ event_grid_subscribe_api_connection_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - app_config_store_name: {{ app_config_name }}
+      - logic_app_name: {{ config_cache_updater_logicapp_name }}
+      - role_name: Contributor
+    outputPath: messagebus/workflows/configcacheupdater
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/workflows/configcacheupdater/Deploy-100-AppConfigStore-RoleAssignment.ps1.liquid
+          - messagebus/workflows/configcacheupdater/New-AppConfigStore-RoleAssignment.ps1
+          - messagebus/workflows/configcacheupdater/TearDown-100-AppConfigStore-RoleAssignment.ps1.liquid
+          - messagebus/workflows/configcacheupdater/Remove-AppConfigStore-RoleAssignment.ps1
+
+  - template: deployMessageBusAzureLogicAppStandard
+    templateType: microsoft.template.powershell
+    resourceName: {{ messagebus_logic_app_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath: messagebus/workflows
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - messagebus/standard/Deploy-90-MessageBus-LogicApp.ps1.liquid
+          - messagebus/standard/New-MessageBus-LogicApp.ps1
+          - messagebus/standard/TearDown-90-MessageBus-LogicApp.ps1.liquid
+          - messagebus/standard/Remove-MessageBus-LogicApp.ps1
+
+  - template: deployMessageBusAzureEventGridApiConnectionStandard
+    templateType: microsoft.template.powershell
+    resourceName: {{ messagebus_event_grid_api_connection_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+    outputPath: messagebus/workflows
+    files:
+      - env: ['dev', 'prod']
+        paths:                                       
+          - messagebus/standard/Deploy-80-MessageBusEventGrid-ApiConnection.ps1.liquid
+          - messagebus/standard/New-MessageBusEventGrid-ApiConnection.ps1
+          - messagebus/standard/Remove-MessageBusEventGrid-ApiConnection.ps1
+          - messagebus/standard/TearDown-80-MessageBusEventGrid-ApiConnection.ps1.liquid
+
+  - template: deployMessageBusAzureEventGridApiConnectionAccessPolicyStandard
+    templateType: microsoft.template.powershell
+    resourceName: {{ messagebus_event_grid_api_connection_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+    outputPath: messagebus/workflows
+    files:
+      - env: ['dev', 'prod']
+        paths:                                       
+          - messagebus/standard/Deploy-95-MessageBusEventGrid-ApiConnectionAccessPolicy.ps1.liquid
+          - messagebus/standard/New-MessageBusEventGrid-ApiConnectionAccessPolicy.ps1
+
+  - template: deployMessageBusAppConfigStoreRoleAssignmentStandard
+    templateType: microsoft.template.powershell
+    resourceName: {{ messagebus_event_grid_api_connection_name }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - app_config_store_name: {{ app_config_name }}
+      - logic_app_name: {{ messagebus_logic_app_name }}
+      - role_name: Contributor
+    outputPath: messagebus/workflows
+    files:
+      - env: ['dev', 'prod']
+        paths:                                       
+          - messagebus/standard/Deploy-95-AppConfigStore-RoleAssignment.ps1.liquid
+          - messagebus/standard/New-AppConfigStore-RoleAssignment.ps1
+          - messagebus/standard/Remove-AppConfigStore-RoleAssignment.ps1
+          - messagebus/standard/TearDown-95-AppConfigStore-RoleAssignment.ps1.liquid
