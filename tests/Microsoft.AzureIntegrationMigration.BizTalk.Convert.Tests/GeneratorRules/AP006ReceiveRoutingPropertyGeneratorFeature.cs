@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.Collections.Generic;
@@ -319,7 +319,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.Tests.GeneratorRul
         public void GenerateWithSuccess(AP006ReceiveRoutingPropertyGenerator generator, IFileRepository fileRepository, IScenarioRouteWalker routeWalker, ILogger logger, AzureIntegrationServicesModel model, Application application, MigrationContext context, Exception e)
         {
             var generatedFileName = string.Empty;
-            JObject generatedJson = null;
+            JToken generatedJson = null;
             var resourcemapkey = "resourcemapkey";
             var scenarioName = "scenarioName";
 
@@ -337,9 +337,9 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.Tests.GeneratorRul
                 {
                     _mockFileRepository.Setup(f => f.WriteJsonFile(
                         It.IsAny<string>(),
-                        It.IsAny<JObject>()
+                        It.IsAny<JToken>()
                         ))
-                    .Callback<string, JObject>(
+                    .Callback<string, JToken>(
                         (p1, p2) =>
                         {
                             generatedFileName = p1;
@@ -548,7 +548,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.Tests.GeneratorRul
         public void GenerateFailsWhenMissingConfig(AP006ReceiveRoutingPropertyGenerator generator, IFileRepository fileRepository, IScenarioRouteWalker routeWalker, ILogger logger, AzureIntegrationServicesModel model, Application application, MigrationContext context, Exception e)
         {
             var generatedFileName = string.Empty;
-            JObject generatedJson = null;
+            JToken generatedJson = null;
             var resourcemapkey = "resourcemapkey";
             var scenarioName = "scenarioName";
             var activatingEndpointName = "activatingEndpointName ";
@@ -567,9 +567,9 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.Tests.GeneratorRul
                 {
                     _mockFileRepository.Setup(f => f.WriteJsonFile(
                         It.IsAny<string>(),
-                        It.IsAny<JObject>()
+                        It.IsAny<JToken>()
                         ))
-                    .Callback<string, JObject>(
+                    .Callback<string, JToken>(
                         (p1, p2) =>
                         {
                             generatedFileName = p1;

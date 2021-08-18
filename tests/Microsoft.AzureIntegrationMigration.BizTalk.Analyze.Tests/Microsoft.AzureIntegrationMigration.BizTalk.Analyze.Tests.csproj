@@ -35,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AzureIntegrationMigration.ApplicationModel" Version="0.5.2-beta.2021042628864" />
+    <PackageReference Include="Microsoft.AzureIntegrationMigration.ApplicationModel" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,6 +44,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    <PackageReference Include="Microsoft.AzureIntegrationMigration.Runner" Version="1.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
     <PackageReference Include="Moq" Version="4.14.5" />
     <PackageReference Include="Xbehave" Version="2.4.1" />
