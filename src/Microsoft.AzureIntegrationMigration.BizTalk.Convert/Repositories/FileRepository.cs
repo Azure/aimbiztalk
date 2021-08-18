@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.Collections.Generic;
@@ -75,11 +75,11 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.Repositories
         }
 
         /// <summary>
-        /// Writes a Json object to file.
+        /// Writes a Json token to a file.
         /// </summary>
         /// <param name="filePath">The full name of the file to write to.</param>
-        /// <param name="json">The Json object to write to the file.</param>
-        public void WriteJsonFile(string filePath, JObject json)
+        /// <param name="json">The Json token to write to the file.</param>
+        public void WriteJsonFile(string filePath, JToken json)
         {
             _ = json ?? throw new ArgumentNullException(nameof(json));
 

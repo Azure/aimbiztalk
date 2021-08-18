@@ -1212,7 +1212,10 @@
   <data name="TargetResourceIconKeyVault" xml:space="preserve">
     <value>&lt;i class="fas fa-key text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
   </data>
-  <data name="TargetResourceIconLogicApp" xml:space="preserve">
+  <data name="TargetResourceIconLogicAppConsumption" xml:space="preserve">
+    <value>&lt;i class="fas fa-project-diagram text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
+  </data>
+  <data name="TargetResourceIconLogicAppStandard" xml:space="preserve">
     <value>&lt;i class="fas fa-project-diagram text-secondary small mr-2 ml-2 analysis-icon"&gt;&lt;/i&gt;</value>
   </data>
   <data name="TargetResourceIconMessage" xml:space="preserve">
@@ -1278,8 +1281,11 @@
   <data name="TargetResourceNameKeyVault" xml:space="preserve">
     <value>Key Vault</value>
   </data>
-  <data name="TargetResourceNameLogicApp" xml:space="preserve">
-    <value>Logic App</value>
+  <data name="TargetResourceNameLogicAppConsumption" xml:space="preserve">
+    <value>Consumption Logic App</value>
+  </data>
+  <data name="TargetResourceNameLogicAppStandard" xml:space="preserve">
+    <value>Standard Logic App</value>
   </data>
   <data name="TargetResourceNameMessage" xml:space="preserve">
     <value>Message</value>

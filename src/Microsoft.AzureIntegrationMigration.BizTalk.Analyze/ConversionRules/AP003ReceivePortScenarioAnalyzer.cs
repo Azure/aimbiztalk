@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.Collections.Generic;
@@ -370,7 +370,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
         {
             _logger.LogDebug(TraceMessages.CreatingReceiveEndpointAdapter, RuleName, receiveLocation.ReceiveLocationTransportType.Name, receiveLocation.Name);
 
-            // Create an endpoint adapter (assume receive-reponse or receive, but some adapters may be accept which will be changed later by a specific rule)
+            // Create an endpoint adapter (assume receive-response or receive, but some adapters may be accept which will be changed later by a specific rule)
             var endpointAdapter = new AdapterEndpoint(receiveLocation.Name, receiveLocation.ReceiveLocationTransportType.Name)
             {
                 Activator = true,

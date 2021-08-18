@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.Collections.Generic;
@@ -147,7 +147,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
 
                             if (logicAppResource != null)
                             {
-                                // Generate the routing conig.
+                                // Generate the routing config.
                                 routes.Add(BuildRoutingSlipConfig(configurationRoutingObject.ScenarioStepName, logicAppResource));
                             }
                             else
@@ -226,22 +226,53 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         /// <returns>The routing slip config.</returns>
         private static JObject BuildRoutingSlipConfig(string scenarioStepName, TargetResourceTemplate resource)
         {
-            return JObject.FromObject(new
+            switch (resource.ResourceType)
             {
-                name = scenarioStepName,
-                routingSteps = new
-                {
-                    channelType = ModelConstants.TriggerChannelAzureApim
-                },
-                routingParameters = new
-                {
-                    messageReceiverType = resource.ResourceType,
-                    parameters = new
+                case ModelConstants.ResourceTypeAzureLogicAppConsumption:
                     {
-                        resourceId = $"/{resource?.Parameters[ModelConstants.ResourceTemplateParameterAzureResourceGroupName]}/{resource?.ResourceName}"
+                        return JObject.FromObject(new
+                        {
+                            name = scenarioStepName,
+                            routingSteps = new
+                            {
+                                channelType = ModelConstants.TriggerChannelAzureApim
+                            },
+                            routingParameters = new
+                            {
+                                messageReceiverType = resource.ResourceType,
+                                parameters = new
+                                {
+                                    resourceId = $"/{resource?.Parameters[ModelConstants.ResourceTemplateParameterAzureResourceGroupName]}/{resource?.ResourceName}"
+                                }
+                            }
+                        });
                     }
-                }
-            });
+
+                case ModelConstants.ResourceTypeAzureLogicAppStandard:
+                    {
+                        return JObject.FromObject(new
+                        {
+                            name = scenarioStepName,
+                            routingSteps = new
+                            {
+                                channelType = ModelConstants.TriggerChannelAzureApim
+                            },
+                            routingParameters = new
+                            {
+                                messageReceiverType = resource.ResourceType,
+                                parameters = new
+                                {
+                                    resourceId = $"/{resource?.Parameters[ModelConstants.ResourceTemplateParameterAzureResourceGroupName]}/{resource?.Parameters[ModelConstants.ResourceTemplateParameterAzureLogicAppName]}/{resource?.ResourceName}"
+                                }
+                            }
+                        });
+                    }
+
+                default:
+                    {
+                        return new JObject();
+                    }
+            }
         }
 
         /// <summary>
@@ -253,10 +284,11 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         /// <returns>The matching resource if one is found, otherwise null.</returns>
         private TargetResourceTemplate FindLogicAppResource(IEnumerable<TargetResourceTemplate> resources, string scope, string scenarioStepName)
         {
+            
             _logger.LogTrace(TraceMessages.FindingResourceTemplateByScenarioStepName, RuleName, ModelConstants.ResourceTypeAzureLogicApp, scenarioStepName, scope);
 
             var templates = resources.Where(r =>
-                r.ResourceType == ModelConstants.ResourceTypeAzureLogicApp &&
+                r.ResourceType.StartsWith(ModelConstants.ResourceTypeAzureLogicApp) &&
                 r.Parameters.ContainsKey(ModelConstants.ResourceTemplateParameterScenarioStepName) &&
                 r.Parameters[ModelConstants.ResourceTemplateParameterScenarioStepName].ToString() == scenarioStepName);
 

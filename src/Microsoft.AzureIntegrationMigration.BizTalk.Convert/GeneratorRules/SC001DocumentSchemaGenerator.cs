@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.Globalization;
@@ -101,17 +101,20 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                                 }
                                 else
                                 {
-                                    var integrationAccountSchemaResource = message.Resources.SingleOrDefault(r => r.ResourceType == ModelConstants.ResourceTypeXml);
+                                    var schemaXmlResources = message.Resources.Where(r => r.ResourceType == ModelConstants.ResourceTypeXml);
 
-                                    if (integrationAccountSchemaResource != null)
+                                    if (schemaXmlResources != null && schemaXmlResources.Count() > 0)
                                     {
-                                        var fileName = $"{targetApplication.Name}.{message.MessageSchema.Name}".Replace(" ", string.Empty);
+                                        foreach (var schemaXmlResource in schemaXmlResources)
+                                        {
+                                            var fileName = $"{targetApplication.Name}.{message.MessageSchema.Name}".Replace(" ", string.Empty);
 
-                                        var outputPath = new FileInfo(Path.Combine(conversionPath, Path.Combine(integrationAccountSchemaResource.OutputPath, $"{fileName}.xsd")));
+                                            var outputPath = new FileInfo(Path.Combine(conversionPath, Path.Combine(schemaXmlResource.OutputPath, $"{fileName}.xsd")));
 
-                                        _fileRepository.WriteXmlFile(outputPath.FullName, schemaResourceDefinition.ResourceContent.ToString());
+                                            _fileRepository.WriteXmlFile(outputPath.FullName, schemaResourceDefinition.ResourceContent.ToString());
 
-                                        _logger.LogDebug(TraceMessages.SavingArtifact, outputPath.FullName);
+                                            _logger.LogDebug(TraceMessages.SavingArtifact, outputPath.FullName);
+                                        }
                                     }
                                     else
                                     {

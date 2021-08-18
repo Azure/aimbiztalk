@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.Collections.Generic;
@@ -117,7 +117,8 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.StageRunners.Convert
                 Container.GetRequiredService<BizTalk.Convert.GeneratorRules.SC001DocumentSchemaGenerator>(),
                 Container.GetRequiredService<BizTalk.Convert.GeneratorRules.SC002PropertySchemaGenerator>(),
                 Container.GetRequiredService<BizTalk.Convert.GeneratorRules.MA001TransformGenerator>(),
-                Container.GetRequiredService<BizTalk.Convert.GeneratorRules.WF001WorkflowGenerator>(),
+                Container.GetRequiredService<BizTalk.Convert.GeneratorRules.WF001ConsumptionWorkflowGenerator>(),
+                Container.GetRequiredService<BizTalk.Convert.GeneratorRules.WF002StandardWorkflowGenerator>(),
                 Container.GetRequiredService<BizTalk.Convert.GeneratorRules.AP007ProcessManagerRoutingSlipGenerator>(),
                 Container.GetRequiredService<BizTalk.Convert.GeneratorRules.AP008ProcessManagerConfigurationEntryGenerator>()
             };

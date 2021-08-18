@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.Collections.Generic;
@@ -22,14 +22,14 @@ using Newtonsoft.Json.Linq;
 namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
 {
     /// <summary>
-    /// Defines a class that implements a converter that generates a workflow from snippets.
+    /// Defines a class that implements a converter that generates a standard Logic App workflow from snippets.
     /// </summary>
-    public sealed class WF001WorkflowGenerator : BizTalkConverterBase
+    public sealed class WF002StandardWorkflowGenerator : BizTalkConverterBase
     {
         /// <summary>
         /// Defines the name of this rule.
         /// </summary>
-        private const string RuleName = "WF001";
+        private const string RuleName = "WF002";
 
         /// <summary>
         /// Key for a default converter.
@@ -72,7 +72,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         private readonly IDictionary<string, ConvertActivityHandler> _activityConverters = new Dictionary<string, ConvertActivityHandler>();
 
         /// <summary>
-        /// Creates a new instance of a <see cref="WF001WorkflowGenerator"/> class.
+        /// Creates a new instance of a <see cref="WF002StandardWorkflowGenerator"/> class.
         /// </summary>
         /// <param name="fileRepository">The file repository.</param>
         /// <param name="repository">The repository.</param>
@@ -80,8 +80,8 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         /// <param name="model">The model.</param>
         /// <param name="context">The context.</param>
         /// <param name="logger">A logger.</param>
-        public WF001WorkflowGenerator(IFileRepository fileRepository, ITemplateRepository repository, ISnippetRenderer snippetRenderer, IApplicationModel model, MigrationContext context, ILogger logger)
-            : base(nameof(WF001WorkflowGenerator), model, context, logger)
+        public WF002StandardWorkflowGenerator(IFileRepository fileRepository, ITemplateRepository repository, ISnippetRenderer snippetRenderer, IApplicationModel model, MigrationContext context, ILogger logger)
+            : base(nameof(WF002StandardWorkflowGenerator), model, context, logger)
         {
             // Validate and set the member
             _fileRepository = fileRepository ?? throw new ArgumentNullException(nameof(fileRepository));
@@ -116,9 +116,16 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "The folder paths are lowercased, so must use a lowercase function.")]
         protected override async Task ConvertInternalAsync(CancellationToken token)
         {
+            // We only execute this converter if the Model Target is Standard or StandardLite
+            if (Model.MigrationTarget.TargetEnvironment != AzureIntegrationServicesTargetEnvironment.Standard && Model.MigrationTarget.TargetEnvironment != AzureIntegrationServicesTargetEnvironment.StandardLite)
+            {
+                _logger.LogDebug(TraceMessages.TargetNotSupportedByConverter, RuleName, Model.MigrationTarget.TargetEnvironment);
+                return;
+            }
+
             if (Model.MigrationTarget.MessageBus?.Applications != null)
             {
-                _logger.LogDebug(TraceMessages.RunningGenerator, RuleName, nameof(WF001WorkflowGenerator));
+                _logger.LogDebug(TraceMessages.RunningGenerator, RuleName, nameof(WF002StandardWorkflowGenerator));
 
                 foreach (var targetApplication in Model.MigrationTarget.MessageBus.Applications)
                 {
@@ -136,21 +143,21 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                     }
                 }
 
-                _logger.LogDebug(TraceMessages.GeneratorCompleted, RuleName, nameof(WF001WorkflowGenerator));
+                _logger.LogDebug(TraceMessages.GeneratorCompleted, RuleName, nameof(WF002StandardWorkflowGenerator));
             }
             else
             {
-                _logger.LogDebug(TraceMessages.SkippingRuleAsMigrationTargetMessageBusMissing, RuleName, nameof(WF001WorkflowGenerator));
+                _logger.LogDebug(TraceMessages.SkippingRuleAsMigrationTargetMessageBusMissing, RuleName, nameof(WF002StandardWorkflowGenerator));
             }
         }
 
         /// <summary>
-        /// Builds an instance of a process manager intermediary using snippets.
+        /// Builds an instance of a process manager intermediary using snippets, targeting the Standard runtime.
         /// </summary>
         /// <remarks>
-        /// As a process manager is a worklow related intermediary, this rule assumes that the workflow implementation
-        /// in AIS will be a Logic App.  This code will therefore expect the snippets to be individual parts of a
-        /// Logic App that need to be stitched together to form a single Logic App.
+        /// As a process manager is a workflow related intermediary, this rule assumes that the workflow implementation
+        /// in AIS will be a Standard Logic App Workflow.  This code will therefore expect the snippets to be individual parts of a
+        /// workflow that need to be stitched together to form a single Standard Logic App Workflow.
         /// </remarks>
         /// <param name="processManager">The process manager to build.</param>
         private async Task BuildProcessManager(ProcessManager processManager)
@@ -174,26 +181,20 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                         }
 
                         // Find resource template for the process manager
-                        var resourceTemplate = processManager.Resources.Where(r => r.ResourceType == ModelConstants.ResourceTypeAzureLogicApp).SingleOrDefault();
+                        var resourceTemplate = processManager.Resources.Where(r => r.ResourceType == ModelConstants.ResourceTypeAzureLogicAppStandard).SingleOrDefault();
                         if (resourceTemplate != null)
                         {
                             // Find snippet for workflow definition
-                            var workflowResource = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowDefinition).FirstOrDefault();
+                            var workflowResource = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowDefinition).FirstOrDefault();
                             if (workflowResource != null)
                             {
                                 _logger.LogDebug(TraceMessages.GeneratingWorkflow, RuleName, processManager.Name);
 
-                                // Generate skeleton Logic App in which we will add snippets based on the workflow model
-                                var workflowDefinition = await LoadSnippet(processManager, processManager.WorkflowModel, resourceTemplate, workflowResource, snippetPaths, generationPath).ConfigureAwait(false);
+                                // Generate skeleton workflow in which we will add snippets based on the workflow model
+                                var workflowDefinition = await LoadSnippet<JObject>(processManager, processManager.WorkflowModel, resourceTemplate, workflowResource, snippetPaths, generationPath).ConfigureAwait(false);
                                 if (workflowDefinition != null)
                                 {
                                     _index = 0;
-
-                                    // Add parameters
-                                    await AddParameters(processManager, workflowDefinition, resourceTemplate, snippetPaths, generationPath).ConfigureAwait(false);
-
-                                    // Add properties
-                                    await AddProperties(processManager, workflowDefinition, resourceTemplate, snippetPaths, generationPath).ConfigureAwait(false);
 
                                     // Add triggers
                                     await AddTriggers(processManager, workflowDefinition, resourceTemplate, snippetPaths, generationPath).ConfigureAwait(false);
@@ -205,7 +206,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                                     await AddMessages(processManager, workflowDefinition, resourceTemplate, snippetPaths, generationPath).ConfigureAwait(false);
 
                                     // Add actions
-                                    var actionsPath = "$..definition.actions";
+                                    var actionsPath = "$.definition.actions";
                                     var container = (JObject)workflowDefinition.SelectToken(actionsPath);
                                     if (container != null)
                                     {
@@ -216,7 +217,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                                         BindActions(processManager, container);
 
                                         // Save workflow definition to path where process manager is loaded in the resource template
-                                        var workflowFilePath = (string)resourceTemplate.Parameters["workflow_definition_file"];
+                                        var workflowFilePath = (string)resourceTemplate.Parameters[ModelConstants.ResourceTemplateParameterWorkflowDefinitionFile];
                                         SaveWorkflow(processManager, workflowDefinition, generationPath, workflowFilePath);
                                     }
                                     else
@@ -228,33 +229,122 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                             }
                             else
                             {
-                                _logger.LogWarning(WarningMessages.ProcessManagerSnippetNotFound, processManager.Name, ModelConstants.ResourceTypeWorkflowDefinition);
+                                _logger.LogWarning(WarningMessages.ProcessManagerSnippetNotFound, processManager.Name, ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowDefinition);
                             }
 
+                            // Add workflow parameters
                             // Find snippet for parameters definition
-                            var parametersResource = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowParametersDefinition).FirstOrDefault();
+                            var parametersResource = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowParameters).FirstOrDefault();
                             if (parametersResource != null)
                             {
-                                // Generate skeleton Logic App ARM Parameters file to add parameters
-                                var parametersDefinition = await LoadSnippet(processManager, processManager.WorkflowModel, resourceTemplate, parametersResource, snippetPaths, generationPath).ConfigureAwait(false);
+                                // Generate skeleton Workflow Parameters file to add parameters
+                                var parametersDefinition = await LoadSnippet<JObject>(processManager, processManager.WorkflowModel, resourceTemplate, parametersResource, snippetPaths, generationPath).ConfigureAwait(false);
                                 if (parametersDefinition != null)
                                 {
                                     // Add parameters
-                                    await AddArmParameters(processManager, parametersDefinition, resourceTemplate, snippetPaths, generationPath).ConfigureAwait(false);
+                                    await AddParameters(processManager, parametersDefinition, resourceTemplate, snippetPaths, generationPath).ConfigureAwait(false);
                                 }
 
                                 // Save parameter file to the path in the resource template
-                                var parametersFilePath = (string)resourceTemplate.Parameters["workflow_parameters_file"];
+                                var parametersFilePath = (string)resourceTemplate.Parameters[ModelConstants.ResourceTemplateParameterWorkflowParametersFile];
                                 SaveWorkflow(processManager, parametersDefinition, generationPath, parametersFilePath);
                             }
                             else
                             {
-                                _logger.LogWarning(WarningMessages.ProcessManagerSnippetNotFound, processManager.Name, ModelConstants.ResourceTypeWorkflowParametersDefinition);
+                                _logger.LogWarning(WarningMessages.ProcessManagerSnippetNotFound, processManager.Name, ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowParameters);
+                            }
+
+                            // Add workflow local parameters
+                            // Find snippet for local parameters definition
+                            var localParametersResource = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowLocalParameters).FirstOrDefault();
+                            if (localParametersResource != null)
+                            {
+                                // Generate skeleton Workflow Local Parameters file
+                                var localParametersDefinition = await LoadSnippet<JObject>(processManager, processManager.WorkflowModel, resourceTemplate, localParametersResource, snippetPaths, generationPath).ConfigureAwait(false);
+                                if (localParametersDefinition != null)
+                                {
+                                    // Add localParameters
+                                    await AddParameters(processManager, localParametersDefinition, resourceTemplate, snippetPaths, generationPath).ConfigureAwait(false);
+                                }
+
+                                // Save local parameters file to the path in the resource template
+                                var localParametersFilePath = (string)resourceTemplate.Parameters[ModelConstants.ResourceTemplateParameterWorkflowLocalParametersFile];
+                                SaveWorkflow(processManager, localParametersDefinition, generationPath, localParametersFilePath);
+                            }
+                            else
+                            {
+                                _logger.LogWarning(WarningMessages.ProcessManagerSnippetNotFound, processManager.Name, ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowLocalParameters);
+                            }
+
+                            // Add workflow connections
+                            // Find snippet for connections definition
+                            var connectionsResource = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowConnections).FirstOrDefault();
+                            if (connectionsResource != null)
+                            {
+                                // Generate skeleton Workflow Connections file
+                                var connectionsDefinition = await LoadSnippet<JObject>(processManager, processManager.WorkflowModel, resourceTemplate, connectionsResource, snippetPaths, generationPath).ConfigureAwait(false);
+                                if (connectionsDefinition != null)
+                                {
+                                    // Add connections
+                                    //await AddConnections(processManager, connectionsDefinition, resourceTemplate, snippetPaths, generationPath).ConfigureAwait(false);
+                                }
+
+                                // Save connections file to the path in the resource template
+                                var connectionsFilePath = (string)resourceTemplate.Parameters[ModelConstants.ResourceTemplateParameterWorkflowConnectionsFile];
+                                SaveWorkflow(processManager, connectionsDefinition, generationPath, connectionsFilePath);
+                            }
+                            else
+                            {
+                                _logger.LogWarning(WarningMessages.ProcessManagerSnippetNotFound, processManager.Name, ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowConnections);
+                            }
+
+                            // Add workflow appsettings
+                            // Find snippet for appsettings definition
+                            var appSettingsResource = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowAppSettings).FirstOrDefault();
+                            if (appSettingsResource != null)
+                            {
+                                // Generate skeleton Workflow AppSettings file
+                                var appSettingsDefinition = await LoadSnippet<JArray>(processManager, processManager.WorkflowModel, resourceTemplate, appSettingsResource, snippetPaths, generationPath).ConfigureAwait(false);
+                                if (appSettingsDefinition != null)
+                                {
+                                    // Add appsettings
+                                    //await AddAppSettings(processManager, appSettingsDefinition, resourceTemplate, snippetPaths, generationPath).ConfigureAwait(false);
+                                }
+
+                                // Save appsettings file to the path in the resource template
+                                var appSettingsFilePath = (string)resourceTemplate.Parameters[ModelConstants.ResourceTemplateParameterWorkflowAppSettingsFile];
+                                SaveWorkflow(processManager, appSettingsDefinition, generationPath, appSettingsFilePath);
+                            }
+                            else
+                            {
+                                _logger.LogWarning(WarningMessages.ProcessManagerSnippetNotFound, processManager.Name, ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowAppSettings);
+                            }
+
+                            // Add workflow local appsettings
+                            // Find snippet for local appsettings definition
+                            var localAppSettingsResource = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowLocalAppSettings).FirstOrDefault();
+                            if (localAppSettingsResource != null)
+                            {
+                                // Generate skeleton Workflow Local AppSettings file
+                                var localAppSettingsDefinition = await LoadSnippet<JObject>(processManager, processManager.WorkflowModel, resourceTemplate, localAppSettingsResource, snippetPaths, generationPath).ConfigureAwait(false);
+                                if (localAppSettingsDefinition != null)
+                                {
+                                    // Add local appsettings
+                                    //await AddLocalAppSettings(processManager, localAppSettingsDefinition, resourceTemplate, snippetPaths, generationPath).ConfigureAwait(false);
+                                }
+
+                                // Save local appsettings file to the path in the resource template
+                                var localAppSettingsFilePath = (string)resourceTemplate.Parameters[ModelConstants.ResourceTemplateParameterWorkflowLocalAppSettingsFile];
+                                SaveWorkflow(processManager, localAppSettingsDefinition, generationPath, localAppSettingsFilePath);
+                            }
+                            else
+                            {
+                                _logger.LogWarning(WarningMessages.ProcessManagerSnippetNotFound, processManager.Name, ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowLocalAppSettings);
                             }
                         }
                         else
                         {
-                            _logger.LogWarning(WarningMessages.ProcessManagerResourceTemplateNotFound, processManager.Name, ModelConstants.ResourceTypeAzureLogicApp);
+                            _logger.LogWarning(WarningMessages.ProcessManagerResourceTemplateNotFound, processManager.Name, ModelConstants.ResourceTypeAzureLogicAppStandard);
                         }
                     }
                     else
@@ -275,153 +365,40 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         }
 
         /// <summary>
-        /// Adds workflow parameters to the workflow definition.
+        /// Adds parameters to the workflow parameters file.
         /// </summary>
         /// <param name="processManager">The process manager.</param>
-        /// <param name="workflowDefinition">The workflow definition.</param>
+        /// <param name="parametersDefinition">The parameters definition.</param>
         /// <param name="resourceTemplate">The resource template for this render.</param>
         /// <param name="snippetPaths">The list of source template paths.</param>
         /// <param name="generationPathRoot">The root path for all generated files.</param>
-        private async Task AddParameters(ProcessManager processManager, JObject workflowDefinition, TargetResourceTemplate resourceTemplate, IEnumerable<DirectoryInfo> snippetPaths, DirectoryInfo generationPathRoot)
+        private async Task AddParameters(ProcessManager processManager, JObject parametersDefinition, TargetResourceTemplate resourceTemplate, IEnumerable<DirectoryInfo> snippetPaths, DirectoryInfo generationPathRoot)
         {
-            var parameterSnippets = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowParameter).ToList();
+            var parameterSnippets = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeAzureLogicAppConsumption + ModelConstants.ResourceTypeSuffixWorkflowParameter).ToList();
             if (parameterSnippets != null && parameterSnippets.Any())
             {
-                foreach (var parameterSnippet in parameterSnippets)
-                {
-                    var snippet = await LoadSnippet(processManager, processManager.WorkflowModel, resourceTemplate, parameterSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
-                    if (snippet != null && snippet.HasValues)
-                    {
-                        // Workflow definition parameter (parameter inside the Logic App definition)
-                        var definitionParametersPath = "$..definition.parameters";
-                        var definitionParameters = (JObject)workflowDefinition.SelectToken(definitionParametersPath);
-                        if (definitionParameters != null)
-                        {
-                            if (snippet.ContainsKey("workflowDefinitionParameter"))
-                            {
-                                var parameter = (JProperty)snippet["workflowDefinitionParameter"].First();
-
-                                // Does it already exist?
-                                if (!definitionParameters.ContainsKey(parameter.Name))
-                                {
-                                    // Doesn't exist, add to the parameters
-                                    definitionParameters.Add(parameter.Name, parameter.Value);
-                                }
-
-                                _logger.LogDebug(TraceMessages.AddedWorkflowParameterToWorkflowDefinition, RuleName, parameter.Name);
-                            }
-                        }
-                        else
-                        {
-                            _logger.LogError(ErrorMessages.UnableToFindNodeInWorkflowDefinition, processManager.Name, definitionParametersPath);
-                            Context.Errors.Add(new ErrorMessage(string.Format(CultureInfo.CurrentCulture, ErrorMessages.UnableToFindNodeInWorkflowDefinition, processManager.Name, definitionParametersPath)));
-                        }
-
-                        // Workflow parameter (parameter inside the Logic App workflow resource)
-                        var workflowParametersPath = "$.resources[?(@.type == 'Microsoft.Logic/workflows')].properties.parameters";
-                        var workflowParameters = (JObject)workflowDefinition.SelectToken(workflowParametersPath);
-                        if (workflowParameters != null)
-                        {
-                            if (snippet.ContainsKey("workflowParameter"))
-                            {
-                                var parameter = (JProperty)snippet["workflowParameter"].First();
-
-                                // Does it already exist?
-                                if (workflowParameters.ContainsKey(parameter.Name))
-                                {
-                                    // Get value object of existing parameter
-                                    var existingValue = workflowParameters[parameter.Name].SelectToken("$..value");
-                                    if (existingValue is JObject)
-                                    {
-                                        var existingValueObject = (JObject)existingValue;
-
-                                        // Incoming parameter already exists, add all the value properties to the existing parameter, if each property
-                                        // doesn't exist and incoming value is also an object (to allow multiple properties).
-                                        var value = parameter.Value.SelectToken("$..value");
-                                        if (value is JObject)
-                                        {
-                                            // Add value object properties to existing parameter
-                                            var valueObject = (JObject)value;
-                                            foreach (var valueProperty in valueObject.Properties())
-                                            {
-                                                if (!existingValueObject.ContainsKey(valueProperty.Name))
-                                                {
-                                                    existingValueObject.Add(valueProperty.Name, valueProperty.Value);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    // Doesn't exist, add to the parameters
-                                    workflowParameters.Add(parameter.Name, parameter.Value);
-                                }
-
-                                _logger.LogDebug(TraceMessages.AddedWorkflowParameterToResourceParameters, RuleName, parameter.Name);
-                            }
-                        }
-                        else
-                        {
-                            _logger.LogError(ErrorMessages.UnableToFindNodeInWorkflowDefinition, processManager.Name, workflowParametersPath);
-                            Context.Errors.Add(new ErrorMessage(string.Format(CultureInfo.CurrentCulture, ErrorMessages.UnableToFindNodeInWorkflowDefinition, processManager.Name, workflowParametersPath)));
-                        }
-
-                        // ARM template parameter (parameter inside the ARM template)
-                        var armTemplateParametersPath = "$.parameters";
-                        var armTemplateParameters = (JObject)workflowDefinition.SelectToken(armTemplateParametersPath);
-                        if (armTemplateParameters != null)
-                        {
-                            if (snippet.ContainsKey("armTemplateParameter"))
-                            {
-                                var parameter = (JProperty)snippet["armTemplateParameter"].First();
-                                armTemplateParameters.Add(parameter.Name, parameter.Value);
-
-                                _logger.LogDebug(TraceMessages.AddedWorkflowParameterToArmTemplate, RuleName, parameter.Name);
-                            }
-                        }
-                        else
-                        {
-                            _logger.LogError(ErrorMessages.UnableToFindNodeInWorkflowDefinition, processManager.Name, armTemplateParametersPath);
-                            Context.Errors.Add(new ErrorMessage(string.Format(CultureInfo.CurrentCulture, ErrorMessages.UnableToFindNodeInWorkflowDefinition, processManager.Name, armTemplateParametersPath)));
-                        }
-                    }
-                }
-            }
-            else
-            {
-                _logger.LogDebug(TraceMessages.WorkflowParameterSnippetsNotFound, RuleName, processManager.Name);
-            }
-        }
-
-        /// <summary>
-        /// Adds ARM parameters to the parameters definition.
-        /// </summary>
-        /// <param name="processManager">The process manager.</param>
-        /// <param name="parametersDefinition">The workflow parameters definition.</param>
-        /// <param name="resourceTemplate">The resource template for this render.</param>
-        /// <param name="snippetPaths">The list of source template paths.</param>
-        /// <param name="generationPathRoot">The root path for all generated files.</param>
-        private async Task AddArmParameters(ProcessManager processManager, JObject parametersDefinition, TargetResourceTemplate resourceTemplate, IEnumerable<DirectoryInfo> snippetPaths, DirectoryInfo generationPathRoot)
-        {
-            var parameterSnippets = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowParameter).ToList();
-            if (parameterSnippets != null && parameterSnippets.Any())
-            {
-                var parametersPath = "$.parameters";
+                var parametersPath = "$.";
                 var parameters = (JObject)parametersDefinition.SelectToken(parametersPath);
                 if (parameters != null)
                 {
                     foreach (var parameterSnippet in parameterSnippets)
                     {
-                        var snippet = await LoadSnippet(processManager, processManager.WorkflowModel, resourceTemplate, parameterSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
+                        var snippet = await LoadSnippet<JObject>(processManager, processManager.WorkflowModel, resourceTemplate, parameterSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
                         if (snippet != null && snippet.HasValues)
                         {
-                            if (snippet.ContainsKey("armParameter"))
+                            // Loop through the properties defined in the snippet
+                            foreach (JProperty snippetProperty in snippet.Children())
                             {
-                                var parameter = (JProperty)snippet["armParameter"].First();
-                                parameters.Add(parameter.Name, parameter.Value);
-
-                                _logger.LogDebug(TraceMessages.AddedWorkflowParameterToArmParameters, RuleName, parameter.Name);
+                                // Check if there's already a parameter with this name - can't have multiple parameters with the same name
+                                if (!parameters.ContainsKey(snippetProperty.Name))
+                                {
+                                    parameters.Add(snippetProperty.DeepClone());
+                                    _logger.LogDebug(TraceMessages.AddedParameterToLogicAppParameters, RuleName, snippetProperty.Name);
+                                }
+                                else
+                                {
+                                    _logger.LogWarning(WarningMessages.DuplicateLogicAppParameterDetected, RuleName, snippetProperty.Name);
+                                }
                             }
                         }
                     }
@@ -435,70 +412,6 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
             else
             {
                 _logger.LogDebug(TraceMessages.WorkflowParameterSnippetsNotFound, RuleName, processManager.Name);
-            }
-        }
-
-        /// <summary>
-        /// Adds workflow properties to the workflow definition.
-        /// </summary>
-        /// <param name="processManager">The process manager.</param>
-        /// <param name="workflowDefinition">The workflow definition.</param>
-        /// <param name="resourceTemplate">The resource template for this render.</param>
-        /// <param name="snippetPaths">The list of source template paths.</param>
-        /// <param name="generationPathRoot">The root path for all generated files.</param>
-        private async Task AddProperties(ProcessManager processManager, JObject workflowDefinition, TargetResourceTemplate resourceTemplate, IEnumerable<DirectoryInfo> snippetPaths, DirectoryInfo generationPathRoot)
-        {
-            var propertySnippets = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowProperty).ToList();
-            if (propertySnippets != null && propertySnippets.Any())
-            {
-                foreach (var propertySnippet in propertySnippets)
-                {
-                    var snippet = await LoadSnippet(processManager, processManager.WorkflowModel, resourceTemplate, propertySnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
-                    if (snippet != null && snippet.HasValues)
-                    {
-                        // Workflow resource property (property inside the Logic App workflow ARM resource type)
-                        var workflowResourcePropertiesPath = "$.resources[?(@.type == 'Microsoft.Logic/workflows')]";
-                        var workflowResourceProperties = (JObject)workflowDefinition.SelectToken(workflowResourcePropertiesPath);
-                        if (workflowResourceProperties != null)
-                        {
-                            if (snippet.ContainsKey("workflowResourceProperty"))
-                            {
-                                var property = (JProperty)snippet["workflowResourceProperty"].First();
-                                workflowResourceProperties.Add(property.Name, property.Value);
-
-                                _logger.LogDebug(TraceMessages.AddedWorkflowPropertyToResource, RuleName, property.Name);
-                            }
-                        }
-                        else
-                        {
-                            _logger.LogError(ErrorMessages.UnableToFindNodeInWorkflowDefinition, processManager.Name, workflowResourcePropertiesPath);
-                            Context.Errors.Add(new ErrorMessage(string.Format(CultureInfo.CurrentCulture, ErrorMessages.UnableToFindNodeInWorkflowDefinition, processManager.Name, workflowResourcePropertiesPath)));
-                        }
-
-                        // Workflow property (property inside the Logic App workflow resource properties object)
-                        var workflowPropertiesPath = "$.resources[?(@.type == 'Microsoft.Logic/workflows')].properties";
-                        var workflowProperties = (JObject)workflowDefinition.SelectToken(workflowPropertiesPath);
-                        if (workflowProperties != null)
-                        {
-                            if (snippet.ContainsKey("workflowProperty"))
-                            {
-                                var property = (JProperty)snippet["workflowProperty"].First();
-                                workflowProperties.Add(property.Name, property.Value);
-
-                                _logger.LogDebug(TraceMessages.AddedWorkflowPropertyToResourceProperties, RuleName, property.Name);
-                            }
-                        }
-                        else
-                        {
-                            _logger.LogError(ErrorMessages.UnableToFindNodeInWorkflowDefinition, processManager.Name, workflowPropertiesPath);
-                            Context.Errors.Add(new ErrorMessage(string.Format(CultureInfo.CurrentCulture, ErrorMessages.UnableToFindNodeInWorkflowDefinition, processManager.Name, workflowPropertiesPath)));
-                        }
-                    }
-                }
-            }
-            else
-            {
-                _logger.LogDebug(TraceMessages.WorkflowPropertySnippetsNotFound, RuleName, processManager.Name);
             }
         }
 
@@ -521,21 +434,21 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
             {
                 foreach (var channel in channels)
                 {
-                    var channelSnippets = processManager.Snippets.Where(s => s.ResourceType.StartsWith($"{ModelConstants.ResourceTypeWorkflowChannel}.", StringComparison.CurrentCultureIgnoreCase)).ToList();
+                    var channelSnippets = processManager.Snippets.Where(s => s.ResourceType.StartsWith($"{ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowChannel}.", StringComparison.CurrentCultureIgnoreCase)).ToList();
                     if (channelSnippets != null && channelSnippets.Any())
                     {
                         // For triggers, messages are received into a new activate instance, whether that is via
                         // a topic channel (message subscription) or a trigger channel (invoked workflow).
-                        var triggerSnippets = channelSnippets.Where(s => s.ResourceType.StartsWith($"{ModelConstants.ResourceTypeWorkflowChannelTrigger}.", StringComparison.CurrentCultureIgnoreCase));
+                        var triggerSnippets = channelSnippets.Where(s => s.ResourceType.StartsWith($"{ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowChannelTrigger}.", StringComparison.CurrentCultureIgnoreCase));
                         if (triggerSnippets != null && triggerSnippets.Any())
                         {
                             foreach (var triggerSnippet in triggerSnippets)
                             {
-                                var snippet = await LoadSnippet(processManager, processManager.WorkflowModel, resourceTemplate, triggerSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
+                                var snippet = await LoadSnippet<JObject>(processManager, processManager.WorkflowModel, resourceTemplate, triggerSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
                                 if (snippet != null && snippet.HasValues)
                                 {
                                     // Workflow definition parameter (parameter inside the Logic App definition)
-                                    var definitionTriggersPath = "$..definition.triggers";
+                                    var definitionTriggersPath = "$.definition.triggers";
                                     var definitionTriggers = (JObject)workflowDefinition.SelectToken(definitionTriggersPath);
                                     if (definitionTriggers != null)
                                     {
@@ -582,16 +495,16 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         private async Task AddVariables(ProcessManager processManager, JObject workflowDefinition, TargetResourceTemplate resourceTemplate, IEnumerable<DirectoryInfo> snippetPaths, DirectoryInfo generationPathRoot)
         {
             // Find any statically declared variables defined as snippets against the process manager
-            var variableSnippets = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowVariable && s.ResourceType != ModelConstants.ResourceTypeWorkflowVariablePlaceHolder).ToList();
+            var variableSnippets = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowVariable && s.ResourceType != ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowVariablePlaceHolder).ToList();
             if (variableSnippets != null && variableSnippets.Any())
             {
                 foreach (var variableSnippet in variableSnippets)
                 {
-                    var snippet = await LoadSnippet(processManager, processManager.WorkflowModel, resourceTemplate, variableSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
+                    var snippet = await LoadSnippet<JObject>(processManager, processManager.WorkflowModel, resourceTemplate, variableSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
                     if (snippet != null && snippet.HasValues)
                     {
                         // Workflow definition variable (an action inside the Logic App definition)
-                        var definitionVariablesPath = "$..definition.actions";
+                        var definitionVariablesPath = "$.definition.actions";
                         var definitionVariables = (JObject)workflowDefinition.SelectToken(definitionVariablesPath);
                         if (definitionVariables != null)
                         {
@@ -607,25 +520,6 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                         {
                             _logger.LogError(ErrorMessages.UnableToFindNodeInWorkflowDefinition, processManager.Name, definitionVariablesPath);
                             Context.Errors.Add(new ErrorMessage(string.Format(CultureInfo.CurrentCulture, ErrorMessages.UnableToFindNodeInWorkflowDefinition, processManager.Name, definitionVariablesPath)));
-                        }
-
-                        // ARM template variable (variable inside the ARM template)
-                        var armTemplateVariablesPath = "$.variables";
-                        var armTemplateVariables = (JObject)workflowDefinition.SelectToken(armTemplateVariablesPath);
-                        if (armTemplateVariables != null)
-                        {
-                            if (snippet.ContainsKey("armTemplateVariable"))
-                            {
-                                var variable = (JProperty)snippet["armTemplateVariable"].First();
-                                armTemplateVariables.Add(variable.Name, variable.Value);
-
-                                _logger.LogDebug(TraceMessages.AddedWorkflowVariableToArmTemplate, RuleName, variable.Name);
-                            }
-                        }
-                        else
-                        {
-                            _logger.LogError(ErrorMessages.UnableToFindNodeInWorkflowDefinition, processManager.Name, armTemplateVariablesPath);
-                            Context.Errors.Add(new ErrorMessage(string.Format(CultureInfo.CurrentCulture, ErrorMessages.UnableToFindNodeInWorkflowDefinition, processManager.Name, armTemplateVariablesPath)));
                         }
                     }
                 }
@@ -651,7 +545,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         private async Task AddWorkflowVariables(ProcessManager processManager, JObject workflowDefinition, WorkflowActivityContainer activityContainer, TargetResourceTemplate resourceTemplate, IEnumerable<DirectoryInfo> snippetPaths, DirectoryInfo generationPathRoot)
         {
             // Get top level actions object (can only put variables and messages here)
-            var actionsPath = "$..definition.actions";
+            var actionsPath = "$.definition.actions";
             var rootContainer = (JObject)workflowDefinition.SelectToken(actionsPath);
             if (rootContainer != null)
             {
@@ -660,10 +554,10 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                 {
                     foreach (var variable in activityContainer.Variables)
                     {
-                        var variableSnippet = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowVariablePlaceHolder).SingleOrDefault();
+                        var variableSnippet = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowVariablePlaceHolder).SingleOrDefault();
                         if (variableSnippet != null)
                         {
-                            var renderedVariableSnippet = await LoadSnippet(processManager, variable, resourceTemplate, variableSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
+                            var renderedVariableSnippet = await LoadSnippet<JObject>(processManager, variable, resourceTemplate, variableSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
                             if (renderedVariableSnippet != null && renderedVariableSnippet.HasValues)
                             {
                                 if (renderedVariableSnippet.ContainsKey("workflowDefinitionVariable"))
@@ -677,7 +571,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                         }
                         else
                         {
-                            _logger.LogDebug(TraceMessages.WorkflowVariablePlaceHolderSnippetNotFound, RuleName, ModelConstants.ResourceTypeWorkflowVariablePlaceHolder);
+                            _logger.LogDebug(TraceMessages.WorkflowVariablePlaceHolderSnippetNotFound, RuleName, ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowVariablePlaceHolder);
                         }
                     }
                 }
@@ -710,16 +604,16 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         private async Task AddMessages(ProcessManager processManager, JObject workflowDefinition, TargetResourceTemplate resourceTemplate, IEnumerable<DirectoryInfo> snippetPaths, DirectoryInfo generationPathRoot)
         {
             // Find any statically declared messages defined as snippets against the process manager
-            var messageSnippets = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowMessage && s.ResourceType != ModelConstants.ResourceTypeWorkflowMessagePlaceHolder).ToList();
+            var messageSnippets = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowMessage && s.ResourceType != ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowMessagePlaceHolder).ToList();
             if (messageSnippets != null && messageSnippets.Any())
             {
                 foreach (var messageSnippet in messageSnippets)
                 {
-                    var snippet = await LoadSnippet(processManager, processManager.WorkflowModel, resourceTemplate, messageSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
+                    var snippet = await LoadSnippet<JObject>(processManager, processManager.WorkflowModel, resourceTemplate, messageSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
                     if (snippet != null && snippet.HasValues)
                     {
                         // Workflow definition message (an action inside the Logic App definition)
-                        var definitionMessagesPath = "$..definition.actions";
+                        var definitionMessagesPath = "$.definition.actions";
                         var definitionMessages = (JObject)workflowDefinition.SelectToken(definitionMessagesPath);
                         if (definitionMessages != null)
                         {
@@ -760,7 +654,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         private async Task AddWorkflowMessages(ProcessManager processManager, JObject workflowDefinition, WorkflowActivityContainer activityContainer, TargetResourceTemplate resourceTemplate, IEnumerable<DirectoryInfo> snippetPaths, DirectoryInfo generationPathRoot)
         {
             // Get top level actions object (can only put variables and messages here)
-            var actionsPath = "$..definition.actions";
+            var actionsPath = "$.definition.actions";
             var rootContainer = (JObject)workflowDefinition.SelectToken(actionsPath);
             if (rootContainer != null)
             {
@@ -769,10 +663,10 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                 {
                     foreach (var message in activityContainer.Messages)
                     {
-                        var messageSnippet = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowMessagePlaceHolder).SingleOrDefault();
+                        var messageSnippet = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowMessagePlaceHolder).SingleOrDefault();
                         if (messageSnippet != null)
                         {
-                            var renderedMessageSnippet = await LoadSnippet(processManager, message, resourceTemplate, messageSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
+                            var renderedMessageSnippet = await LoadSnippet<JObject>(processManager, message, resourceTemplate, messageSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
                             if (renderedMessageSnippet != null && renderedMessageSnippet.HasValues)
                             {
                                 if (renderedMessageSnippet.ContainsKey("workflowDefinitionMessage"))
@@ -786,7 +680,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                         }
                         else
                         {
-                            _logger.LogDebug(TraceMessages.WorkflowMessagePlaceHolderSnippetNotFound, RuleName, ModelConstants.ResourceTypeWorkflowMessagePlaceHolder);
+                            _logger.LogDebug(TraceMessages.WorkflowMessagePlaceHolderSnippetNotFound, RuleName, ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowMessagePlaceHolder);
                         }
                     }
                 }
@@ -878,13 +772,13 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
             var count = 0;
 
             // Build key to find snippet based on the activity container type
-            var containerSnippetResourceType = $"{ModelConstants.ResourceTypeWorkflowActivityContainer}.{activityContainer.Type.ToLower(CultureInfo.CurrentCulture)}";
+            var containerSnippetResourceType = $"{ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowActivityContainer}.{activityContainer.Type.ToLower(CultureInfo.CurrentCulture)}";
             var containerSnippets = processManager.Snippets.Where(s => s.ResourceType.StartsWith($"{containerSnippetResourceType}.", StringComparison.CurrentCultureIgnoreCase) && s.ResourceType != containerSnippetResourceType);
             if (containerSnippets != null && containerSnippets.Any())
             {
                 foreach (var containerSnippet in containerSnippets)
                 {
-                    var renderedContainerSnippet = await LoadSnippet(processManager, activityContainer, resourceTemplate, containerSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
+                    var renderedContainerSnippet = await LoadSnippet<JObject>(processManager, activityContainer, resourceTemplate, containerSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
                     if (renderedContainerSnippet != null && renderedContainerSnippet.HasValues)
                     {
                         // Workflow definition action (an action inside the Logic App definition)
@@ -1103,12 +997,12 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
 
             var converted = false;
 
-            var actionSnippets = processManager.Snippets.Where(s => s.ResourceType.StartsWith($"{ModelConstants.ResourceTypeWorkflowChannelReceive}.", StringComparison.CurrentCultureIgnoreCase));
+            var actionSnippets = processManager.Snippets.Where(s => s.ResourceType.StartsWith($"{ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowChannelReceive}.", StringComparison.CurrentCultureIgnoreCase));
             if (actionSnippets != null && actionSnippets.Any())
             {
                 foreach (var actionSnippet in actionSnippets)
                 {
-                    var snippet = await LoadSnippet(processManager, activity, resourceTemplate, actionSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
+                    var snippet = await LoadSnippet<JObject>(processManager, activity, resourceTemplate, actionSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
                     if (snippet != null && snippet.HasValues)
                     {
                         if (snippet.ContainsKey("workflowDefinitionAction"))
@@ -1147,12 +1041,12 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
 
             var converted = false;
 
-            var actionSnippets = processManager.Snippets.Where(s => s.ResourceType.StartsWith($"{ModelConstants.ResourceTypeWorkflowChannelSend}.", StringComparison.CurrentCultureIgnoreCase));
+            var actionSnippets = processManager.Snippets.Where(s => s.ResourceType.StartsWith($"{ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowChannelSend}.", StringComparison.CurrentCultureIgnoreCase));
             if (actionSnippets != null && actionSnippets.Any())
             {
                 foreach (var actionSnippet in actionSnippets)
                 {
-                    var snippet = await LoadSnippet(processManager, activity, resourceTemplate, actionSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
+                    var snippet = await LoadSnippet<JObject>(processManager, activity, resourceTemplate, actionSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
                     if (snippet != null && snippet.HasValues)
                     {
                         if (snippet.ContainsKey("workflowDefinitionAction"))
@@ -1191,7 +1085,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
             string actionPath = null;
 
             // Build key to find snippet based on the activity container type
-            var containerSnippetResourceType = $"{ModelConstants.ResourceTypeWorkflowActivityContainer}.{activityContainer.Type.ToLower(CultureInfo.CurrentCulture)}";
+            var containerSnippetResourceType = $"{ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowActivityContainer}.{activityContainer.Type.ToLower(CultureInfo.CurrentCulture)}";
             var containerSnippet = processManager.Snippets.Where(s => s.ResourceType == containerSnippetResourceType).SingleOrDefault();
 
             // If not found, try getting the placeholder container
@@ -1199,12 +1093,12 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
             {
                 _logger.LogTrace(TraceMessages.WorkflowActivityContainerSnippetNotFound, RuleName, containerSnippetResourceType);
 
-                containerSnippet = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowActivityContainerPlaceHolder).SingleOrDefault();
+                containerSnippet = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowActivityContainerPlaceHolder).SingleOrDefault();
             }
 
             if (containerSnippet != null)
             {
-                var renderedContainerSnippet = await LoadSnippet(processManager, activityContainer, resourceTemplate, containerSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
+                var renderedContainerSnippet = await LoadSnippet<JObject>(processManager, activityContainer, resourceTemplate, containerSnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
                 if (renderedContainerSnippet != null && renderedContainerSnippet.HasValues)
                 {
                     // Workflow definition action (an action inside the Logic App definition)
@@ -1222,7 +1116,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
             }
             else
             {
-                _logger.LogDebug(TraceMessages.WorkflowActivityContainerPlaceHolderSnippetNotFound, RuleName, ModelConstants.ResourceTypeWorkflowActivityContainerPlaceHolder);
+                _logger.LogDebug(TraceMessages.WorkflowActivityContainerPlaceHolderSnippetNotFound, RuleName, ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowActivityContainerPlaceHolder);
             }
 
             return (actions, actionPath);
@@ -1242,7 +1136,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
             IEnumerable<JProperty> actions = null;
 
             // Build key to find snippet based on the activity type
-            var activitySnippetResourceType = $"{ModelConstants.ResourceTypeWorkflowActivity}.{activity.Type.ToLower(CultureInfo.CurrentCulture)}";
+            var activitySnippetResourceType = $"{ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowActivity}.{activity.Type.ToLower(CultureInfo.CurrentCulture)}";
             var activitySnippet = processManager.Snippets.Where(s => s.ResourceType == activitySnippetResourceType).SingleOrDefault();
 
             // If not found, try getting the placeholder activity
@@ -1250,12 +1144,12 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
             {
                 _logger.LogTrace(TraceMessages.WorkflowActivitySnippetNotFound, RuleName, activitySnippetResourceType);
 
-                activitySnippet = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeWorkflowActivityPlaceHolder).SingleOrDefault();
+                activitySnippet = processManager.Snippets.Where(s => s.ResourceType == ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowActivityPlaceHolder).SingleOrDefault();
             }
 
             if (activitySnippet != null)
             {
-                var renderedActivitySnippet = await LoadSnippet(processManager, activity, resourceTemplate, activitySnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
+                var renderedActivitySnippet = await LoadSnippet<JObject>(processManager, activity, resourceTemplate, activitySnippet, snippetPaths, generationPathRoot).ConfigureAwait(false);
                 if (renderedActivitySnippet != null && renderedActivitySnippet.HasValues)
                 {
                     if (renderedActivitySnippet.ContainsKey("workflowDefinitionAction"))
@@ -1266,7 +1160,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
             }
             else
             {
-                _logger.LogDebug(TraceMessages.WorkflowActivityPlaceHolderSnippetNotFound, RuleName, ModelConstants.ResourceTypeWorkflowActivityPlaceHolder);
+                _logger.LogDebug(TraceMessages.WorkflowActivityPlaceHolderSnippetNotFound, RuleName, ModelConstants.ResourceTypeAzureLogicAppStandard + ModelConstants.ResourceTypeSuffixWorkflowActivityPlaceHolder);
             }
 
             return actions;
@@ -1327,7 +1221,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         /// <param name="snippetPaths">The list of source template paths.</param>
         /// <param name="generationPathRoot">The root path for all generated files.</param>
         /// <returns>A <see cref="JObject"/> representing the snippet.</returns>
-        private async Task<JObject> LoadSnippet(ProcessManager processManager, WorkflowObject workflowObject, TargetResourceTemplate resourceTemplate, TargetResourceSnippet resourceSnippet, IEnumerable<DirectoryInfo> snippetPaths, DirectoryInfo generationPathRoot)
+        private async Task<T> LoadSnippet<T>(ProcessManager processManager, WorkflowObject workflowObject, TargetResourceTemplate resourceTemplate, TargetResourceSnippet resourceSnippet, IEnumerable<DirectoryInfo> snippetPaths, DirectoryInfo generationPathRoot) where T : JToken
         {
             // Increment unique index and assign to workflow object
             var index = Interlocked.Increment(ref _index);
@@ -1348,7 +1242,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
                 {
                     using (var jsonReader = new JsonTextReader(reader))
                     {
-                        return (JObject)JToken.ReadFrom(jsonReader);
+                        return JToken.ReadFrom(jsonReader) as T;
                     }
                 }
             }
@@ -1440,7 +1334,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.GeneratorRules
         /// <param name="workflowDefinition">The workflow.</param>
         /// <param name="generationPathRoot">The root of the generation path for output.</param>
         /// <param name="filePath">The file path for the saved workflow.</param>
-        private void SaveWorkflow(ProcessManager processManager, JObject workflowDefinition, DirectoryInfo generationPathRoot, string filePath)
+        private void SaveWorkflow(ProcessManager processManager, JToken workflowDefinition, DirectoryInfo generationPathRoot, string filePath)
         {
             // Build path
             var outputFilePath = new FileInfo(Path.Combine(generationPathRoot.FullName, filePath));

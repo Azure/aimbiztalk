@@ -129,6 +129,27 @@
   <data name="BizTalkFtpAdapterSensitivePropertyMustBeSpecifiedLater" xml:space="preserve">
     <value>The BizTalk FTP adapter property '{0}' is not copied because it is a sensitive value and must be manually specified later in the generated template file where this property is used.</value>
   </data>
+  <data name="BizTalkHttpAdapterPropertyNotSupported" xml:space="preserve">
+    <value>The BizTalk Http adapter property '{0}' with value '{1}' is not supported by the AIS HTTP connector.</value>
+  </data>
+  <data name="BizTalkMqAdapterPropertyNotSupported" xml:space="preserve">
+    <value>The BizTalk MQ adapter property '{0}' with value '{1}' is not supported by the AIS MQ connector.</value>
+  </data>
+  <data name="BizTalkMqAdapterSensitivePropertyMustBeSpecifiedLater" xml:space="preserve">
+    <value>The BizTalk MQ adapter property '{0}' is not copied because it is a sensitive value and must be manually specified later in the generated template file where this property is used</value>
+  </data>
+  <data name="BizTalkSapAdapterPropertyNotSupported" xml:space="preserve">
+    <value>The BizTalk SAP adapter property '{0}' with value '{1}' is not supported by the AIS SAP connector.</value>
+  </data>
+  <data name="BizTalkSapAdapterSensitivePropertyMustBeSpecifiedLater" xml:space="preserve">
+    <value>The BizTalk SAP adapter property '{0}' is not copied because it is a sensitive value and must be manually specified later in the generated template file where this property is used</value>
+  </data>
+  <data name="BizTalkSftpAdapterPropertyNotSupported" xml:space="preserve">
+    <value>The BizTalk SFTP adapter property '{0}' with value '{1}' is not supported by the AIS SFTP connector.</value>
+  </data>
+  <data name="BizTalkSftpAdapterSensitivePropertyMustBeSpecifiedLater" xml:space="preserve">
+    <value>The BizTalk SFTP adapter property '{0}' is not copied because it is a sensitive value and must be manually specified later in the generated template file where this property is used</value>
+  </data>
   <data name="RunningBizTalkAnalyzer" xml:space="preserve">
     <value>Running BizTalk analyzer {AnalyzerName}.</value>
   </data>

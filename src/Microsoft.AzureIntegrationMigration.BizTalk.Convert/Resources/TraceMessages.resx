@@ -123,6 +123,9 @@
   <data name="AddedActionForWorkflowActivityToWorkflowDefinition" xml:space="preserve">
     <value>{RuleId}: Added action {ActionName} for workflow activity {ActivityName} to workflow definition actions.</value>
   </data>
+  <data name="AddedParameterToLogicAppParameters" xml:space="preserve">
+    <value>{RuleId}: Added parameter {ParameterName} to logic app parameters definition.</value>
+  </data>
   <data name="AddedPreBuiltActionsToWorkflowActivityContainer" xml:space="preserve">
     <value>{RuleId}: Added {ActionCount} pre-built actions to workflow activity container {ContainerName}.</value>
   </data>
@@ -164,6 +167,9 @@
   </data>
   <data name="BindingActions" xml:space="preserve">
     <value>{RuleId}: Binding actions for process manager {ProcessManagerName}.</value>
+  </data>
+  <data name="BuildRoutingSlipAddRoute" xml:space="preserve">
+    <value>Adding route for scenario {ScenarioName} and resource {ResourceName}</value>
   </data>
   <data name="CheckingInputChannels" xml:space="preserve">
     <value>{RuleId}: Finding messaging objects in the route with input channels {InputChannels}.</value>
@@ -248,6 +254,9 @@
   </data>
   <data name="SkippingRuleAsMigrationTargetMessageBusMissing" xml:space="preserve">
     <value>{RuleId}: Skipping the rule {RuleName} as there is no migration target message bus.</value>
+  </data>
+  <data name="TargetNotSupportedByConverter" xml:space="preserve">
+    <value>{RuleId}: The target {TargetName} is not supproted by this converter. No work will be performed.</value>
   </data>
   <data name="UnableToFindResourceWithTypeInTargetModelForScenarioStepName" xml:space="preserve">
     <value>{RuleId}: Unable to find the resource template with the type {0} and scenario step name of {1} in the target model.</value>

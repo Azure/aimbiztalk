@@ -28,7 +28,8 @@
 
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.24" />
-    <PackageReference Include="Microsoft.AzureIntegrationMigration.ApplicationModel" Version="0.5.2-beta.2021042628864" />
+    <PackageReference Include="Microsoft.AzureIntegrationMigration.ApplicationModel" Version="1.0.0" />
+    <PackageReference Include="Microsoft.AzureIntegrationMigration.Runner" Version="1.0.0" />
     <PackageReference Include="wix-libs" Version="3.11.1" NoWarn="NU1701" />
   </ItemGroup>
 

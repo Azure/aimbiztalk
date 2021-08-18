@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +12,7 @@ using System.Xml;
 using Microsoft.AzureIntegrationMigration.ApplicationModel.Report;
 using Microsoft.AzureIntegrationMigration.ApplicationModel.Target;
 using Microsoft.AzureIntegrationMigration.ApplicationModel.Target.Endpoints;
+using Microsoft.AzureIntegrationMigration.ApplicationModel.Target.Messages;
 using Microsoft.AzureIntegrationMigration.BizTalk.Analyze.Resources;
 using Microsoft.AzureIntegrationMigration.BizTalk.Types;
 using Microsoft.AzureIntegrationMigration.BizTalk.Types.Entities;
@@ -22,14 +22,14 @@ using Microsoft.Extensions.Logging;
 namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
 {
     /// <summary>
-    /// Implements rule RP002, which analyzes the model and creates endpoints for each file receive location.
+    /// Implements rule RP005, which analyzes the model and creates EndPoints for each application receive mq location.
     /// </summary>
-    public class RP002FileReceivePortAnalyzer : BizTalkAnalyzerBase
+    public sealed class RP005MqReceivePortAnalyzer : BizTalkAnalyzerBase
     {
         /// <summary>
         /// Defines the name of this rule.
         /// </summary>
-        private const string RuleName = "RP002";
+        private const string RuleName = "RP005";
 
         /// <summary>
         /// Defines a logger.
@@ -37,20 +37,20 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Creates a new instance of a <see cref="RP002FileReceivePortAnalyzer"/> class.
+        /// Creates a new instance of a <see cref="RP005MqReceivePortAnalyzer"/> class.
         /// </summary>
         /// <param name="model">The model.</param>
         /// <param name="context">The context.</param>
         /// <param name="logger">A logger.</param>
-        public RP002FileReceivePortAnalyzer(IApplicationModel model, MigrationContext context, ILogger logger)
-            : base(nameof(RP002FileReceivePortAnalyzer), model, context, logger)
+        public RP005MqReceivePortAnalyzer(IApplicationModel model, MigrationContext context, ILogger logger)
+            : base(nameof(RP005MqReceivePortAnalyzer), model, context, logger)
         {
             // Validate and set the member.
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
-        /// Creates the file endpoints in the migration target.
+        /// Creates the mq EndPoints for applications in the migration target.
         /// </summary>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task used to await the operation.</returns>
@@ -60,7 +60,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
             var parsedApplicationGroup = Model.GetSourceModel<ParsedBizTalkApplicationGroup>();
             if (parsedApplicationGroup?.Applications != null)
             {
-                _logger.LogDebug(TraceMessages.RunningRule, RuleName, nameof(RP002FileReceivePortAnalyzer));
+                _logger.LogDebug(TraceMessages.RunningRule, RuleName, nameof(RP005MqReceivePortAnalyzer));
 
                 foreach (var application in parsedApplicationGroup.Applications)
                 {
@@ -73,68 +73,41 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                             {
                                 foreach (var receiveLocation in receivePort.ReceiveLocations)
                                 {
-                                    if (receiveLocation.ReceiveLocationTransportType.Name == "FILE")
+                                    if (receiveLocation.ReceiveLocationTransportType.Name == "MQS")
                                     {
                                         // Find adapter in target model
                                         var adapterKey = $"{ModelConstants.MessageBusLeafKey}:{application.Application.Name.FormatKey()}:{receivePort.Name.FormatKey()}:{receiveLocation.Name.FormatKey()}:{ModelConstants.AdapterEndpointLeafKey}";
                                         var adapter = Model.FindMessagingObject(adapterKey);
                                         if (adapter.messagingObject != null)
                                         {
-                                            var fileAdapter = (AdapterEndpoint)adapter.messagingObject;
+                                            var mqAdapter = (AdapterEndpoint)adapter.messagingObject;
 
                                             // Set conversion rating
-                                            fileAdapter.Rating = ConversionRating.FullConversionWithFidelityLoss;
+                                            mqAdapter.Rating = ConversionRating.FullConversionWithFidelityLoss;
 
-                                            // Change to the accept message exchange pattern as no ack can be delivered for file receives.
-                                            fileAdapter.MessageExchangePattern = MessageExchangePattern.Accept;
+                                            // Change to Accept message exchange pattern as no ack can be delivered for MQ
+                                            mqAdapter.MessageExchangePattern = MessageExchangePattern.Accept;
 
                                             // Set resource map key to hook into the configuration process
-                                            var messagingObject = Model.FindMessagingObject(fileAdapter.Key);
+                                            var messagingObject = Model.FindMessagingObject(mqAdapter.Key);
                                             var appName = $"{messagingObject.application.Name.Replace(".", "-").Replace(" ", string.Empty).Replace(":", "-")}";
-                                            var adapterName = fileAdapter.Name.Replace(".", "-").Replace(" ", string.Empty).Replace(":", "-");
-                                            fileAdapter.ResourceMapKey = $"fileReceiveAdapterEndpoint{appName}{adapterName}";
+                                            var adapterName = mqAdapter.Name.Replace(".", "-").Replace(" ", string.Empty).Replace(":", "-");
+                                            mqAdapter.ResourceMapKey = $"mqReceiveAdapterEndpoint{appName}{adapterName}";
 
                                             // Handle adapter properties
                                             if (!string.IsNullOrEmpty(receiveLocation.ReceiveLocationTransportTypeData))
                                             {
                                                 var configItems = MapTransportTypeData(receiveLocation.ReceiveLocationTransportTypeData);
 
-                                                // Add the address to the config items.
-                                                var address = receiveLocation.Address;
-                                                if (!string.IsNullOrEmpty(address))
-                                                {
-                                                    if (configItems.TryGetValue("FileMask", out var fileMask))
-                                                    {
-                                                        address = address.Replace(fileMask, string.Empty);
-                                                    }
-                                                    // Replace the path separator to ensure its can be processed by the Azure CLI.
-                                                    address = address.Replace("\\", "/");
-                                                }
-                                                configItems.Add("Address", address);
+                                                MapAdapterProperties(configItems, mqAdapter);
 
-                                                MapAdapterProperties(configItems, fileAdapter);
-
-                                                // Map the config.
-                                                var configProperties = fileAdapter.Properties[ModelConstants.ConfigurationEntry] as Dictionary<string, object>;
-                                                configProperties["failedMessageRouting"] = receivePort.RouteFailedMessage;
-                                                configProperties["fileMask"] = fileAdapter.Properties["fileMask"];
-                                                
-                                                foreach (var item in configItems)
-                                                {
-                                                    fileAdapter.ReportMessages.Add(new ReportMessage()
-                                                    {
-                                                        Severity = MessageSeverity.Warning,                                                        
-                                                        Message = string.Format(CultureInfo.CurrentCulture, InformationMessages.BizTalkFileAdapterPropertyNotSupported, item.Key, item.Value)
-                                                    });
-                                                }
-
-                                                fileAdapter.ReportLinks.Add(AnalysisResources.FileAdapterHelpLink);
+                                                mqAdapter.ReportLinks.Add(AnalysisResources.MqAdapterHelpLink);
                                             }
                                             else
                                             {
-                                                _logger.LogDebug(WarningMessages.ReceiveLocationTransportTypeDataNotFound, fileAdapter.Name);
+                                                _logger.LogDebug(WarningMessages.ReceiveLocationTransportTypeDataNotFound, mqAdapter.Name);
 
-                                                fileAdapter.ReportMessages.Add(new ReportMessage() { Severity = MessageSeverity.Warning, Message = string.Format(CultureInfo.CurrentCulture, WarningMessages.ReceiveLocationTransportTypeDataNotFound, fileAdapter.Name) });
+                                                mqAdapter.ReportMessages.Add(new ReportMessage() { Severity = MessageSeverity.Warning, Message = string.Format(CultureInfo.CurrentCulture, WarningMessages.ReceiveLocationTransportTypeDataNotFound, mqAdapter.Name) });
                                             }
                                         }
                                         else
@@ -148,18 +121,19 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                         }
                     }
                 }
-                _logger.LogDebug(TraceMessages.RuleCompleted, RuleName, nameof(RP002FileReceivePortAnalyzer));
+
+                _logger.LogDebug(TraceMessages.RuleCompleted, RuleName, nameof(RP005MqReceivePortAnalyzer));
             }
             else
             {
-                _logger.LogDebug(TraceMessages.SkippingRuleAsSourceModelMissing, RuleName, nameof(RP002FileReceivePortAnalyzer));
+                _logger.LogDebug(TraceMessages.SkippingRuleAsSourceModelMissing, RuleName, nameof(RP005MqReceivePortAnalyzer));
             }
 
             await Task.CompletedTask.ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Map the fields that are to be used by the azure file connector, expected fields that are not found are added with a default value or a place holder text.
+        /// Map the fields that are to be used by the azure mq connector, expected fields that are not found are added with default value or a place holder text.
         /// </summary>
         /// <param name="configItems"></param>
         /// <param name="endpoint"></param>
@@ -168,28 +142,66 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
             // Set supported property names and defaults
             var supportedProperties = new Dictionary<string, (string, object)>()
             {
-                { "Address", ("rootFolder", "C:/")},
-                { "BatchSize", ("maxFileCount", 10)},
-                { "FileMask", ("fileMask", "*.*")},
-                { "PollingInterval", ("recurrence", 60000)},
-                { "Username", ("userName", "temp.user")}
+                { "uri", ("uri", "") },
+                { "queueDetails", ("queueDetails", "") },
+                { "userName", ("userName", "") },
+                { "password", ("password", "") },
+                { "transactionSupported", ("transactionSupported", false) },
+                { "suspendAsNonResumable", ("suspendAsNonResumable", false) },
+                { "dataOffsetForHeaders", ("dataOffsetForHeaders", false) },
+                { "waitInterval", ("waitInterval", "3") },
+                { "pollingInterval", ("pollingInterval", "3") },
+                { "pollingUnit", ("pollingUnit", "seconds") },
+                { "maximumBatchSize", ("maximumBatchSize", "500000") },
+                { "maximumNumberOfMessages", ("maximumNumberOfMessages", "100") },
+                { "batchWaitInterval", ("batchWaitInterval", "0") },
+                { "threadCount", ("threadCount", "1") },
+                { "fragmentationSize", ("fragmentationSize", "500000") },
+                { "characterSet", ("characterSet", "utf8") },
+                { "errorThreshold", ("errorThreshold", "10") },
+                { "segmentation", ("segmentation", "none") },
+                { "ordered", ("ordered", false) }
             };
 
-            // Search through the BizTalk adapter properties and map them over to their AIS equivalents.
+            // Search through BizTalk adapter properties and match properties
             foreach (var supportedProperty in supportedProperties)
             {
                 (string mappedName, object mappedValue) mappedProperty = supportedProperty.Value;
 
                 if (configItems.ContainsKey(supportedProperty.Key) && !string.IsNullOrEmpty(configItems[supportedProperty.Key]))
                 {
+                    // Convert values
                     var convertedValue = ConvertAdapterProperty(supportedProperty.Key, configItems[supportedProperty.Key]);
 
-                    // Set the value on the endpoint
+                    // Set value on endpoint
                     endpoint.Properties.Add(mappedProperty.mappedName, convertedValue);
 
-                    _logger.LogDebug(TraceMessages.BizTalkFileReceiveAdapterBindingPropertyFound, RuleName, supportedProperty.Key, endpoint.Name, convertedValue);
+                    _logger.LogDebug(TraceMessages.BizTalkMqReceiveAdapterBindingPropertyFound, RuleName, supportedProperty.Key, endpoint.Name, convertedValue);
 
-                    // Remove the property from the BizTalk adapter property list.
+                    // If this is queuedetails, split into server, port, queuemaneger and queue
+                    if (supportedProperty.Key == "queueDetails" && !string.IsNullOrWhiteSpace(configItems[supportedProperty.Key]))
+                    {
+                        string[] queueDetailsParts = configItems[supportedProperty.Key].Split('/');
+                        if (queueDetailsParts.Length == 3)
+                        {
+                            // Check if server contains a port
+                            if (queueDetailsParts[0].Contains(":"))
+                            {
+                                string[] serverNameParts = queueDetailsParts[0].Split(':');
+                                endpoint.Properties.Add("serverAddress", serverNameParts[0]);
+                                endpoint.Properties.Add("serverPort", serverNameParts[1]);
+                            }
+                            else
+                            {
+                                endpoint.Properties.Add("serverAddress", queueDetailsParts[0]);
+                                endpoint.Properties.Add("serverPort", "");
+                            }
+                            endpoint.Properties.Add("queueManager", queueDetailsParts[1]);
+                            endpoint.Properties.Add("queue", queueDetailsParts[2]);
+                        }
+                    }
+
+                    // Remove handled property from BizTalk adapter property list
                     configItems.Remove(supportedProperty.Key);
                 }
                 else
@@ -197,16 +209,15 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                     // Set default value
                     endpoint.Properties.Add(mappedProperty.mappedName, mappedProperty.mappedValue);
 
-                    _logger.LogDebug(TraceMessages.BizTalkFileReceiveAdapterBindingPropertyNotFound, RuleName, supportedProperty.Key, endpoint.Name, mappedProperty.mappedValue);
+                    _logger.LogDebug(TraceMessages.BizTalkMqReceiveAdapterBindingPropertyNotFound, RuleName, supportedProperty.Key, endpoint.Name, mappedProperty.mappedValue);
                 }
             }
 
-            // Passwords are a special case password and will be removed as they contain sensitive information.
+            // Special case password because it is a sensitive value
             endpoint.Properties.Add("password", "");
-            endpoint.ReportMessages.Add(new ReportMessage() { Severity = MessageSeverity.Information, Message = string.Format(CultureInfo.CurrentCulture, InformationMessages.BizTalkFileAdapterSensitivePropertyMustBeSpecifiedLater, "password") });
-            configItems.Remove("Password");
-
-            _logger.LogDebug(TraceMessages.BizTalkFileReceiveAdapterBindingPropertySensitive, RuleName, "Password", endpoint.Name);
+            endpoint.ReportMessages.Add(new ReportMessage() { Severity = MessageSeverity.Information, Message = string.Format(CultureInfo.CurrentCulture, InformationMessages.BizTalkMqAdapterSensitivePropertyMustBeSpecifiedLater, "password") });
+            configItems.Remove("password");
+            _logger.LogDebug(TraceMessages.BizTalkMqReceiveAdapterBindingPropertySensitive, RuleName, "password", endpoint.Name);
         }
 
         /// <summary>
@@ -217,21 +228,24 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
         /// <returns>The new converted value.</returns>
         private static object ConvertAdapterProperty(string propertyName, object propertyValue)
         {
-            if (propertyName == "PollingInterval")
+            switch (propertyName)
             {
-                return int.Parse((string)propertyValue, CultureInfo.InvariantCulture) / 1000;
+                case "transactionSupported":
+                case "suspendAsNonResumable":
+                case "dataOffsetForHeaders":
+                case "ordered":
+
+                    return propertyValue.ToString() == "yes" ? true : false;
             }
-            else
-            {
-                return propertyValue;
-            }
+
+            return propertyValue;
         }
 
         /// <summary>
-        /// Convert the BizTalk adapter TransportTypeData to a dictionary.
+        /// Convert the a BizTalk adapter TransportTypeData to a dictionary.
         /// </summary>
-        /// <param name="transportTypeData">The XML representation of the transport type.</param>
-        /// <returns>A dictionary containing the transport type data.</returns>
+        /// <param name="transportTypeData">The xml of the transport type</param>
+        /// <returns>A dictionary with the key value types.</returns>
         private static Dictionary<string, string> MapTransportTypeData(string transportTypeData)
         {
             var decodedCustomProps = HttpUtility.HtmlDecode(transportTypeData);
@@ -239,7 +253,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
 #pragma warning disable CA3075 // Insecure DTD processing in XML
             docCustomProps.LoadXml(decodedCustomProps);
 #pragma warning restore CA3075 // Insecure DTD processing in XML
-            var node = docCustomProps.SelectSingleNode("/CustomProps");
+            var node = docCustomProps.SelectSingleNode("/CustomProps/AdapterConfig/Config");
 
             var items = new Dictionary<string, string>();
 

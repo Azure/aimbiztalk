@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +12,7 @@ using System.Xml;
 using Microsoft.AzureIntegrationMigration.ApplicationModel.Report;
 using Microsoft.AzureIntegrationMigration.ApplicationModel.Target;
 using Microsoft.AzureIntegrationMigration.ApplicationModel.Target.Endpoints;
+using Microsoft.AzureIntegrationMigration.ApplicationModel.Target.Messages;
 using Microsoft.AzureIntegrationMigration.BizTalk.Analyze.Resources;
 using Microsoft.AzureIntegrationMigration.BizTalk.Types;
 using Microsoft.AzureIntegrationMigration.BizTalk.Types.Entities;
@@ -22,14 +22,14 @@ using Microsoft.Extensions.Logging;
 namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
 {
     /// <summary>
-    /// Implements rule RP002, which analyzes the model and creates endpoints for each file receive location.
+    /// Implements rule RP004, which analyzes the model and creates EndPoints for each application receive sftp location.
     /// </summary>
-    public class RP002FileReceivePortAnalyzer : BizTalkAnalyzerBase
+    public sealed class RP004SftpReceivePortAnalyzer : BizTalkAnalyzerBase
     {
         /// <summary>
         /// Defines the name of this rule.
         /// </summary>
-        private const string RuleName = "RP002";
+        private const string RuleName = "RP004";
 
         /// <summary>
         /// Defines a logger.
@@ -37,20 +37,20 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Creates a new instance of a <see cref="RP002FileReceivePortAnalyzer"/> class.
+        /// Creates a new instance of a <see cref="RP004SftpReceivePortAnalyzer"/> class.
         /// </summary>
         /// <param name="model">The model.</param>
         /// <param name="context">The context.</param>
         /// <param name="logger">A logger.</param>
-        public RP002FileReceivePortAnalyzer(IApplicationModel model, MigrationContext context, ILogger logger)
-            : base(nameof(RP002FileReceivePortAnalyzer), model, context, logger)
+        public RP004SftpReceivePortAnalyzer(IApplicationModel model, MigrationContext context, ILogger logger)
+            : base(nameof(RP004SftpReceivePortAnalyzer), model, context, logger)
         {
             // Validate and set the member.
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
-        /// Creates the file endpoints in the migration target.
+        /// Creates the sftp EndPoints for applications in the migration target.
         /// </summary>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task used to await the operation.</returns>
@@ -60,7 +60,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
             var parsedApplicationGroup = Model.GetSourceModel<ParsedBizTalkApplicationGroup>();
             if (parsedApplicationGroup?.Applications != null)
             {
-                _logger.LogDebug(TraceMessages.RunningRule, RuleName, nameof(RP002FileReceivePortAnalyzer));
+                _logger.LogDebug(TraceMessages.RunningRule, RuleName, nameof(RP004SftpReceivePortAnalyzer));
 
                 foreach (var application in parsedApplicationGroup.Applications)
                 {
@@ -73,68 +73,52 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                             {
                                 foreach (var receiveLocation in receivePort.ReceiveLocations)
                                 {
-                                    if (receiveLocation.ReceiveLocationTransportType.Name == "FILE")
+                                    if (receiveLocation.ReceiveLocationTransportType.Name == "SFTP")
                                     {
                                         // Find adapter in target model
                                         var adapterKey = $"{ModelConstants.MessageBusLeafKey}:{application.Application.Name.FormatKey()}:{receivePort.Name.FormatKey()}:{receiveLocation.Name.FormatKey()}:{ModelConstants.AdapterEndpointLeafKey}";
                                         var adapter = Model.FindMessagingObject(adapterKey);
                                         if (adapter.messagingObject != null)
                                         {
-                                            var fileAdapter = (AdapterEndpoint)adapter.messagingObject;
+                                            var sftpAdapter = (AdapterEndpoint)adapter.messagingObject;
 
                                             // Set conversion rating
-                                            fileAdapter.Rating = ConversionRating.FullConversionWithFidelityLoss;
+                                            sftpAdapter.Rating = ConversionRating.FullConversionWithFidelityLoss;
 
-                                            // Change to the accept message exchange pattern as no ack can be delivered for file receives.
-                                            fileAdapter.MessageExchangePattern = MessageExchangePattern.Accept;
+                                            // Change to Accept message exchange pattern as no ack can be delivered for SFTP
+                                            sftpAdapter.MessageExchangePattern = MessageExchangePattern.Accept;
 
                                             // Set resource map key to hook into the configuration process
-                                            var messagingObject = Model.FindMessagingObject(fileAdapter.Key);
+                                            var messagingObject = Model.FindMessagingObject(sftpAdapter.Key);
                                             var appName = $"{messagingObject.application.Name.Replace(".", "-").Replace(" ", string.Empty).Replace(":", "-")}";
-                                            var adapterName = fileAdapter.Name.Replace(".", "-").Replace(" ", string.Empty).Replace(":", "-");
-                                            fileAdapter.ResourceMapKey = $"fileReceiveAdapterEndpoint{appName}{adapterName}";
+                                            var adapterName = sftpAdapter.Name.Replace(".", "-").Replace(" ", string.Empty).Replace(":", "-");
+                                            sftpAdapter.ResourceMapKey = $"sftpReceiveAdapterEndpoint{appName}{adapterName}";
 
                                             // Handle adapter properties
                                             if (!string.IsNullOrEmpty(receiveLocation.ReceiveLocationTransportTypeData))
                                             {
                                                 var configItems = MapTransportTypeData(receiveLocation.ReceiveLocationTransportTypeData);
 
-                                                // Add the address to the config items.
-                                                var address = receiveLocation.Address;
-                                                if (!string.IsNullOrEmpty(address))
-                                                {
-                                                    if (configItems.TryGetValue("FileMask", out var fileMask))
-                                                    {
-                                                        address = address.Replace(fileMask, string.Empty);
-                                                    }
-                                                    // Replace the path separator to ensure its can be processed by the Azure CLI.
-                                                    address = address.Replace("\\", "/");
-                                                }
-                                                configItems.Add("Address", address);
+                                                MapAdapterProperties(configItems, sftpAdapter);
 
-                                                MapAdapterProperties(configItems, fileAdapter);
-
-                                                // Map the config.
-                                                var configProperties = fileAdapter.Properties[ModelConstants.ConfigurationEntry] as Dictionary<string, object>;
-                                                configProperties["failedMessageRouting"] = receivePort.RouteFailedMessage;
-                                                configProperties["fileMask"] = fileAdapter.Properties["fileMask"];
-                                                
                                                 foreach (var item in configItems)
                                                 {
-                                                    fileAdapter.ReportMessages.Add(new ReportMessage()
+                                                    // Skip the Password and PrivateKeyPassword properties as they've already been handled
+                                                    if (item.Key == "Password" || item.Key == "PrivateKeyPassword") continue;
+                                                    sftpAdapter.ReportMessages.Add(new ReportMessage()
                                                     {
-                                                        Severity = MessageSeverity.Warning,                                                        
-                                                        Message = string.Format(CultureInfo.CurrentCulture, InformationMessages.BizTalkFileAdapterPropertyNotSupported, item.Key, item.Value)
+                                                        Severity = MessageSeverity.Warning,
+                                                        Message = string.Format(CultureInfo.CurrentCulture, InformationMessages.BizTalkSftpAdapterPropertyNotSupported, item.Key, item.Value)
                                                     });
                                                 }
 
-                                                fileAdapter.ReportLinks.Add(AnalysisResources.FileAdapterHelpLink);
+                                                sftpAdapter.ReportLinks.Add(AnalysisResources.SftpAdapterHelpLink);
                                             }
                                             else
                                             {
-                                                _logger.LogDebug(WarningMessages.ReceiveLocationTransportTypeDataNotFound, fileAdapter.Name);
+                                                _logger.LogDebug(WarningMessages.ReceiveLocationTransportTypeDataNotFound, sftpAdapter.Name);
 
-                                                fileAdapter.ReportMessages.Add(new ReportMessage() { Severity = MessageSeverity.Warning, Message = string.Format(CultureInfo.CurrentCulture, WarningMessages.ReceiveLocationTransportTypeDataNotFound, fileAdapter.Name) });
+                                                sftpAdapter.ReportMessages.Add(new ReportMessage() { Severity = MessageSeverity.Warning, Message = string.Format(CultureInfo.CurrentCulture, WarningMessages.ReceiveLocationTransportTypeDataNotFound, sftpAdapter.Name) });
                                             }
                                         }
                                         else
@@ -148,18 +132,19 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                         }
                     }
                 }
-                _logger.LogDebug(TraceMessages.RuleCompleted, RuleName, nameof(RP002FileReceivePortAnalyzer));
+
+                _logger.LogDebug(TraceMessages.RuleCompleted, RuleName, nameof(RP004SftpReceivePortAnalyzer));
             }
             else
             {
-                _logger.LogDebug(TraceMessages.SkippingRuleAsSourceModelMissing, RuleName, nameof(RP002FileReceivePortAnalyzer));
+                _logger.LogDebug(TraceMessages.SkippingRuleAsSourceModelMissing, RuleName, nameof(RP004SftpReceivePortAnalyzer));
             }
 
             await Task.CompletedTask.ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Map the fields that are to be used by the azure file connector, expected fields that are not found are added with a default value or a place holder text.
+        /// Map the fields that are to be used by the azure ftp connector, expected fields that are not found are added with default value or a place holder text.
         /// </summary>
         /// <param name="configItems"></param>
         /// <param name="endpoint"></param>
@@ -168,28 +153,35 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
             // Set supported property names and defaults
             var supportedProperties = new Dictionary<string, (string, object)>()
             {
-                { "Address", ("rootFolder", "C:/")},
-                { "BatchSize", ("maxFileCount", 10)},
-                { "FileMask", ("fileMask", "*.*")},
-                { "PollingInterval", ("recurrence", 60000)},
-                { "Username", ("userName", "temp.user")}
+                { "ServerAddress", ("serverAddress", "") },
+                { "Port", ("serverPort", 22) },
+                { "UserName", ("userName", "") },
+                { "PrivateKey", ("sshPrivateKey", "") },
+                { "FolderPath", ("folderPath", "/") },
+                { "FileMask", ("fileMask", "*.*") },
+                { "PollingIntervalUnit", ("frequency", "Seconds") },
+                { "PollingInterval", ("recurrence", 60) },
+                { "AccessAnySSHServerHostKey", ("acceptAnySshHostKey", "false") },
+                { "SSHServerHostKey", ("sshHostKeyFingerprint", "") },
+                { "ClientAuthenticationMode", ("clientAuthenticationMode", "Password")}
             };
 
-            // Search through the BizTalk adapter properties and map them over to their AIS equivalents.
+            // Search through BizTalk adapter properties and match properties
             foreach (var supportedProperty in supportedProperties)
             {
                 (string mappedName, object mappedValue) mappedProperty = supportedProperty.Value;
 
                 if (configItems.ContainsKey(supportedProperty.Key) && !string.IsNullOrEmpty(configItems[supportedProperty.Key]))
                 {
+                    // Convert values
                     var convertedValue = ConvertAdapterProperty(supportedProperty.Key, configItems[supportedProperty.Key]);
 
-                    // Set the value on the endpoint
+                    // Set value on endpoint
                     endpoint.Properties.Add(mappedProperty.mappedName, convertedValue);
 
-                    _logger.LogDebug(TraceMessages.BizTalkFileReceiveAdapterBindingPropertyFound, RuleName, supportedProperty.Key, endpoint.Name, convertedValue);
+                    _logger.LogDebug(TraceMessages.BizTalkFtpReceiveAdapterBindingPropertyFound, RuleName, supportedProperty.Key, endpoint.Name, convertedValue);
 
-                    // Remove the property from the BizTalk adapter property list.
+                    // Remove handled property from BizTalk adapter property list
                     configItems.Remove(supportedProperty.Key);
                 }
                 else
@@ -197,16 +189,31 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                     // Set default value
                     endpoint.Properties.Add(mappedProperty.mappedName, mappedProperty.mappedValue);
 
-                    _logger.LogDebug(TraceMessages.BizTalkFileReceiveAdapterBindingPropertyNotFound, RuleName, supportedProperty.Key, endpoint.Name, mappedProperty.mappedValue);
+                    _logger.LogDebug(TraceMessages.BizTalkSftpReceiveAdapterBindingPropertyNotFound, RuleName, supportedProperty.Key, endpoint.Name, mappedProperty.mappedValue);
                 }
             }
 
-            // Passwords are a special case password and will be removed as they contain sensitive information.
-            endpoint.Properties.Add("password", "");
-            endpoint.ReportMessages.Add(new ReportMessage() { Severity = MessageSeverity.Information, Message = string.Format(CultureInfo.CurrentCulture, InformationMessages.BizTalkFileAdapterSensitivePropertyMustBeSpecifiedLater, "password") });
-            configItems.Remove("Password");
-
-            _logger.LogDebug(TraceMessages.BizTalkFileReceiveAdapterBindingPropertySensitive, RuleName, "Password", endpoint.Name);
+            // Special case for Password or PrivateKeyPassword because they are sensitive values
+            // Check the ClientAuthenticationMode
+            var authenticationMode = endpoint.Properties["clientAuthenticationMode"] as string;
+            if (authenticationMode == "Password")
+            {
+                endpoint.Properties.Add("password", "<redacted>");
+                _logger.LogDebug(TraceMessages.BizTalkSftpReceiveAdapterBindingPropertySensitive, RuleName, "password", endpoint.Name);
+                endpoint.ReportMessages.Add(new ReportMessage() { Severity = MessageSeverity.Information, Message = string.Format(CultureInfo.CurrentCulture, InformationMessages.BizTalkSftpAdapterSensitivePropertyMustBeSpecifiedLater, "password") });
+            }
+            else if (authenticationMode == "PublicKeyAuthentication")
+            {
+                endpoint.Properties.Add("sshPrivateKeyPassphrase", "<redacted>");
+                _logger.LogDebug(TraceMessages.BizTalkSftpReceiveAdapterBindingPropertySensitive, RuleName, "sshPrivateKeyPassphrase", endpoint.Name);
+                endpoint.ReportMessages.Add(new ReportMessage() { Severity = MessageSeverity.Information, Message = string.Format(CultureInfo.CurrentCulture, InformationMessages.BizTalkSftpAdapterSensitivePropertyMustBeSpecifiedLater, "sshPrivateKeyPassphrase") });
+            }
+            else
+            {
+                // Unsupported ClientAuthenticationMode (e.g. MFA)
+                endpoint.ReportMessages.Add(new ReportMessage() { Severity = MessageSeverity.Warning, Message = string.Format(CultureInfo.CurrentCulture, InformationMessages.BizTalkSftpAdapterPropertyNotSupported, "clientAuthenticationMode", authenticationMode) });
+            }
+            configItems.Remove("clientAuthenticationMode");
         }
 
         /// <summary>
@@ -217,21 +224,24 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
         /// <returns>The new converted value.</returns>
         private static object ConvertAdapterProperty(string propertyName, object propertyValue)
         {
-            if (propertyName == "PollingInterval")
+            switch (propertyName)
             {
-                return int.Parse((string)propertyValue, CultureInfo.InvariantCulture) / 1000;
+                case "AccessAnySSHServerHostKey":
+                    return propertyValue.ToString() == "-1" ? "true" : "false";
+
+                case "FolderPath":
+
+                    return propertyValue.ToString().StartsWith("/") ? propertyValue : "/" + propertyValue.ToString();
             }
-            else
-            {
-                return propertyValue;
-            }
+
+            return propertyValue;
         }
 
         /// <summary>
-        /// Convert the BizTalk adapter TransportTypeData to a dictionary.
+        /// Convert the a BizTalk adapter TransportTypeData to a dictionary.
         /// </summary>
-        /// <param name="transportTypeData">The XML representation of the transport type.</param>
-        /// <returns>A dictionary containing the transport type data.</returns>
+        /// <param name="transportTypeData">The xml of the transport type</param>
+        /// <returns>A dictionary with the key value types.</returns>
         private static Dictionary<string, string> MapTransportTypeData(string transportTypeData)
         {
             var decodedCustomProps = HttpUtility.HtmlDecode(transportTypeData);

@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.Collections.Generic;
@@ -361,7 +361,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.Tests.GeneratorRul
             var messageSchemaName = "testMessageSchemaName";
 
             var generatedFileName = string.Empty;
-            JObject generatedJson = null;
+            JToken generatedJson = null;
 
             "Given a model"
                 .x(() => model = new AzureIntegrationServicesModel());
@@ -399,9 +399,9 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Convert.Tests.GeneratorRul
 
                     _mockFileRepository.Setup(f => f.WriteJsonFile(
                         It.IsAny<string>(),
-                        It.IsAny<JObject>()
+                        It.IsAny<JToken>()
                         ))
-                    .Callback<string, JObject>(
+                    .Callback<string, JToken>(
                         (p1, p2) =>
                         {
                             generatedFileName = p1;

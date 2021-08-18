@@ -13,6 +13,9 @@ systemapplication
 {%- capture system_application_group -%}
 {{ aim_user_prefix }}rg-aimapp-{{ system_application }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
 {%- endcapture -%}
+{%- capture system_application_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimsystemapplication-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
 {%- capture integration_account_name -%}
 {{ aim_user_prefix }}intacc-aimartifactstore-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
 {%- endcapture -%}
@@ -28,6 +31,9 @@ systemapplication
 {%- capture message_suspend_processor_logicapp_name -%}
 {{ aim_user_prefix }}logic-aimmessagesuspendprocessor-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
 {%- endcapture -%}
+{%- capture xml_message_translator_lite_logicapp_name -%}
+{{ aim_user_prefix }}logic-aimxmlmessagetranslatorlite-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
 {%- capture service_bus_namespace_name -%}
 {{ aim_user_prefix }}sb-aimmsgbox-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
 {%- endcapture -%}
@@ -37,8 +43,17 @@ systemapplication
 {%- capture key_vault_apim_subscription_secret_name -%}
 aim-apim-subscriptionkey-unlimited
 {%- endcapture -%}
+{%- capture app_insights_name -%}
+{{ aim_user_prefix }}appi-aimmsgbusops-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
 {%- capture api_management_service_name -%}
 {{ aim_user_prefix }}apim-aimmsgbussvc-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture standard_app_service_plan_name -%}
+{{ aim_user_prefix }}plan-logicapp-aimmsgbussvc-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+{%- endcapture -%}
+{%- capture storage_account_name -%}
+{{ aim_user_prefix }}staimmsgbussvc{{ model.migration_target.deployment_environment | downcase }}01{{ aim_unique_suffix }}
 {%- endcapture -%}
 {%- capture routing_slip_router_logicapp_name -%}
 {{ aim_user_prefix }}logic-aimroutingsliprouter-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
@@ -118,6 +133,118 @@ resourceTemplates:
   {%- endif %}
 {%- endfor %}
 
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-"  %}
+  {% if application.name != 'System Application' %}
+  # ------------------------------------------------------------------------------
+  # {{ app_name }} Standard Workflows
+  # ------------------------------------------------------------------------------
+
+  - template: {{ app_name }}AzureLogicAppStandard
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+      - azure_storage_account_name: {{ storage_account_name }}
+      - azure_app_service_plan_name: {{ standard_app_service_plan_name }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_service_bus_resource_group_name: {{ system_application_group }}
+      - azure_service_bus_namespace_name: {{ service_bus_namespace_name }}
+      - azure_system_application_resource_group_name: {{ system_application_group }}
+      - azure_system_application_logic_app_name: {{ system_application_logicapp_name }}
+      - app_insights_name: {{ app_insights_name }}
+      - apim_service_name: {{ api_management_service_name }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/standard/base.application.logic.json.liquid
+      - env: ['dev']
+        paths:
+          - application/standard/application.logic.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - application/standard/application.logic.prod.parameters.json.liquid
+
+  - template: {{ app_name }}AzureLogicAppStandardWorkflows
+    templateType: microsoft.template.arm
+    resourceName: {{ app_name }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+      - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/standard/application.logic.workflows/.funcignore
+          - application/standard/application.logic.workflows/.gitignore
+          - application/standard/application.logic.workflows/base.appsettings.local.json.liquid
+          - application/standard/application.logic.workflows/base.connections.json.liquid
+          - application/standard/application.logic.workflows/base.parameters.json.liquid
+          - application/standard/application.logic.workflows/base.parameters.local.json.liquid
+          - application/standard/application.logic.workflows/host.json
+
+  - template: {{ app_name }}AzureLogicAppStandardWorkflowsVsCode
+    templateType: microsoft.template.arm
+    resourceName: {{ app_name }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/.vscode
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/standard/application.logic.workflows/.vscode/extensions.json
+          - application/standard/application.logic.workflows/.vscode/launch.json
+          - application/standard/application.logic.workflows/.vscode/settings.json
+          - application/standard/application.logic.workflows/.vscode/tasks.json
+
+  - template: {{ app_name }}AzureLogicAppStandardWorkflowsWorkflowDesigntime
+    templateType: microsoft.template.arm
+    resourceName: {{ app_name }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/workflow-designtime
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/standard/application.logic.workflows/workflow-designtime/host.json
+          - application/standard/application.logic.workflows/workflow-designtime/local.settings.json
+
+  {%- endif %}
+{%- endfor %}
+
   # ------------------------------------------------------------------------------
   # Schemas
   # ------------------------------------------------------------------------------
@@ -126,7 +253,7 @@ resourceTemplates:
   {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-"  -%}
   {%- for message in application.messages %}
     {% assign message_name = message.name | remove: " " | replace: ".", "-" | replace: "/" "-" | replace: ":", "-" %}
-  - template: messagesAzureIntegrationAccountSchema{{ app_name }}{{ message_name }}
+  - template: messagesXmlSchemaConsumption{{ app_name }}{{ message_name }}
     templateType: microsoft.template.json
     resourceName: {{ message_name }}
     resourceType: microsoft.schemas.xml
@@ -149,6 +276,24 @@ resourceTemplates:
       - env: ['prod']
         paths:
           - messages/schemas/requestbody.prod.json.liquid
+
+  - template: messagesXmlSchemaStandard{{ app_name }}{{ message_name }}
+    templateType: microsoft.template.json
+    resourceName: {{ message_name }}
+    resourceType: microsoft.schemas.xml
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_integration_account_name: {{ integration_account_name }}
+      - azure_message_schema_name : {{ message.properties.typeName }}
+      - message_type: {{ message.properties.messageType }}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/workflows/systemapplication.logic.workflows/Artifacts/Schemas
+    files:
   {%- endfor %}
 {%- endfor %}
 
@@ -162,7 +307,7 @@ resourceTemplates:
     {% assign message_name = message.name | remove: " " | replace: ".", "-" | replace: "/" "-" | replace: ":", "-" %}
     {%- for transform in message.message_transforms %}
       {% assign transform_name = transform.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: messagesAzureIntegrationAccountMap{{ app_name }}{{ message_name }}{{ transform_name }}
+  - template: messagesXmlMapConsumption{{ app_name }}{{ message_name }}{{ transform_name }}
     templateType: microsoft.template.json
     resourceName: {{ transform_name }}
     resourceType: microsoft.schemas.xslt
@@ -192,6 +337,31 @@ resourceTemplates:
       - env: ['prod']
         paths:
           - messages/transforms/requestbody.prod.json.liquid
+
+  - template: messagesXmlMapStandard{{ app_name }}{{ message_name }}{{ transform_name }}
+    templateType: microsoft.template.json
+    resourceName: {{ transform_name }}
+    resourceType: microsoft.schemas.xslt
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_integration_account_name: {{ integration_account_name }}
+      - azure_message_map_name : {{ transform.properties.typeName }}
+      - azure_source_schema_message_types: {% for message_type in transform.properties.sourceSchemaMessageTypes -%}
+                                             {{ message_type }}
+                                             {%- if forloop.last == false -%}|{%- endif -%}
+                                           {%- endfor %}
+      - azure_target_schema_message_types: {% for message_type in transform.properties.targetSchemaMessageTypes -%}
+                                             {{ message_type }}
+                                             {%- if forloop.last == false -%}|{%- endif -%}
+                                           {%- endfor %}
+    outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/workflows/systemapplication.logic.workflows/Artifacts/Maps
+    files:
     {%- endfor %}
   {%- endfor -%}
 {%- endfor %}
@@ -496,17 +666,18 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FTP" and endpoint.message_exchange_pattern == "Accept" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: ftpReceiveAzureFtpConnectionEndpoint{{ app_name }}{{ endpoint_name }}
+  - template: ftpReceiveAzureFtpConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}apic-aimftprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.web.connections
     tags:
-      - ApplicationName: {{ app_name }}
+      - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V1
       - azure_ftp_server_address: {{ endpoint.properties.serverAddress}}
       - azure_ftp_server_port: {{ endpoint.properties.serverPort }}
       - azure_ftp_user_name: {{ endpoint.properties.userName }}
@@ -517,13 +688,47 @@ resourceTemplates:
     files:
       - env: ['dev', 'prod']
         paths:
-          - endpoints/ftp/receive/ftpreceiveadapterftp.apiconnection.json
+          - endpoints/ftp/receive/ftpreceiveadapterftp.apiconnection.json.liquid
       - env: ['dev']
         paths:
           - endpoints/ftp/receive/ftpreceiveadapterftp.apiconnection.dev.parameters.json.liquid
       - env: ['prod']
         paths:
           - endpoints/ftp/receive/ftpreceiveadapterftp.apiconnection.prod.parameters.json.liquid
+
+  - template: ftpReceiveAzureFtpConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-aimftprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V2
+      - azure_ftp_server_address: {{ endpoint.properties.serverAddress}}
+      - azure_ftp_server_port: {{ endpoint.properties.serverPort }}
+      - azure_ftp_user_name: {{ endpoint.properties.userName }}
+      - azure_ftp_password: {{ endpoint.properties.password  }}
+      - azure_ftp_is_binary_transport: {{ endpoint.properties.isBinaryTransport }}
+      - azure_ftp_is_ssl: {{ endpoint.properties.isSSL }}
+      - application_logicapp_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/ftp/receive/ftpreceiveadapterftp.apiconnection.json.liquid
+          - endpoints/ftp/receive/ftpreceiveadapterftp.apiconnectionaccesspolicy.json
+      - env: ['dev']
+        paths:
+          - endpoints/ftp/receive/ftpreceiveadapterftp.apiconnection.dev.parameters.json.liquid
+          - endpoints/ftp/receive/ftpreceiveadapterftp.apiconnectionaccesspolicy.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/ftp/receive/ftpreceiveadapterftp.apiconnection.prod.parameters.json.liquid
+          - endpoints/ftp/receive/ftpreceiveadapterftp.apiconnectionaccesspolicy.prod.parameters.json.liquid
     {%- endif -%}
   {%- endfor -%}
 {%- endfor %}
@@ -533,30 +738,61 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FTP" and endpoint.message_exchange_pattern == "Accept" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}         
-  - template: ftpReceiveAzureServiceBusConnectionEndpoint{{ app_name }}{{ endpoint_name }}
+  - template: ftpReceiveAzureServiceBusConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.web.connections
     tags:
-      - ApplicationName: {{ app_name }}
+      - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V1
       - azure_service_bus_resource_group_name: {{ system_application_group }}
       - azure_service_bus_namespace : {{ service_bus_namespace_name }}      
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
     files:
       - env: ['dev', 'prod']
         paths:
-          - endpoints/ftp/receive/ftpreceiveadapterservicebus.apiconnection.json
+          - endpoints/ftp/receive/ftpreceiveadapterservicebus.apiconnection.json.liquid
       - env: ['dev']
         paths:
           - endpoints/ftp/receive/ftpreceiveadapterservicebus.apiconnection.dev.parameters.json.liquid
       - env: ['prod']
         paths:
           - endpoints/ftp/receive/ftpreceiveadapterservicebus.apiconnection.prod.parameters.json.liquid
+
+  - template: ftpReceiveAzureServiceBusConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V2
+      - azure_service_bus_resource_group_name: {{ system_application_group }}
+      - azure_service_bus_namespace : {{ service_bus_namespace_name }}    
+      - application_logicapp_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/ftp/receive/ftpreceiveadapterservicebus.apiconnection.json.liquid
+          - endpoints/ftp/receive/ftpreceiveadapterservicebus.apiconnectionaccesspolicy.json
+      - env: ['dev']
+        paths:
+          - endpoints/ftp/receive/ftpreceiveadapterservicebus.apiconnection.dev.parameters.json.liquid
+          - endpoints/ftp/receive/ftpreceiveadapterservicebus.apiconnectionaccesspolicy.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/ftp/receive/ftpreceiveadapterservicebus.apiconnection.prod.parameters.json.liquid
+          - endpoints/ftp/receive/ftpreceiveadapterservicebus.apiconnectionaccesspolicy.prod.parameters.json.liquid
     {%- endif -%}
   {%- endfor -%}
 {%- endfor %}
@@ -566,12 +802,12 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FTP" and endpoint.message_exchange_pattern == "Accept" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}         
-  - template: ftpReceiveAzureAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+  - template: ftpReceiveAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimftpradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
-      - ApplicationName: {{ app_name }}
+      - Application: {{ app_name }}
       - Scenario: {{ endpoint.properties.scenario }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
@@ -612,6 +848,51 @@ resourceTemplates:
       - env: ['prod']
         paths:
           - endpoints/ftp/receive/ftpreceiveadapter.logicapp.prod.parameters.json.liquid
+
+  - template: ftpReceiveAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ app_name }}
+      - Scenario: {{ endpoint.properties.scenario }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - app_name: {{ app_name | downcase }}
+      - ftp_api_connector_name: {{ aim_user_prefix }}apic-aimftprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
+      - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
+      - workflow_name: {{ endpoint_name | downcase }}
+      - azure_ftp_scenario: {{ endpoint.properties.scenario | downcase }}
+      - azure_ftp_target_folder: {{ endpoint.properties.targetFolder }}
+      - azure_ftp_file_mask: "{{ endpoint.properties.fileMask }}"
+      - azure_ftp_max_file_count: {{ endpoint.properties.maxFileCount }}
+      - azure_ftp_recurrence: {{ endpoint.properties.recurrence }}
+      - azure_ftp_frequency: {% case endpoint.properties.frequency -%}
+                               {%- when "Seconds" -%}Second
+                               {%- when "Minutes" -%}Minute
+                               {%- when "Hours" -%}Hour
+                               {%- when "Days" -%}Day
+                             {%- endcase %}
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_name: {{ endpoint.properties.scenario }}
+      - scenario_step_name: {{ endpoint.properties.scenarioStep }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/standard/application.logic.workflows/ftpreceiveadapter/workflow.json.liquid
+          - application/standard/application.logic.workflows/ftpreceiveadapter/ftpreceiveadapter.appsettings.json.liquid
+          - application/standard/application.logic.workflows/ftpreceiveadapter/ftpreceiveadapter.appsettings.local.json.liquid
+          - application/standard/application.logic.workflows/ftpreceiveadapter/ftpreceiveadapter.connections.json.liquid
+          - application/standard/application.logic.workflows/ftpreceiveadapter/ftpReceiveAdapter.parameters.json.liquid
+          - application/standard/application.logic.workflows/ftpreceiveadapter/ftpreceiveadapter.parameters.local.json.liquid
     {%- endif -%}
   {%- endfor -%}
 {%- endfor %}
@@ -625,17 +906,18 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FTP" and endpoint.message_exchange_pattern == "Send" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: ftpSendAzureConnectionEndpoint{{ app_name }}{{ endpoint_name }}
+  - template: ftpSendAzureConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}apic-aimftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.web.connections
     tags:
-      - ApplicationName: {{ app_name }}
+      - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V1
       - azure_ftp_server_address: {{ endpoint.properties.serverAddress }}
       - azure_ftp_server_port: {{ endpoint.properties.serverPort }}
       - azure_ftp_user_name: {{ endpoint.properties.userName }}
@@ -646,13 +928,47 @@ resourceTemplates:
     files:
       - env: ['dev', 'prod']
         paths:
-          - endpoints/ftp/send/ftpsendadapter.apiconnection.json
+          - endpoints/ftp/send/ftpsendadapter.apiconnection.json.liquid
       - env: ['dev']
         paths:
           - endpoints/ftp/send/ftpsendadapter.apiconnection.dev.parameters.json.liquid
       - env: ['prod']
         paths:
           - endpoints/ftp/send/ftpsendadapter.apiconnection.prod.parameters.json.liquid
+
+  - template: ftpSendAzureConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-aimftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V2
+      - azure_ftp_server_address: {{ endpoint.properties.serverAddress }}
+      - azure_ftp_server_port: {{ endpoint.properties.serverPort }}
+      - azure_ftp_user_name: {{ endpoint.properties.userName }}
+      - azure_ftp_password: {{ endpoint.properties.password  }}
+      - azure_ftp_is_binary_transport: {{ endpoint.properties.isBinaryTransport }}
+      - azure_ftp_is_ssl: {{ endpoint.properties.isSSL }}
+      - application_logicapp_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/ftp/send/ftpsendadapter.apiconnection.json.liquid
+          - endpoints/ftp/send/ftpsendadapter.apiconnectionaccesspolicy.json
+      - env: ['dev']
+        paths:
+          - endpoints/ftp/send/ftpsendadapter.apiconnection.dev.parameters.json.liquid
+          - endpoints/ftp/send/ftpsendadapter.apiconnectionaccesspolicy.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/ftp/send/ftpsendadapter.apiconnection.prod.parameters.json.liquid
+          - endpoints/ftp/send/ftpsendadapter.apiconnectionaccesspolicy.prod.parameters.json.liquid
     {%- endif -%}
   {%- endfor -%}
 {%- endfor %}
@@ -662,19 +978,19 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FTP" and endpoint.message_exchange_pattern == "Send" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: ftpSendAzureAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+  - template: ftpSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimftpsadapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
-      - ApplicationName: {{ app_name }}
+      - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - ftp_api_connector_name: {{ aim_user_prefix }}apic-aimftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
       - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
       - azure_ftp_target_folder: {{ endpoint.properties.targetFolder }}
@@ -692,6 +1008,436 @@ resourceTemplates:
       - env: ['prod']
         paths:
           - endpoints/ftp/send/ftpsendadapter.logicapp.prod.parameters.json.liquid
+
+  - template: ftpSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+      - ftp_api_connector_name: {{ aim_user_prefix }}apic-aimftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
+      - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
+      - azure_ftp_target_folder: {{ endpoint.properties.targetFolder }}
+      - azure_ftp_target_file_name: "{{ endpoint.properties.targetFileName }}"
+      - workflow_name: {{ endpoint_name | downcase }}
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_step_name: ftpSendAdapter
+    outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/standard/application.logic.workflows/ftpsendadapter/workflow.json.liquid
+          - application/standard/application.logic.workflows/ftpsendadapter/ftpsendadapter.appsettings.json.liquid
+          - application/standard/application.logic.workflows/ftpsendadapter/ftpsendadapter.appsettings.local.json.liquid
+          - application/standard/application.logic.workflows/ftpsendadapter/ftpsendadapter.connections.json.liquid
+          - application/standard/application.logic.workflows/ftpsendadapter/ftpsendadapter.parameters.json.liquid
+          - application/standard/application.logic.workflows/ftpsendadapter/ftpsendadapter.parameters.local.json.liquid
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+  # ------------------------------------------------------------------------------
+  # Endpoints - SFTP Receive 
+  # ------------------------------------------------------------------------------
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints %}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "SFTP" and endpoint.message_exchange_pattern == "Accept" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - template: sftpReceiveAzureFtpConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-aimsftprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V1
+      - azure_sftp_server_address: {{ endpoint.properties.serverAddress}}
+      - azure_sftp_server_port: {{ endpoint.properties.serverPort }}
+      - azure_sftp_user_name: {{ endpoint.properties.userName }}
+      - azure_sftp_password: {{ endpoint.properties.password  }}
+      - azure_sftp_accept_any_ssh_host_key: {{ endpoint.properties.acceptAnySshHostKey  }}
+      - azure_sftp_root_folder: {{ endpoint.properties.folderPath }}
+      - azure_sftp_host_key_fingerprint: {{ endpoint.properties.sshHostKeyFingerprint }}
+      - azure_sftp_private_key: {{ endpoint.properties.sshPrivateKey }}
+      - azure_sftp_private_key_passphrase: {{ endpoint.properties.sshPrivateKeyPassphrase }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/sftp/receive/sftpreceiveadaptersftp.apiconnection.json.liquid
+      - env: ['dev']
+        paths:
+          - endpoints/sftp/receive/sftpreceiveadaptersftp.apiconnection.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/sftp/receive/sftpreceiveadaptersftp.apiconnection.prod.parameters.json.liquid
+
+  - template: sftpReceiveAzureFtpConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-aimsftprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V2
+      - azure_sftp_server_address: {{ endpoint.properties.serverAddress}}
+      - azure_sftp_server_port: {{ endpoint.properties.serverPort }}
+      - azure_sftp_user_name: {{ endpoint.properties.userName }}
+      - azure_sftp_password: {{ endpoint.properties.password  }}
+      - azure_sftp_accept_any_ssh_host_key: {{ endpoint.properties.acceptAnySshHostKey  }}
+      - azure_sftp_root_folder: {{ endpoint.properties.folderPath }}
+      - azure_sftp_host_key_fingerprint: {{ endpoint.properties.sshHostKeyFingerprint }}
+      - azure_sftp_private_key: {{ endpoint.properties.sshPrivateKey }}
+      - azure_sftp_private_key_passphrase: {{ endpoint.properties.sshPrivateKeyPassphrase }}
+      - application_logicapp_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/sftp/receive/sftpreceiveadaptersftp.apiconnection.json.liquid
+          - endpoints/sftp/receive/sftpreceiveadaptersftp.apiconnectionaccesspolicy.json
+      - env: ['dev']
+        paths:
+          - endpoints/sftp/receive/sftpreceiveadaptersftp.apiconnection.dev.parameters.json.liquid
+          - endpoints/sftp/receive/sftpreceiveadaptersftp.apiconnectionaccesspolicy.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/sftp/receive/sftpreceiveadaptersftp.apiconnection.prod.parameters.json.liquid
+          - endpoints/sftp/receive/sftpreceiveadaptersftp.apiconnectionaccesspolicy.prod.parameters.json.liquid
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints %}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "SFTP" and endpoint.message_exchange_pattern == "Accept" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}         
+  - template: sftpReceiveAzureServiceBusConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V1
+      - azure_service_bus_resource_group_name: {{ system_application_group }}
+      - azure_service_bus_namespace : {{ service_bus_namespace_name }}      
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/sftp/receive/sftpreceiveadapterservicebus.apiconnection.json.liquid
+      - env: ['dev']
+        paths:
+          - endpoints/sftp/receive/sftpreceiveadapterservicebus.apiconnection.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/sftp/receive/sftpreceiveadapterservicebus.apiconnection.prod.parameters.json.liquid
+
+  - template: sftpReceiveAzureServiceBusConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V2
+      - azure_service_bus_resource_group_name: {{ system_application_group }}
+      - azure_service_bus_namespace : {{ service_bus_namespace_name }}    
+      - application_logicapp_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/sftp/receive/sftpreceiveadapterservicebus.apiconnection.json.liquid
+          - endpoints/sftp/receive/sftpreceiveadapterservicebus.apiconnectionaccesspolicy.json
+      - env: ['dev']
+        paths:
+          - endpoints/sftp/receive/sftpreceiveadapterservicebus.apiconnection.dev.parameters.json.liquid
+          - endpoints/sftp/receive/sftpreceiveadapterservicebus.apiconnectionaccesspolicy.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/sftp/receive/sftpreceiveadapterservicebus.apiconnection.prod.parameters.json.liquid
+          - endpoints/sftp/receive/sftpreceiveadapterservicebus.apiconnectionaccesspolicy.prod.parameters.json.liquid
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints %}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "SFTP" and endpoint.message_exchange_pattern == "Accept" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}         
+  - template: sftpReceiveAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}logic-aimsftpradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.workflows.azurelogicapp.consumption
+    tags:
+      - Application: {{ app_name }}
+      - Scenario: {{ endpoint.properties.scenario }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - app_name: {{ app_name | downcase }}
+      - sftp_api_connector_name: {{ aim_user_prefix }}apic-aimsftprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_integration_account_name: {{ integration_account_name }}      
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
+      - azure_message_constructor_logic_app_name: {{ message_constructor_logicapp_name }}
+      - azure_message_suspend_processor_logic_app_name : {{ message_suspend_processor_logicapp_name }}
+      - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
+      - azure_sftp_scenario: {{ endpoint.properties.scenario | downcase }}
+      - azure_sftp_target_folder: {{ endpoint.properties.targetFolder }}
+      - azure_sftp_file_mask: "{{ endpoint.properties.fileMask }}"
+      - azure_sftp_recurrence: {{ endpoint.properties.recurrence }}
+      - azure_sftp_frequency: {% case endpoint.properties.frequency -%}
+                               {%- when "Seconds" -%}Second
+                               {%- when "Minutes" -%}Minute
+                               {%- when "Hours" -%}Hour
+                               {%- when "Days" -%}Day
+                             {%- endcase %}
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_name: {{ endpoint.properties.scenario }}
+      - scenario_step_name: {{ endpoint.properties.scenarioStep }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/sftp/receive/sftpreceiveadapter.logicapp.json
+      - env: ['dev']
+        paths:
+          - endpoints/sftp/receive/sftpreceiveadapter.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/sftp/receive/sftpreceiveadapter.logicapp.prod.parameters.json.liquid
+
+  - template: sftpReceiveAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ app_name }}
+      - Scenario: {{ endpoint.properties.scenario }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - app_name: {{ app_name | downcase }}
+      - sftp_api_connector_name: {{ aim_user_prefix }}apic-aimsftprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
+      - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
+      - workflow_name: {{ endpoint_name | downcase }}
+      - azure_sftp_scenario: {{ endpoint.properties.scenario | downcase }}
+      - azure_sftp_target_folder: {{ endpoint.properties.targetFolder }}
+      - azure_sftp_file_mask: "{{ endpoint.properties.fileMask }}"
+      - azure_sftp_recurrence: {{ endpoint.properties.recurrence }}
+      - azure_sftp_frequency: {% case endpoint.properties.frequency -%}
+                               {%- when "Seconds" -%}Second
+                               {%- when "Minutes" -%}Minute
+                               {%- when "Hours" -%}Hour
+                               {%- when "Days" -%}Day
+                             {%- endcase %}
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_name: {{ endpoint.properties.scenario }}
+      - scenario_step_name: {{ endpoint.properties.scenarioStep }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/standard/application.logic.workflows/sftpreceiveadapter/workflow.json.liquid
+          - application/standard/application.logic.workflows/sftpreceiveadapter/sftpreceiveadapter.appsettings.json.liquid
+          - application/standard/application.logic.workflows/sftpreceiveadapter/sftpreceiveadapter.appsettings.local.json.liquid
+          - application/standard/application.logic.workflows/sftpreceiveadapter/sftpreceiveadapter.connections.json.liquid
+          - application/standard/application.logic.workflows/sftpreceiveadapter/sftpReceiveAdapter.parameters.json.liquid
+          - application/standard/application.logic.workflows/sftpreceiveadapter/sftpreceiveadapter.parameters.local.json.liquid
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+  # ------------------------------------------------------------------------------
+  # Endpoints - SFTP Send
+  # ------------------------------------------------------------------------------
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints %}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "SFTP" and endpoint.message_exchange_pattern == "Send" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - template: sftpSendAzureConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-aimsftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V1
+      - azure_sftp_server_address: {{ endpoint.properties.serverAddress}}
+      - azure_sftp_server_port: {{ endpoint.properties.serverPort }}
+      - azure_sftp_user_name: {{ endpoint.properties.userName }}
+      - azure_sftp_password: {{ endpoint.properties.password  }}
+      - azure_sftp_accept_any_ssh_host_key: {{ endpoint.properties.acceptAnySshHostKey  }}
+      - azure_sftp_root_folder: {{ endpoint.properties.folderPath }}
+      - azure_sftp_host_key_fingerprint: {{ endpoint.properties.sshHostKeyFingerprint }}
+      - azure_sftp_private_key: {{ endpoint.properties.sshPrivateKey }}
+      - azure_sftp_private_key_passphrase: {{ endpoint.properties.sshPrivateKeyPassphrase }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/sftp/send/sftpsendadapter.apiconnection.json.liquid
+      - env: ['dev']
+        paths:
+          - endpoints/sftp/send/sftpsendadapter.apiconnection.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/sftp/send/sftpsendadapter.apiconnection.prod.parameters.json.liquid
+
+  - template: sftpSendAzureConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-aimsftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V2
+      - azure_sftp_server_address: {{ endpoint.properties.serverAddress}}
+      - azure_sftp_server_port: {{ endpoint.properties.serverPort }}
+      - azure_sftp_user_name: {{ endpoint.properties.userName }}
+      - azure_sftp_password: {{ endpoint.properties.password  }}
+      - azure_sftp_accept_any_ssh_host_key: {{ endpoint.properties.acceptAnySshHostKey  }}
+      - azure_sftp_root_folder: {{ endpoint.properties.folderPath }}
+      - azure_sftp_host_key_fingerprint: {{ endpoint.properties.sshHostKeyFingerprint }}
+      - azure_sftp_private_key: {{ endpoint.properties.sshPrivateKey }}
+      - azure_sftp_private_key_passphrase: {{ endpoint.properties.sshPrivateKeyPassphrase }}
+      - application_logicapp_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/sftp/send/sftpsendadapter.apiconnection.json.liquid
+          - endpoints/sftp/send/sftpsendadapter.apiconnectionaccesspolicy.json
+      - env: ['dev']
+        paths:
+          - endpoints/sftp/send/sftpsendadapter.apiconnection.dev.parameters.json.liquid
+          - endpoints/sftp/send/sftpsendadapter.apiconnectionaccesspolicy.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/sftp/send/sftpsendadapter.apiconnection.prod.parameters.json.liquid
+          - endpoints/sftp/send/sftpsendadapter.apiconnectionaccesspolicy.prod.parameters.json.liquid
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints %}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "SFTP" and endpoint.message_exchange_pattern == "Send" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - template: sftpSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}logic-aimsftpsadapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.workflows.azurelogicapp.consumption
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+      - sftp_api_connector_name: {{ aim_user_prefix }}apic-aimsftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
+      - azure_sftp_target_folder: {{ endpoint.properties.targetFolder }}
+      - azure_sftp_target_file_name: "{{ endpoint.properties.targetFileName }}"
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_step_name: sftpSendAdapter
+    outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/sftp/send/sftpsendadapter.logicapp.json
+      - env: ['dev']
+        paths:
+          - endpoints/sftp/send/sftpsendadapter.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/sftp/send/sftpsendadapter.logicapp.prod.parameters.json.liquid
+
+  - template: sftpSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+      - sftp_api_connector_name: {{ aim_user_prefix }}apic-aimsftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
+      - azure_sftp_target_folder: {{ endpoint.properties.targetFolder }}
+      - azure_sftp_target_file_name: "{{ endpoint.properties.targetFileName }}"
+      - workflow_name: {{ endpoint_name | downcase }}
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_step_name: sftpSendAdapter
+    outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/standard/application.logic.workflows/sftpsendadapter/workflow.json.liquid
+          - application/standard/application.logic.workflows/sftpsendadapter/sftpsendadapter.appsettings.json.liquid
+          - application/standard/application.logic.workflows/sftpsendadapter/sftpsendadapter.appsettings.local.json.liquid
+          - application/standard/application.logic.workflows/sftpsendadapter/sftpsendadapter.connections.json.liquid
+          - application/standard/application.logic.workflows/sftpsendadapter/sftpsendadapter.parameters.json.liquid
+          - application/standard/application.logic.workflows/sftpsendadapter/sftpsendadapter.parameters.local.json.liquid
     {%- endif -%}
   {%- endfor -%}
 {%- endfor %}
@@ -705,17 +1451,18 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Accept" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: fileReceiveAzureFileConnectionEndpoint{{ app_name }}{{ endpoint_name }}
+  - template: fileReceiveAzureFileConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}apic-aimfilerconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.web.connections
     tags:
-      - ApplicationName: {{ app_name }}
+      - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V1
       - azure_file_password: {{ endpoint.properties.password }}
       - azure_file_root_folder: {{ endpoint.properties.rootFolder }}
       - azure_file_user_name: {{ endpoint.properties.userName }}
@@ -725,13 +1472,46 @@ resourceTemplates:
     files:
       - env: ['dev', 'prod']
         paths:
-          - endpoints/file/receive/filereceiveadapterfilesystem.apiconnection.json
+          - endpoints/file/receive/filereceiveadapterfilesystem.apiconnection.json.liquid
       - env: ['dev']
         paths:
           - endpoints/file/receive/filereceiveadapterfilesystem.apiconnection.dev.parameters.json.liquid
       - env: ['prod']
         paths:
           - endpoints/file/receive/filereceiveadapterfilesystem.apiconnection.prod.parameters.json.liquid
+
+  - template: fileReceiveAzureFileConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-aimfilerconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V2
+      - azure_file_password: {{ endpoint.properties.password }}
+      - azure_file_root_folder: {{ endpoint.properties.rootFolder }}
+      - azure_file_user_name: {{ endpoint.properties.userName }}
+      - azure_gateway_resource_group_name: {{ system_application_group }}
+      - azure_gateway_resource_name: {{ gateway_resource_name }}
+      - application_logicapp_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/file/receive/filereceiveadapterfilesystem.apiconnection.json.liquid
+          - endpoints/file/receive/filereceiveadapterfilesystem.apiconnectionaccesspolicy.json
+      - env: ['dev']
+        paths:
+          - endpoints/file/receive/filereceiveadapterfilesystem.apiconnection.dev.parameters.json.liquid
+          - endpoints/file/receive/filereceiveadapterfilesystem.apiconnectionaccesspolicy.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/file/receive/filereceiveadapterfilesystem.apiconnection.prod.parameters.json.liquid
+          - endpoints/file/receive/filereceiveadapterfilesystem.apiconnectionaccesspolicy.dev.parameters.json.liquid
     {%- endif -%}
   {%- endfor -%}
 {%- endfor %}
@@ -741,30 +1521,61 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Accept" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: fileReceiveAzureServiceBusConnectionEndpoint{{ app_name }}{{ endpoint_name }}
+  - template: fileReceiveAzureServiceBusConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.web.connections
     tags:
-      - ApplicationName: {{ app_name }}
+      - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V1
       - azure_service_bus_resource_group_name: {{ system_application_group }}
       - azure_service_bus_namespace : {{ service_bus_namespace_name }}      
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
     files:
       - env: ['dev', 'prod']
         paths:
-          - endpoints/file/receive/filereceiveadapterservicebus.apiconnection.json
+          - endpoints/file/receive/filereceiveadapterservicebus.apiconnection.json.liquid
       - env: ['dev']
         paths:
           - endpoints/file/receive/filereceiveadapterservicebus.apiconnection.dev.parameters.json.liquid
       - env: ['prod']
         paths:
           - endpoints/file/receive/filereceiveadapterservicebus.apiconnection.prod.parameters.json.liquid
+
+  - template: fileReceiveAzureServiceBusConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V2
+      - azure_service_bus_resource_group_name: {{ system_application_group }}
+      - azure_service_bus_namespace : {{ service_bus_namespace_name }}
+      - application_logicapp_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/file/receive/filereceiveadapterservicebus.apiconnection.json.liquid
+          - endpoints/file/receive/filereceiveadapterservicebus.apiconnectionaccesspolicy.json
+      - env: ['dev']
+        paths:
+          - endpoints/file/receive/filereceiveadapterservicebus.apiconnection.dev.parameters.json.liquid
+          - endpoints/file/receive/filereceiveadapterservicebus.apiconnectionaccesspolicy.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/file/receive/filereceiveadapterservicebus.apiconnection.prod.parameters.json.liquid
+          - endpoints/file/receive/filereceiveadapterservicebus.apiconnectionaccesspolicy.dev.parameters.json.liquid
     {%- endif -%}
   {%- endfor -%}
 {%- endfor %}
@@ -774,12 +1585,12 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Accept" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}         
-  - template: fileReceiveAzureAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+  - template: fileReceiveAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimfileradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
-      - ApplicationName: {{ app_name }}
+      - Application: {{ app_name }}
       - Scenario: {{ endpoint.properties.scenario }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
@@ -787,7 +1598,7 @@ resourceTemplates:
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - app_name: {{ app_name | downcase }}
-      - file_api_connector_name: {{ aim_user_prefix }}apic-aimfilerconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}      
+      - filesystem_api_connector_name: {{ aim_user_prefix }}apic-aimfilerconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}      
       - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_integration_account_name: {{ integration_account_name }}
       - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
@@ -813,6 +1624,45 @@ resourceTemplates:
       - env: ['prod']
         paths:
           - endpoints/file/receive/filereceiveadapter.logicapp.prod.parameters.json.liquid
+
+  - template: fileReceiveAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ app_name }}
+      - Scenario: {{ endpoint.properties.scenario }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - app_name: {{ app_name | downcase }}
+      - filesystem_api_connector_name: {{ aim_user_prefix }}apic-aimfilerconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}      
+      - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
+      - azure_system_application_name: {{ system_application_name }}
+      - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
+      - workflow_name: {{ endpoint_name | downcase }}
+      - azure_file_target_folder: {{ endpoint.properties.rootFolder }}
+      - azure_file_max_file_count: {{ endpoint.properties.maxFileCount }}
+      - azure_file_frequency: Second
+      - azure_file_recurrence: {{ endpoint.properties.recurrence }}
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_name: {{ endpoint.properties.scenario }}
+      - scenario_step_name: {{ endpoint.properties.scenarioStep }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/standard/application.logic.workflows/filereceiveadapter/workflow.json.liquid
+          - application/standard/application.logic.workflows/filereceiveadapter/filereceiveadapter.appsettings.json.liquid
+          - application/standard/application.logic.workflows/filereceiveadapter/filereceiveadapter.appsettings.local.json.liquid
+          - application/standard/application.logic.workflows/filereceiveadapter/filereceiveadapter.connections.json.liquid
+          - application/standard/application.logic.workflows/filereceiveadapter/filereceiveadapter.parameters.json.liquid
+          - application/standard/application.logic.workflows/filereceiveadapter/filereceiveadapter.parameters.local.json.liquid
     {%- endif -%}
   {%- endfor -%}
 {%- endfor %}
@@ -826,17 +1676,18 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Send" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: fileSendAzureConnectionEndpoint{{ app_name }}{{ endpoint_name }}
+  - template: fileSendAzureConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}apic-aimfilesconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.web.connections
     tags:
-      - ApplicationName: {{ app_name }}
+      - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
-      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}      
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V1
       - azure_file_password: {{ endpoint.properties.password }}
       - azure_file_root_folder: {{ endpoint.properties.rootFolder }}
       - azure_file_user_name: {{ endpoint.properties.userName }}
@@ -846,13 +1697,46 @@ resourceTemplates:
     files:
       - env: ['dev', 'prod']
         paths:
-          - endpoints/file/send/filesystemsendadapter.apiconnection.json
+          - endpoints/file/send/filesystemsendadapter.apiconnection.json.liquid
       - env: ['dev']
         paths:
           - endpoints/file/send/filesystemsendadapter.apiconnection.dev.parameters.json.liquid
       - env: ['prod']
         paths:
           - endpoints/file/send/filesystemsendadapter.apiconnection.prod.parameters.json.liquid
+
+  - template: fileSendAzureConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-aimfilesconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V2
+      - azure_file_password: {{ endpoint.properties.password }}
+      - azure_file_root_folder: {{ endpoint.properties.rootFolder }}
+      - azure_file_user_name: {{ endpoint.properties.userName }}
+      - azure_gateway_resource_group_name: {{ system_application_group }}
+      - azure_gateway_resource_name: {{ gateway_resource_name }}
+      - application_logicapp_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/file/send/filesystemsendadapter.apiconnection.json.liquid
+          - endpoints/file/send/filesystemsendadapter.apiconnectionaccesspolicy.json
+      - env: ['dev']
+        paths:
+          - endpoints/file/send/filesystemsendadapter.apiconnection.dev.parameters.json.liquid
+          - endpoints/file/send/filesystemsendadapter.apiconnectionaccesspolicy.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/file/send/filesystemsendadapter.apiconnection.prod.parameters.json.liquid
+          - endpoints/file/send/filesystemsendadapter.apiconnectionaccesspolicy.dev.parameters.json.liquid
     {%- endif -%}
   {%- endfor -%}
 {%- endfor %}
@@ -862,19 +1746,19 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Send" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: fileSendAzureAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+  - template: fileSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimfilesadapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
-      - ApplicationName: {{ app_name }}
+      - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimfilesconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - filesystem_api_connector_name: {{ aim_user_prefix }}apic-aimfilesconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
       - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
       - apim_service_name: {{ api_management_service_name }}
@@ -890,6 +1774,417 @@ resourceTemplates:
       - env: ['prod']
         paths:
           - endpoints/file/send/filesendadapter.logicapp.prod.parameters.json.liquid
+
+  - template: fileSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+      - filesystem_api_connector_name: {{ aim_user_prefix }}apic-aimfilesconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
+      - workflow_name: {{ endpoint_name | downcase }}
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_step_name: {{ endpoint.properties.scenarioStep }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/standard/application.logic.workflows/filesendadapter/workflow.json.liquid
+          - application/standard/application.logic.workflows/filesendadapter/filesendadapter.appsettings.json.liquid
+          - application/standard/application.logic.workflows/filesendadapter/filesendadapter.appsettings.local.json.liquid
+          - application/standard/application.logic.workflows/filesendadapter/filesendadapter.connections.json.liquid
+          - application/standard/application.logic.workflows/filesendadapter/filesendadapter.parameters.json.liquid
+          - application/standard/application.logic.workflows/filesendadapter/filesendadapter.parameters.local.json.liquid
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+  # ------------------------------------------------------------------------------
+  # Endpoints - MQ Receive 
+  # ------------------------------------------------------------------------------
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints %}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "MQS" and endpoint.message_exchange_pattern == "Accept" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - template: mqReceiveAzureFtpConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-aimmqrconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V1
+      - azure_mq_server_address: {{ endpoint.properties.serverAddress}}
+      - azure_mq_server_port: {{ endpoint.properties.serverPort }}
+      - azure_mq_user_name: {{ endpoint.properties.userName }}
+      - azure_mq_password: {{ endpoint.properties.password }}
+      - azure_mq_queue_manager: {{ endpoint.properties.queueManager }}
+      - azure_mq_queue: {{ endpoint.properties.queue }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/mq/receive/mqreceiveadaptermq.apiconnection.json.liquid
+      - env: ['dev']
+        paths:
+          - endpoints/mq/receive/mqreceiveadaptermq.apiconnection.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/mq/receive/mqreceiveadaptermq.apiconnection.prod.parameters.json.liquid
+
+  - template: mqReceiveAzureFtpConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-aimmqrconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V2
+      - azure_mq_server_address: {{ endpoint.properties.serverAddress}}
+      - azure_mq_server_port: {{ endpoint.properties.serverPort }}
+      - azure_mq_user_name: {{ endpoint.properties.userName }}
+      - azure_mq_password: {{ endpoint.properties.password }}
+      - azure_mq_queue_manager: {{ endpoint.properties.queueManager }}
+      - azure_mq_queue: {{ endpoint.properties.queue }}
+      - application_logicapp_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/mq/receive/mqreceiveadaptermq.apiconnection.json.liquid
+          - endpoints/mq/receive/mqreceiveadaptermq.apiconnectionaccesspolicy.json
+      - env: ['dev']
+        paths:
+          - endpoints/mq/receive/mqreceiveadaptermq.apiconnection.dev.parameters.json.liquid
+          - endpoints/mq/receive/mqreceiveadaptermq.apiconnectionaccesspolicy.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/mq/receive/mqreceiveadaptermq.apiconnection.prod.parameters.json.liquid
+          - endpoints/mq/receive/mqreceiveadaptermq.apiconnectionaccesspolicy.prod.parameters.json.liquid
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints %}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "MQS" and endpoint.message_exchange_pattern == "Accept" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}         
+  - template: mqReceiveAzureServiceBusConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V1
+      - azure_service_bus_resource_group_name: {{ system_application_group }}
+      - azure_service_bus_namespace : {{ service_bus_namespace_name }}      
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/mq/receive/mqreceiveadapterservicebus.apiconnection.json.liquid
+      - env: ['dev']
+        paths:
+          - endpoints/mq/receive/mqreceiveadapterservicebus.apiconnection.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/mq/receive/mqreceiveadapterservicebus.apiconnection.prod.parameters.json.liquid
+
+  - template: mqReceiveAzureServiceBusConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V2
+      - azure_service_bus_resource_group_name: {{ system_application_group }}
+      - azure_service_bus_namespace : {{ service_bus_namespace_name }}    
+      - application_logicapp_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/mq/receive/mqreceiveadapterservicebus.apiconnection.json.liquid
+          - endpoints/mq/receive/mqreceiveadapterservicebus.apiconnectionaccesspolicy.json
+      - env: ['dev']
+        paths:
+          - endpoints/mq/receive/mqreceiveadapterservicebus.apiconnection.dev.parameters.json.liquid
+          - endpoints/mq/receive/mqreceiveadapterservicebus.apiconnectionaccesspolicy.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/mq/receive/mqreceiveadapterservicebus.apiconnection.prod.parameters.json.liquid
+          - endpoints/mq/receive/mqreceiveadapterservicebus.apiconnectionaccesspolicy.prod.parameters.json.liquid
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints %}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "MQS" and endpoint.message_exchange_pattern == "Accept" %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}         
+  - template: mqReceiveAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}logic-aimmqradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.workflows.azurelogicapp.consumption
+    tags:
+      - Application: {{ app_name }}
+      - Scenario: {{ endpoint.properties.scenario }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - app_name: {{ app_name | downcase }}
+      - mq_api_connector_name: {{ aim_user_prefix }}apic-aimmqrconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_integration_account_name: {{ integration_account_name }}      
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
+      - azure_message_constructor_logic_app_name: {{ message_constructor_logicapp_name }}
+      - azure_message_suspend_processor_logic_app_name : {{ message_suspend_processor_logicapp_name }}
+      - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
+      - azure_mq_scenario: {{ endpoint.properties.scenario | downcase }}
+      - azure_mq_recurrence: {{ endpoint.properties.pollingInterval }}
+      - azure_mq_frequency: {% case endpoint.properties.pollingUnit -%}
+                               {%- when "Seconds" -%}Second
+                               {%- when "Minutes" -%}Minute
+                               {%- when "Hours" -%}Hour
+                               {%- when "Days" -%}Day
+                             {%- endcase %}
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_name: {{ endpoint.properties.scenario }}
+      - scenario_step_name: {{ endpoint.properties.scenarioStep }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/mq/receive/mqreceiveadapter.logicapp.json
+      - env: ['dev']
+        paths:
+          - endpoints/mq/receive/mqreceiveadapter.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/mq/receive/mqreceiveadapter.logicapp.prod.parameters.json.liquid
+
+  - template: mqReceiveAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ app_name }}
+      - Scenario: {{ endpoint.properties.scenario }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - app_name: {{ app_name | downcase }}
+      - mq_api_connector_name: {{ aim_user_prefix }}apic-aimmqrconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
+      - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
+      - workflow_name: {{ endpoint_name | downcase }}
+      - azure_mq_scenario: {{ endpoint.properties.scenario }}
+      - azure_mq_recurrence: {{ endpoint.properties.pollingInterval }}
+      - azure_mq_frequency: {% case endpoint.properties.pollingUnit -%}
+                               {%- when "Seconds" -%}Second
+                               {%- when "Minutes" -%}Minute
+                               {%- when "Hours" -%}Hour
+                               {%- when "Days" -%}Day
+                             {%- endcase %}
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_name: {{ endpoint.properties.scenario }}
+      - scenario_step_name: {{ endpoint.properties.scenarioStep }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/standard/application.logic.workflows/mqreceiveadapter/workflow.json.liquid
+          - application/standard/application.logic.workflows/mqreceiveadapter/mqreceiveadapter.appsettings.json.liquid
+          - application/standard/application.logic.workflows/mqreceiveadapter/mqreceiveadapter.appsettings.local.json.liquid
+          - application/standard/application.logic.workflows/mqreceiveadapter/mqreceiveadapter.connections.json.liquid
+          - application/standard/application.logic.workflows/mqreceiveadapter/mqReceiveAdapter.parameters.json.liquid
+          - application/standard/application.logic.workflows/mqreceiveadapter/mqreceiveadapter.parameters.local.json.liquid
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+  # ------------------------------------------------------------------------------
+  # Endpoints - MQ Send
+  # ------------------------------------------------------------------------------
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints %}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "MQS" and ( endpoint.message_exchange_pattern == "RequestReply" or endpoint.message_exchange_pattern == "Send" ) %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - template: mqSendAzureConnectionEndpointConsumption{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-aimmqsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V1
+      - azure_mq_server_address: {{ endpoint.properties.serverAddress}}
+      - azure_mq_server_port: {{ endpoint.properties.serverPort }}
+      - azure_mq_user_name: {{ endpoint.properties.userName }}
+      - azure_mq_password: {{ endpoint.properties.password }}
+      - azure_mq_queue_manager: {{ endpoint.properties.queueManager }}
+      - azure_mq_queue: {{ endpoint.properties.queue }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/mq/send/mqsendadapter.apiconnection.json.liquid
+      - env: ['dev']
+        paths:
+          - endpoints/mq/send/mqsendadapter.apiconnection.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/mq/send/mqsendadapter.apiconnection.prod.parameters.json.liquid
+
+  - template: mqSendAzureConnectionEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-aimmqsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V2
+      - azure_mq_server_address: {{ endpoint.properties.serverAddress}}
+      - azure_mq_server_port: {{ endpoint.properties.serverPort }}
+      - azure_mq_user_name: {{ endpoint.properties.userName }}
+      - azure_mq_password: {{ endpoint.properties.password }}
+      - azure_mq_queue_manager: {{ endpoint.properties.queueManager }}
+      - azure_mq_queue: {{ endpoint.properties.queue }}
+      - application_logicapp_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/mq/send/mqsendadapter.apiconnection.json.liquid
+          - endpoints/mq/send/mqsendadapter.apiconnectionaccesspolicy.json
+      - env: ['dev']
+        paths:
+          - endpoints/mq/send/mqsendadapter.apiconnection.dev.parameters.json.liquid
+          - endpoints/mq/send/mqsendadapter.apiconnectionaccesspolicy.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/mq/send/mqsendadapter.apiconnection.prod.parameters.json.liquid
+          - endpoints/mq/send/mqsendadapter.apiconnectionaccesspolicy.prod.parameters.json.liquid
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints %}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "MQS" and ( endpoint.message_exchange_pattern == "RequestReply" or endpoint.message_exchange_pattern == "Send" ) %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - template: mqSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}logic-aimmqsadapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.workflows.azurelogicapp.consumption
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+      - mq_api_connector_name: {{ aim_user_prefix }}apic-aimmqsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - routing_slip_router_name: {{ routing_slip_router_logicapp_name }}
+      - azure_mq_target_folder: {{ endpoint.properties.targetFolder }}
+      - azure_mq_target_file_name: "{{ endpoint.properties.targetFileName }}"
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_step_name: mqSendAdapter
+    outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/mq/send/mqsendadapter.logicapp.json
+      - env: ['dev']
+        paths:
+          - endpoints/mq/send/mqsendadapter.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/mq/send/mqsendadapter.logicapp.prod.parameters.json.liquid
+
+  - template: mqSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+      - mq_api_connector_name: {{ aim_user_prefix }}apic-aimmqsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
+      - azure_mq_target_folder: {{ endpoint.properties.targetFolder }}
+      - azure_mq_target_file_name: "{{ endpoint.properties.targetFileName }}"
+      - workflow_name: {{ endpoint_name | downcase }}
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_step_name: mqSendAdapter
+    outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/standard/application.logic.workflows/mqsendadapter/workflow.json.liquid
+          - application/standard/application.logic.workflows/mqsendadapter/mqsendadapter.appsettings.json.liquid
+          - application/standard/application.logic.workflows/mqsendadapter/mqsendadapter.appsettings.local.json.liquid
+          - application/standard/application.logic.workflows/mqsendadapter/mqsendadapter.connections.json.liquid
+          - application/standard/application.logic.workflows/mqsendadapter/mqsendadapter.parameters.json.liquid
+          - application/standard/application.logic.workflows/mqsendadapter/mqsendadapter.parameters.local.json.liquid
     {%- endif -%}
   {%- endfor -%}
 {%- endfor %}
@@ -903,12 +2198,12 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "HTTP" and ( endpoint.message_exchange_pattern == "ReceiveResponse" or endpoint.message_exchange_pattern == "Receive" ) %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}         
-  - template: httpReceiveAzureAdapterEndpoint{{ app_name }}{{ endpoint_name }}
+  - template: httpReceiveAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimhttpradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
-      - ApplicationName: {{ app_name }}
+      - Application: {{ app_name }}
       - Scenario: {{ endpoint.properties.scenario }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
@@ -940,6 +2235,221 @@ resourceTemplates:
       - env: ['prod']
         paths:
           - endpoints/http/receive/httpreceiveadapter.logicapp.prod.parameters.json.liquid
+
+  - template: httpReceiveAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ app_name }}
+      - Scenario: {{ endpoint.properties.scenario }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - app_name: {{ app_name | downcase }}
+      - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_integration_account_name: {{ integration_account_name }}      
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
+      - workflow_name: {{ endpoint_name | downcase }}
+      - azure_message_response_handler_logic_app_name : {{ message_response_handler_logicapp_name }}
+      - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
+      - azure_service_bus_response_topic_name: {{ messageBoxResponseTopicName }}
+      - azure_service_bus_response_subscription_name: {{ aim_user_prefix }}sbs-{{ endpoint.properties.responseSubscription | remove: " " | replace: ".", "-" | replace: "/", "-" | downcase }}
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_name: {{ endpoint.properties.scenario }}
+      - scenario_step_name: {{ endpoint.properties.scenarioStep }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/standard/application.logic.workflows/httpreceiveadapter/workflow.json.liquid
+          - application/standard/application.logic.workflows/httpreceiveadapter/httpreceiveadapter.appsettings.json.liquid
+          - application/standard/application.logic.workflows/httpreceiveadapter/httpreceiveadapter.appsettings.local.json.liquid
+          - application/standard/application.logic.workflows/httpreceiveadapter/httpreceiveadapter.connections.json.liquid
+          - application/standard/application.logic.workflows/httpreceiveadapter/httpreceiveadapter.parameters.json.liquid
+          - application/standard/application.logic.workflows/httpreceiveadapter/httpreceiveadapter.parameters.local.json.liquid
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+  # ------------------------------------------------------------------------------
+  # Endpoints - HTTP Send 
+  # ------------------------------------------------------------------------------
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints %}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "HTTP" and ( endpoint.message_exchange_pattern == "RequestReply" or endpoint.message_exchange_pattern == "Send" ) %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}         
+  - template: httpSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}logic-aimhttpradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.workflows.azurelogicapp.consumption
+    tags:
+      - Application: {{ app_name }}
+      - Scenario: {{ endpoint.properties.scenario }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - app_name: {{ app_name | downcase }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+      - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_integration_account_name: {{ integration_account_name }}      
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
+      - azure_message_constructor_logic_app_name: {{ message_constructor_logicapp_name }}
+      - azure_message_suspend_processor_logic_app_name : {{ message_suspend_processor_logicapp_name }}
+      - azure_message_response_handler_logic_app_name : {{ message_response_handler_logicapp_name }}
+      - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
+      - azure_service_bus_response_topic_name: {{ messageBoxResponseTopicName }}
+      - azure_service_bus_response_subscription_name: {{ aim_user_prefix }}sbs-{{ endpoint.properties.responseSubscription | remove: " " | replace: ".", "-" | replace: "/", "-" | downcase }}
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_name: {{ endpoint.properties.scenario }}
+      - scenario_step_name: {{ endpoint.properties.scenarioStep }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/http/send/httpsendadapter.logicapp.json
+      - env: ['dev']
+        paths:
+          - endpoints/http/send/httpsendadapter.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/http/send/httpsendadapter.logicapp.prod.parameters.json.liquid
+
+  - template: httpSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ app_name }}
+      - Scenario: {{ endpoint.properties.scenario }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - app_name: {{ app_name | downcase }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+      - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_integration_account_name: {{ integration_account_name }}      
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
+      - workflow_name: {{ endpoint_name | downcase }}
+      - azure_message_response_handler_logic_app_name : {{ message_response_handler_logicapp_name }}
+      - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
+      - azure_service_bus_response_topic_name: {{ messageBoxResponseTopicName }}
+      - azure_service_bus_response_subscription_name: {{ aim_user_prefix }}sbs-{{ endpoint.properties.responseSubscription | remove: " " | replace: ".", "-" | replace: "/", "-" | downcase }}
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_name: {{ endpoint.properties.scenario }}
+      - scenario_step_name: {{ endpoint.properties.scenarioStep }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/standard/application.logic.workflows/httpsendadapter/workflow.json.liquid
+          - application/standard/application.logic.workflows/httpsendadapter/httpsendadapter.appsettings.json.liquid
+          - application/standard/application.logic.workflows/httpsendadapter/httpsendadapter.appsettings.local.json.liquid
+          - application/standard/application.logic.workflows/httpsendadapter/httpsendadapter.connections.json.liquid
+          - application/standard/application.logic.workflows/httpsendadapter/httpsendadapter.parameters.json.liquid
+          - application/standard/application.logic.workflows/httpsendadapter/httpsendadapter.parameters.local.json.liquid
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+  # ------------------------------------------------------------------------------
+  # Endpoints - SAP Send 
+  # ------------------------------------------------------------------------------
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints %}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "WCF-SAP" and ( endpoint.message_exchange_pattern == "RequestReply" or endpoint.message_exchange_pattern == "Send" ) %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}         
+  - template: sapSendAzureAdapterEndpointConsumption{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}logic-aimsapradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.workflows.azurelogicapp.consumption
+    tags:
+      - Application: {{ app_name }}
+      - Scenario: {{ endpoint.properties.scenario }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - app_name: {{ app_name | downcase }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+      - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_integration_account_name: {{ integration_account_name }}      
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
+      - azure_message_constructor_logic_app_name: {{ message_constructor_logicapp_name }}
+      - azure_message_suspend_processor_logic_app_name : {{ message_suspend_processor_logicapp_name }}
+      - azure_message_response_handler_logic_app_name : {{ message_response_handler_logicapp_name }}
+      - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
+      - azure_service_bus_response_topic_name: {{ messageBoxResponseTopicName }}
+      - azure_service_bus_response_subscription_name: {{ aim_user_prefix }}sbs-{{ endpoint.properties.responseSubscription | remove: " " | replace: ".", "-" | replace: "/", "-" | downcase }}
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_name: {{ endpoint.properties.scenario }}
+      - scenario_step_name: {{ endpoint.properties.scenarioStep }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/sap/send/sapsendadapter.logicapp.json
+      - env: ['dev']
+        paths:
+          - endpoints/sap/send/sapsendadapter.logicapp.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - endpoints/sap/send/sapsendadapter.logicapp.prod.parameters.json.liquid
+
+  - template: sapSendAzureAdapterEndpointStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ app_name }}
+      - Scenario: {{ endpoint.properties.scenario }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - app_name: {{ app_name | downcase }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+      - service_bus_api_connector_name: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_integration_account_name: {{ integration_account_name }}      
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_resource_group_name: {{ system_application_group }}
+      - workflow_name: {{ endpoint_name | downcase }}
+      - azure_message_response_handler_logic_app_name : {{ message_response_handler_logicapp_name }}
+      - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
+      - azure_service_bus_response_topic_name: {{ messageBoxResponseTopicName }}
+      - azure_service_bus_response_subscription_name: {{ aim_user_prefix }}sbs-{{ endpoint.properties.responseSubscription | remove: " " | replace: ".", "-" | replace: "/", "-" | downcase }}
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_name: {{ endpoint.properties.scenario }}
+      - scenario_step_name: {{ endpoint.properties.scenarioStep }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/standard/application.logic.workflows/sapsendadapter/workflow.json.liquid
+          - application/standard/application.logic.workflows/sapsendadapter/sapsendadapter.appsettings.json.liquid
+          - application/standard/application.logic.workflows/sapsendadapter/sapsendadapter.appsettings.local.json.liquid
+          - application/standard/application.logic.workflows/sapsendadapter/sapsendadapter.connections.json.liquid
+          - application/standard/application.logic.workflows/sapsendadapter/sapsendadapter.parameters.json.liquid
+          - application/standard/application.logic.workflows/sapsendadapter/sapsendadapter.parameters.local.json.liquid
     {%- endif -%}
   {%- endfor -%}
 {%- endfor %}
@@ -953,17 +2463,18 @@ resourceTemplates:
   {%- for intermediary in application.intermediaries %}
     {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "MessageSubscriber" %}
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: topicSubscriberAzureApiConnection{{ app_name }}{{ intermediary_name }}
+  - template: topicSubscriberAzureApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}apic-topicsubscriberconnector-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.web.connections
     tags:
-      - ApplicationName: {{ app_name }}
+      - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V1
       - azure_service_bus_resource_group_name: {{ system_application_group }}
       - azure_service_bus_namespace: {{ service_bus_namespace_name }}
       - azure_service_bus_policy_name: RootManageSharedAccessKey
@@ -971,13 +2482,44 @@ resourceTemplates:
     files:
       - env: ['dev', 'prod']
         paths:
-          - intermediaries/topicsubscriber/topicsubscriber.apiconnection.json
+          - intermediaries/topicsubscriber/topicsubscriber.apiconnection.json.liquid
       - env: ['dev']
         paths:
           - intermediaries/topicsubscriber/topicsubscriber.apiconnection.dev.parameters.json.liquid
       - env: ['prod']
         paths:
           - intermediaries/topicsubscriber/topicsubscriber.apiconnection.prod.parameters.json.liquid
+
+  - template: topicSubscriberAzureApiConnectionStandard{{ app_name }}{{ intermediary_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}apic-topicsubscriberconnector-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.web.connections
+    tags:
+      - Application: {{ app_name }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V2
+      - azure_service_bus_resource_group_name: {{ system_application_group }}
+      - azure_service_bus_namespace: {{ service_bus_namespace_name }}
+      - azure_service_bus_policy_name: RootManageSharedAccessKey
+      - application_logicapp_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/topicsubscriber{{ intermediary_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/topicsubscriber/topicsubscriber.apiconnection.json.liquid
+          - intermediaries/topicsubscriber/topicsubscriber.apiconnectionaccesspolicy.json
+      - env: ['dev']
+        paths:
+          - intermediaries/topicsubscriber/topicsubscriber.apiconnection.dev.parameters.json.liquid
+          - intermediaries/topicsubscriber/topicsubscriber.apiconnectionaccesspolicy.dev.parameters.json.liquid
+      - env: ['prod']
+        paths:
+          - intermediaries/topicsubscriber/topicsubscriber.apiconnection.prod.parameters.json.liquid
+          - intermediaries/topicsubscriber/topicsubscriber.apiconnectionaccesspolicy.prod.parameters.json.liquid
     {%- endif %}
   {%- endfor %}
 {%- endfor %}
@@ -987,12 +2529,12 @@ resourceTemplates:
   {%- for intermediary in application.intermediaries %}
     {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "MessageSubscriber" %}
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: topicSubscriberAzureLogicApp{{ app_name }}{{ intermediary_name }}
+  - template: topicSubscriberAzureLogicAppConsumption{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimtopicsubscriber-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
-      - ApplicationName: {{ app_name }}
+      - Application: {{ app_name }}
       - Scenario: {{ intermediary.properties.scenario }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
@@ -1023,6 +2565,42 @@ resourceTemplates:
       - env: ['prod']
         paths:
           - intermediaries/topicsubscriber/topicsubscriber.logicapp.prod.parameters.json.liquid
+
+  - template: topicSubscriberAzureLogicAppStandard{{ app_name }}{{ intermediary_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ endpoint_name | to_safe_file_path | downcase }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ app_name }}
+      - Scenario: {{ intermediary.properties.scenario }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_system_resource_group_name: {{ system_application_group }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - workflow_name: {{ endpoint_name | downcase }}
+      - azure_topic_subscriber_api_connection_name: {{ aim_user_prefix }}apic-topicsubscriberconnector-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
+      - azure_service_bus_topic_name: {% assign subscription_filter = intermediary.topic_subscriptions | first %}{{ subscription_filter.key }}
+      - azure_service_bus_subscription_name: {{ aim_user_prefix }}sbs-{% assign subscription_filter = intermediary.topic_subscriptions | first %}{{ subscription_filter.value | remove: " " | replace: ".", "-" | replace: "/", "-" | downcase }}
+      - azure_service_bus_recurrence_frequency: Second
+      - azure_service_bus_recurrence_interval: 10      
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_name: {{ intermediary.properties.scenario }}
+      - scenario_step_name: {{ intermediary.properties.scenarioStep }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/topicsubscriber{{ intermediary_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/standard/application.logic.workflows/topicsubscriber/workflow.json.liquid
+          - application/standard/application.logic.workflows/topicsubscriber/topicsubscriber.appsettings.json.liquid
+          - application/standard/application.logic.workflows/topicsubscriber/topicsubscriber.appsettings.local.json.liquid
+          - application/standard/application.logic.workflows/topicsubscriber/topicsubscriber.connections.json.liquid
+          - application/standard/application.logic.workflows/topicsubscriber/topicsubscriber.parameters.json.liquid
+          - application/standard/application.logic.workflows/topicsubscriber/topicsubscriber.parameters.local.json.liquid
     {%- endif %}
   {%- endfor %}
 {%- endfor %}
@@ -1036,17 +2614,18 @@ resourceTemplates:
   {%- for intermediary in application.intermediaries %}
     {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "ProcessManager" and intermediary.activator == true %}
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: activatableProcessManagerAzureApiConnection{{ app_name }}{{ intermediary_name }}
+  - template: activatableProcessManagerAzureApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}apic-aimsbconnector-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.web.connections
     tags:
-      - ApplicationName: {{ app_name }}
+      - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V1
       - azure_service_bus_resource_group_name: {{ system_application_group }}
       - azure_service_bus_namespace: {{ service_bus_namespace_name }}
       - azure_service_bus_policy_name: RootManageSharedAccessKey
@@ -1054,7 +2633,7 @@ resourceTemplates:
     files:
       - env: ['dev', 'prod']
         paths:
-          - intermediaries/processmanager/processmanagerservicebus.apiconnection.json
+          - intermediaries/processmanager/processmanagerservicebus.apiconnection.json.liquid
       - env: ['dev']
         paths:
           - intermediaries/processmanager/processmanagerservicebus.apiconnection.dev.parameters.json.liquid
@@ -1070,12 +2649,12 @@ resourceTemplates:
   {%- for intermediary in application.intermediaries %}
     {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "ProcessManager" and intermediary.activator == true %}
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: activatableProcessManagerAzureLogicApp{{ app_name }}{{ intermediary_name }}
+  - template: activatableProcessManagerAzureLogicAppConsumption{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimprocessmanager-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
-      - ApplicationName: {{ app_name }}
+      - Application: {{ app_name }}
       - Scenario: {{ intermediary.properties.scenario }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
@@ -1111,6 +2690,46 @@ resourceTemplates:
       - env: ['prod']
         paths:
           - applications/{{ app_name | downcase }}/intermediaries/{{ intermediary_name | downcase }}/processmanager.logicapp.prod.parameters.json.liquid
+
+  - template: activatableProcessManagerAzureLogicAppStandard{{ app_name }}{{ intermediary_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}logic-aimprocessmanager-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.workflows.azurelogicapp.standard
+    tags:
+      - Application: {{ app_name }}
+      - Scenario: {{ intermediary.properties.scenario }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_message_bus_resource_group_name: {{ message_bus_resource_group_name }}
+      - azure_system_application_resource_group_name: {{ system_application_group }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+      - azure_service_bus_topic_name: {% for channel in intermediary.workflow_model.channels %}{% if channel.activator %}{{ channel.subscription.topic }}{% endif %}{% endfor %}
+      - azure_service_bus_subscription_name: {{ aim_user_prefix }}sbs-{% for channel in intermediary.workflow_model.channels %}{% if channel.activator %}{{ channel.subscription.name | remove: " " | replace: ".", "-" | replace: "/", "-" | downcase }}{% endif %}{% endfor %}
+      - azure_xml_translator_lite_logic_app_name: {{ xml_message_translator_lite_logicapp_name }}
+      - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
+      - workflow_name: {{ intermediary_name | to_safe_file_path | downcase }}
+      - scenario_name: {{ intermediary.properties.scenario }}
+      - scenario_step_name: {{ intermediary.properties.scenarioStep }}
+      - workflow_definition_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/workflow.json.liquid
+      - workflow_parameters_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.parameters.json.liquid
+      - workflow_local_parameters_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.parameters.local.json.liquid
+      - workflow_connections_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.connections.json.liquid
+      - workflow_appsettings_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.appsettings.json.liquid
+      - workflow_local_appsettings_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.appsettings.local.json.liquid
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/workflow.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.parameters.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.parameters.local.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.connections.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.appsettings.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.appsettings.local.json.liquid
     {%- endif %}
   {%- endfor %}
 {%- endfor %}
@@ -1124,17 +2743,18 @@ resourceTemplates:
   {%- for intermediary in application.intermediaries %}
     {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "ProcessManager" and intermediary.activator == false %}
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: invokableProcessManagerAzureApiConnection{{ app_name }}{{ intermediary_name }}
+  - template: invokableProcessManagerAzureApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}apic-aimsbconnector-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.web.connections
     tags:
-      - ApplicationName: {{ app_name }}
+      - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_api_connection_version: V1
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
       - azure_service_bus_resource_group_name: {{ system_application_group }}
       - azure_service_bus_namespace: {{ service_bus_namespace_name }}
@@ -1143,7 +2763,7 @@ resourceTemplates:
     files:
       - env: ['dev', 'prod']
         paths:
-          - intermediaries/processmanager/processmanagerservicebus.apiconnection.json
+          - intermediaries/processmanager/processmanagerservicebus.apiconnection.json.liquid
       - env: ['dev']
         paths:
           - intermediaries/processmanager/processmanagerservicebus.apiconnection.dev.parameters.json.liquid
@@ -1159,12 +2779,12 @@ resourceTemplates:
   {%- for intermediary in application.intermediaries %}
     {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "ProcessManager" and intermediary.activator == false %}
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: invokableProcessManagerAzureLogicApp{{ app_name }}{{ intermediary_name }}
+  - template: invokableProcessManagerAzureLogicAppConsumption{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.arm
     resourceName: {{ aim_user_prefix }}logic-aimprocessmanager-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
-    resourceType: microsoft.workflows.azurelogicapp
+    resourceType: microsoft.workflows.azurelogicapp.consumption
     tags:
-      - ApplicationName: {{ app_name }}
+      - Application: {{ app_name }}
       - Scenario: {{ intermediary.properties.scenario }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
@@ -1195,6 +2815,42 @@ resourceTemplates:
       - env: ['prod']
         paths:
           - applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.logicapp.prod.parameters.json.liquid
+
+  - template: invokableProcessManagerAzureLogicAppStandard{{ app_name }}{{ intermediary_name }}
+    templateType: microsoft.template.arm
+    resourceName: {{ aim_user_prefix }}logic-aimprocessmanager-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.workflows.azurelogicapp.standard.workflow
+    tags:
+      - Application: {{ app_name }}
+      - Scenario: {{ intermediary.properties.scenario }}
+      - Env: {{ model.migration_target.deployment_environment | downcase }}
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_logic_app_name: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+      - azure_service_bus_suspend_queue_topic_name: {{ suspendQueueTopicName }}
+      - azure_xml_translator_lite_logic_app_name: {{ xml_message_translator_lite_logicapp_name }}
+      - apim_service_name: {{ api_management_service_name }}
+      - scenario_name: {{ intermediary.properties.scenario }}
+      - scenario_step_name: {{ intermediary.properties.scenarioStep }}
+      - workflow_definition_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/workflow.json.liquid
+      - workflow_parameters_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.parameters.json.liquid
+      - workflow_local_parameters_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.parameters.local.json.liquid
+      - workflow_connections_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.connections.json.liquid
+      - workflow_appsettings_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.appsettings.json.liquid
+      - workflow_local_appsettings_file: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.appsettings.local.json.liquid
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/workflow.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.parameters.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.parameters.local.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.connections.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.appsettings.json.liquid
+          - applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/processmanager.appsettings.local.json.liquid
     {%- endif %}
   {%- endfor %}
 {%- endfor %}
@@ -1215,7 +2871,7 @@ resourceTemplates:
     resourceName: {{ aim_user_prefix }}sbs-{{ subscription_name | downcase }}
     resourceType: microsoft.messaging.azureservicebustopicsubscription
     tags:
-      - ApplicationName: {{ app_name }}
+      - Application: {{ app_name }}
       - Env: {{ model.migration_target.deployment_environment | downcase }}
     parameters:
       - azure_primary_region: {{ model.migration_target.azure_primary_region }}
@@ -1242,7 +2898,7 @@ resourceTemplates:
 {%- endfor %}
 
   # ------------------------------------------------------------------------------
-  # Scripts - Application
+  # Scripts - Application Group
   # ------------------------------------------------------------------------------
 
 {%- for application in model.migration_target.message_bus.applications %}
@@ -1264,6 +2920,40 @@ resourceTemplates:
           - application/applicationgroup/New-ApplicationGroup.ps1.liquid
           - application/applicationgroup/TearDown-10-ApplicationGroup.ps1.liquid
           - application/applicationgroup/Remove-ApplicationGroup.ps1.liquid
+  {%- endif %}
+{%- endfor %}
+
+  # ------------------------------------------------------------------------------
+  # Scripts - Standard Application
+  # ------------------------------------------------------------------------------
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" %}
+  {% if application.name != 'System Application' %}
+  - template: deploy{{ app_name }}AzureLogicAppStandard
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}logic-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+      - application_name: {{ app_name }}
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - application/standard/Deploy-105-Application-LogicApp.ps1.liquid
+          - application/standard/Deploy-110-Application-LogicApp-Configuration.ps1.liquid
+          - application/standard/Deploy-115-Application-LogicApp-Workflows.ps1.liquid
+          - application/standard/New-Application-LogicApp.ps1
+          - application/standard/New-Application-LogicApp-Configuration.ps1
+          - application/standard/New-Application-LogicApp-Workflows.ps1
+          - application/standard/TearDown-100-Application-LogicApp.ps1.liquid
+          - application/standard/Remove-Application-LogicApp.ps1
   {%- endif %}
 {%- endfor %}
 
@@ -1598,7 +3288,7 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Accept" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployFileReceiveAdapterFileApiConnection{{ app_name }}{{ endpoint_name }}
+  - template: deployFileReceiveAdapterFileApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}apic-aimfilerconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -1615,6 +3305,26 @@ resourceTemplates:
           - endpoints/file/receive/New-FileReceiveAdapterFileSystem-ApiConnection.ps1
           - endpoints/file/receive/Remove-FileReceiveAdapterFileSystem-ApiConnection.ps1
           - endpoints/file/receive/TearDown-100-FileReceiveAdapterFileSystem-ApiConnection.ps1.liquid
+
+  - template: deployFileReceiveAdapterFileApiConnectionStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}apic-aimfilerconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}      
+    outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:                                       
+          - endpoints/file/receive/Deploy-100-FileReceiveAdapterFileSystem-ApiConnection.ps1.liquid
+          - endpoints/file/receive/Deploy-110-FileReceiveAdapterFileSystem-ApiConnectionAccessPolicy.ps1.liquid
+          - endpoints/file/receive/New-FileReceiveAdapterFileSystem-ApiConnection.ps1
+          - endpoints/file/receive/New-FileReceiveAdapterFileSystem-ApiConnectionAccessPolicy.ps1
+          - endpoints/file/receive/Remove-FileReceiveAdapterFileSystem-ApiConnection.ps1
+          - endpoints/file/receive/TearDown-100-FileReceiveAdapterFileSystem-ApiConnection.ps1.liquid
     {%- endif -%}
   {%- endfor -%}
 {%- endfor %}
@@ -1624,7 +3334,7 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Accept" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployFileReceiveAdapterServiceBusApiConnection{{ app_name }}{{ endpoint_name }}
+  - template: deployFileReceiveAdapterServiceBusApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -1641,6 +3351,26 @@ resourceTemplates:
           - endpoints/file/receive/New-FileReceiveAdapterServiceBus-ApiConnection.ps1
           - endpoints/file/receive/Remove-FileReceiveAdapterServiceBus-ApiConnection.ps1
           - endpoints/file/receive/TearDown-100-FileReceiveAdapterServiceBus-ApiConnection.ps1.liquid
+
+  - template: deployFileReceiveAdapterServiceBusApiConnectionStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+    outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/file/receive/Deploy-100-FileReceiveAdapterServiceBus-ApiConnection.ps1.liquid
+          - endpoints/file/receive/Deploy-110-FileReceiveAdapterServiceBus-ApiConnectionAccessPolicy.ps1.liquid
+          - endpoints/file/receive/New-FileReceiveAdapterServiceBus-ApiConnection.ps1
+          - endpoints/file/receive/New-FileReceiveAdapterServiceBus-ApiConnectionAccessPolicy.ps1
+          - endpoints/file/receive/Remove-FileReceiveAdapterServiceBus-ApiConnection.ps1
+          - endpoints/file/receive/TearDown-100-FileReceiveAdapterServiceBus-ApiConnection.ps1.liquid
     {%- endif -%}
   {%- endfor -%}
 {%- endfor %}
@@ -1650,7 +3380,7 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Accept" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployFileReceiveAdapterLogicApp{{ app_name }}{{ endpoint_name }}
+  - template: deployFileReceiveAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}logic-aimfileradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -1659,7 +3389,7 @@ resourceTemplates:
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimfilerconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - filesystem_api_connector_name: {{ aim_user_prefix }}apic-aimfilerconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - key_vault_name: {{ key_vault_name }}
       - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
     outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
@@ -1683,7 +3413,7 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Send" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployFileSendAdapterApiConnection{{ app_name }}{{ endpoint_name }}
+  - template: deployFileSendAdapterApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}apic-aimfilesconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -1700,6 +3430,26 @@ resourceTemplates:
           - endpoints/file/send/New-FileSendAdapter-ApiConnection.ps1
           - endpoints/file/send/Remove-FileSendAdapter-ApiConnection.ps1
           - endpoints/file/send/TearDown-100-FileSendAdapter-ApiConnection.ps1.liquid
+
+  - template: deployFileSendAdapterApiConnectionStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}apic-aimfilesconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/file/send/Deploy-100-FileSendAdapter-ApiConnection.ps1.liquid
+          - endpoints/file/send/Deploy-110-FileSendAdapter-ApiConnectionAccessPolicy.ps1.liquid
+          - endpoints/file/send/New-FileSendAdapter-ApiConnection.ps1
+          - endpoints/file/send/New-FileSendAdapter-ApiConnectionAccessPolicy.ps1
+          - endpoints/file/send/Remove-FileSendAdapter-ApiConnection.ps1
+          - endpoints/file/send/TearDown-100-FileSendAdapter-ApiConnection.ps1.liquid
     {%- endif -%}
   {%- endfor -%}
 {%- endfor %}
@@ -1709,7 +3459,7 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FILE" and endpoint.message_exchange_pattern == "Send" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployFileSendAdapterLogicApp{{ app_name }}{{ endpoint_name }}
+  - template: deployFileSendAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}logic-aimfilesadapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -1718,7 +3468,7 @@ resourceTemplates:
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimfilesconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - filesystem_api_connector_name: {{ aim_user_prefix }}apic-aimfilesconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - key_vault_name: {{ key_vault_name }}
       - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
     outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
@@ -1742,7 +3492,7 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FTP" and endpoint.message_exchange_pattern == "Accept" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployFtpReceiveAdapterFtpApiConnection{{ app_name }}{{ endpoint_name }}
+  - template: deployFtpReceiveAdapterFtpApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}apic-aimftprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -1761,6 +3511,28 @@ resourceTemplates:
           - endpoints/ftp/receive/New-FtpReceiveAdapterFtp-ApiConnection.ps1
           - endpoints/ftp/receive/Remove-FtpReceiveAdapterFtp-ApiConnection.ps1
           - endpoints/ftp/receive/TearDown-100-FtpReceiveAdapterFtp-ApiConnection.ps1.liquid
+
+  - template: deployFtpReceiveAdapterFtpApiConnectionStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}apic-aimftprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}      
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:                                       
+          - endpoints/ftp/receive/Deploy-100-FtpReceiveAdapterFtp-ApiConnection.ps1.liquid
+          - endpoints/ftp/receive/Deploy-110-FtpReceiveAdapterFtp-ApiConnectionAccessPolicy.ps1.liquid
+          - endpoints/ftp/receive/New-FtpReceiveAdapterFtp-ApiConnection.ps1
+          - endpoints/ftp/receive/New-FtpReceiveAdapterFtp-ApiConnectionAccessPolicy.ps1
+          - endpoints/ftp/receive/Remove-FtpReceiveAdapterFtp-ApiConnection.ps1
+          - endpoints/ftp/receive/TearDown-100-FtpReceiveAdapterFtp-ApiConnection.ps1.liquid
     {%- endif -%}
   {%- endfor -%}
 {%- endfor %}
@@ -1770,7 +3542,7 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FTP" and endpoint.message_exchange_pattern == "Accept" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployFtpReceiveAdapterServiceBusApiConnection{{ app_name }}{{ endpoint_name }}
+  - template: deployFtpReceiveAdapterServiceBusApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -1787,6 +3559,26 @@ resourceTemplates:
           - endpoints/ftp/receive/New-FtpReceiveAdapterServiceBus-ApiConnection.ps1
           - endpoints/ftp/receive/Remove-FtpReceiveAdapterServiceBus-ApiConnection.ps1
           - endpoints/ftp/receive/TearDown-100-FtpReceiveAdapterServiceBus-ApiConnection.ps1.liquid
+
+  - template: deployFtpReceiveAdapterServiceBusApiConnectionStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}apic-topicpublisherconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+    outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/ftp/receive/Deploy-100-FtpReceiveAdapterServiceBus-ApiConnection.ps1.liquid
+          - endpoints/ftp/receive/Deploy-110-FtpReceiveAdapterServiceBus-ApiConnectionAccessPolicy.ps1.liquid
+          - endpoints/ftp/receive/New-FtpReceiveAdapterServiceBus-ApiConnection.ps1
+          - endpoints/ftp/receive/New-FtpReceiveAdapterServiceBus-ApiConnectionAccessPolicy.ps1
+          - endpoints/ftp/receive/Remove-FtpReceiveAdapterServiceBus-ApiConnection.ps1
+          - endpoints/ftp/receive/TearDown-100-FtpReceiveAdapterServiceBus-ApiConnection.ps1.liquid
     {%- endif -%}
   {%- endfor -%}
 {%- endfor %}
@@ -1796,7 +3588,7 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FTP" and endpoint.message_exchange_pattern == "Accept" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployFtpReceiveAdapterLogicApp{{ app_name }}{{ endpoint_name }}
+  - template: deployFtpReceiveAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}logic-aimftpradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -1805,7 +3597,7 @@ resourceTemplates:
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimftprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - ftp_api_connector_name: {{ aim_user_prefix }}apic-aimftprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - key_vault_name: {{ key_vault_name }}
       - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
     outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
@@ -1829,7 +3621,7 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FTP" and endpoint.message_exchange_pattern == "Send" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployFtpSendAdapterApiConnection{{ app_name }}{{ endpoint_name }}
+  - template: deployFtpSendAdapterApiConnectionConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}apic-aimftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -1846,6 +3638,26 @@ resourceTemplates:
           - endpoints/ftp/send/New-FtpSendAdapter-ApiConnection.ps1
           - endpoints/ftp/send/Remove-FtpSendAdapter-ApiConnection.ps1
           - endpoints/ftp/send/TearDown-100-FtpSendAdapter-ApiConnection.ps1.liquid
+
+  - template: deployFtpSendAdapterApiConnectionStandard{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}apic-aimftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - endpoints/ftp/send/Deploy-100-FtpSendAdapter-ApiConnection.ps1.liquid
+          - endpoints/ftp/send/Deploy-110-FtpSendAdapter-ApiConnectionAccessPolicy.ps1.liquid
+          - endpoints/ftp/send/New-FtpSendAdapter-ApiConnection.ps1
+          - endpoints/ftp/send/New-FtpSendAdapter-ApiConnectionAccessPolicy.ps1
+          - endpoints/ftp/send/Remove-FtpSendAdapter-ApiConnection.ps1
+          - endpoints/ftp/send/TearDown-100-FtpSendAdapter-ApiConnection.ps1.liquid
     {%- endif -%}
   {%- endfor -%}
 {%- endfor %}
@@ -1855,7 +3667,7 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "FTP" and endpoint.message_exchange_pattern == "Send" %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployFtpSendAdapterLogicApp{{ app_name }}{{ endpoint_name }}
+  - template: deployFtpSendAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}logic-aimftpsadapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -1864,7 +3676,7 @@ resourceTemplates:
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - ftp_api_connector_name: {{ aim_user_prefix }}apic-aimftpsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - key_vault_name: {{ key_vault_name }}
       - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
     outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
@@ -1888,7 +3700,7 @@ resourceTemplates:
   {%- for intermediary in application.intermediaries %}
     {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "MessageSubscriber" %}
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployTopicSubscriberApiConnection{{ app_name }}{{ intermediary_name }}
+  - template: deployTopicSubscriberApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}apic-topicsubscriberconnector-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -1905,6 +3717,26 @@ resourceTemplates:
           - intermediaries/topicsubscriber/New-TopicSubscriber-ApiConnection.ps1
           - intermediaries/topicsubscriber/Remove-TopicSubscriber-ApiConnection.ps1
           - intermediaries/topicsubscriber/TearDown-100-TopicSubscriber-ApiConnection.ps1.liquid
+
+  - template: deployTopicSubscriberApiConnectionStandard{{ app_name }}{{ intermediary_name }}
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}apic-topicsubscriberconnector-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+    outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/topicsubscriber{{ intermediary_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:
+          - intermediaries/topicsubscriber/Deploy-100-TopicSubscriber-ApiConnection.ps1.liquid
+          - intermediaries/topicsubscriber/Deploy-110-TopicSubscriber-ApiConnectionAccessPolicy.ps1.liquid
+          - intermediaries/topicsubscriber/New-TopicSubscriber-ApiConnection.ps1
+          - intermediaries/topicsubscriber/New-TopicSubscriber-ApiConnectionAccessPolicy.ps1
+          - intermediaries/topicsubscriber/Remove-TopicSubscriber-ApiConnection.ps1
+          - intermediaries/topicsubscriber/TearDown-100-TopicSubscriber-ApiConnection.ps1.liquid
     {%- endif %}
   {%- endfor %}
 {%- endfor %}
@@ -1914,7 +3746,7 @@ resourceTemplates:
   {%- for intermediary in application.intermediaries %}
     {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "MessageSubscriber" %}
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployTopicSubscriberLogicApp{{ app_name }}{{ intermediary_name }}
+  - template: deployTopicSubscriberLogicAppConsumption{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}logic-aimtopicsubscriber-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -1946,7 +3778,7 @@ resourceTemplates:
   {%- for endpoint in application.endpoints %}
     {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "HTTP" and ( endpoint.message_exchange_pattern == "ReceiveResponse" or endpoint.message_exchange_pattern == "Receive" ) %}
       {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployHttpReceiveAdapterLogicApp{{ app_name }}{{ endpoint_name }}
+  - template: deployHttpReceiveAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}logic-aimhttpradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -1955,7 +3787,6 @@ resourceTemplates:
       - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
       - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
       - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
-      - api_connector_name: {{ aim_user_prefix }}apic-aimhttprconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
       - key_vault_name: {{ key_vault_name }}
       - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
     outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
@@ -1971,6 +3802,71 @@ resourceTemplates:
 {%- endfor %}
 
   # ------------------------------------------------------------------------------
+  # Scripts - HTTP Send
+  # ------------------------------------------------------------------------------
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints %}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "HTTP" and ( endpoint.message_exchange_pattern == "RequestReply" or endpoint.message_exchange_pattern == "Send" ) %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - template: deployHttpSendAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}logic-aimhttpradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:                                       
+          - endpoints/http/send/Deploy-105-HttpSendAdapter-LogicApp.ps1.liquid
+          - endpoints/http/send/New-HttpSendAdapter-LogicApp.ps1
+          - endpoints/http/send/Remove-HttpSendAdapter-LogicApp.ps1
+          - endpoints/http/send/TearDown-105-HttpSendAdapter-LogicApp.ps1.liquid
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+  # ------------------------------------------------------------------------------
+  # Scripts - SAP Send
+  # ------------------------------------------------------------------------------
+
+{%- for application in model.migration_target.message_bus.applications %}
+  {%- assign app_name = application.name | remove: " " | replace: ".", "-" | replace: ":", "-" -%}
+  {%- for endpoint in application.endpoints %}
+    {%- if endpoint.endpoint_type == "Adapter" and endpoint.adapter_protocol == "WCF-SAP" and ( endpoint.message_exchange_pattern == "RequestReply" or endpoint.message_exchange_pattern == "Send" ) %}
+      {% assign endpoint_name = endpoint.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
+  - template: deploySapSendAdapterLogicAppConsumption{{ app_name }}{{ endpoint_name }}
+    templateType: microsoft.template.powershell
+    resourceName: {{ aim_user_prefix }}logic-aimsapradapter-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+    resourceType: microsoft.scripts.powershell
+    parameters:
+      - azure_primary_region: {{ model.migration_target.azure_primary_region }}
+      - azure_secondary_region: {{ model.migration_target.azure_secondary_region }}
+      - azure_subscription_id: {{ model.migration_target.azure_subscription_id }}
+      - azure_resource_group_name: {{ aim_user_prefix }}rg-aimapp-{{ app_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ formatted_azure_primary_region }}-{{ aim_unique_suffix }}
+      - sap_api_connector_name: {{ aim_user_prefix }}apic-aimsapsconnector-{{ endpoint_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
+      - key_vault_name: {{ key_vault_name }}
+      - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+    outputPath:  applications/{{ app_name | to_safe_file_path | downcase }}/endpoints/{{ endpoint_name | to_safe_file_path | downcase }}
+    files:
+      - env: ['dev', 'prod']
+        paths:                                       
+          - endpoints/sap/send/Deploy-105-SapSendAdapter-LogicApp.ps1.liquid
+          - endpoints/sap/send/New-SapSendAdapter-LogicApp.ps1
+          - endpoints/sap/send/Remove-SapSendAdapter-LogicApp.ps1
+          - endpoints/sap/send/TearDown-105-SapSendAdapter-LogicApp.ps1.liquid
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor %}
+
+  # ------------------------------------------------------------------------------
   # Scripts - Process Manager
   # ------------------------------------------------------------------------------
 
@@ -1979,7 +3875,7 @@ resourceTemplates:
   {%- for intermediary in application.intermediaries %}
     {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "ProcessManager" %}
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployProcessManagerApiConnection{{ app_name }}{{ intermediary_name }}
+  - template: deployProcessManagerApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}apic-aimsbconnector-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell
@@ -2005,7 +3901,7 @@ resourceTemplates:
   {%- for intermediary in application.intermediaries %}
     {%- if intermediary.intermediary_type == "MessageRouter" and intermediary.message_router_type == "ProcessManager" %}
       {% assign intermediary_name = intermediary.name | remove: " " | replace: ".", "-" | replace: "/", "-" | replace: ":", "-" %}
-  - template: deployProcessManagerLogicApp{{ app_name }}{{ intermediary_name }}
+  - template: deployProcessManagerLogicAppConsumption{{ app_name }}{{ intermediary_name }}
     templateType: microsoft.template.powershell
     resourceName: {{ aim_user_prefix }}logic-aimprocessmanager-{{ intermediary_name | downcase }}-{{ model.migration_target.deployment_environment | downcase }}-{{ aim_unique_suffix }}
     resourceType: microsoft.scripts.powershell

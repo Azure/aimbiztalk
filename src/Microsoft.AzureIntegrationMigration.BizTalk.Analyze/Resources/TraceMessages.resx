@@ -207,6 +207,69 @@
   <data name="BizTalkFtpSendAdapterBindingPropertySensitive" xml:space="preserve">
     <value>{RuleId}: The BizTalk FTP send adapter sensitive property {PropertyName} in the send port {SendPortName} is being defaulted to an empty value.</value>
   </data>
+  <data name="BizTalkHttpSendAdapterBindingPropertyFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk HTTP send adapter property {PropertyName} was found in the send port {SendPortName}, using value {PropertyValue}.</value>
+  </data>
+  <data name="BizTalkHttpSendAdapterBindingPropertyNotFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk HTTP send adapter property {PropertyName} was not found in the send port {SendPortName}, defaulting value to {PropertyDefaultValue}.</value>
+  </data>
+  <data name="BizTalkHttpSendAdapterBindingPropertySensitive" xml:space="preserve">
+    <value>{RuleId}: The BizTalk HTTP send adapter sensitive property {PropertyName} in the send port {SendPortName} is being defaulted to an empty value.</value>
+  </data>
+  <data name="BizTalkMqReceiveAdapterBindingPropertyFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk MQ receive adapter property {PropertyName} was found in the receive location {ReceiveLocationName}, using value {PropertyValue}.</value>
+  </data>
+  <data name="BizTalkMqReceiveAdapterBindingPropertyNotFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk MQ receive adapter property {PropertyName} was not found in the receive location {ReceiveLocationName}, defaulting value to {PropertyDefaultValue}.</value>
+  </data>
+  <data name="BizTalkMqReceiveAdapterBindingPropertySensitive" xml:space="preserve">
+    <value>{RuleId}: The BizTalk MQ receive adapter sensitive property {PropertyName} in the receive location {ReceiveLocationName} is being defaulted to an empty value.</value>
+  </data>
+  <data name="BizTalkMqSendAdapterBindingPropertyFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk MQ send adapter property {PropertyName} was found in the send port {SendPortName}, using value {PropertyValue}.</value>
+  </data>
+  <data name="BizTalkMqSendAdapterBindingPropertyNotFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk MQ send adapter property {PropertyName} was not found in the send port {SendPortName}, defaulting value to {PropertyDefaultValue}.</value>
+  </data>
+  <data name="BizTalkMqSendAdapterBindingPropertySensitive" xml:space="preserve">
+    <value>{RuleId}: The BizTalk MQ send adapter sensitive property {PropertyName} in the send port {SendPortName} is being defaulted to an empty value.</value>
+  </data>
+  <data name="BizTalkSapReceiveAdapterBindingPropertyFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk SAP receive adapter property {PropertyName} was found in the receive location {ReceiveLocationName}, using value {PropertyValue}.</value>
+  </data>
+  <data name="BizTalkSapReceiveAdapterBindingPropertyNotFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk SAP receive adapter property {PropertyName} was not found in the receive location {ReceiveLocationName}, defaulting value to {PropertyDefaultValue}.</value>
+  </data>
+  <data name="BizTalkSapReceiveAdapterBindingPropertySensitive" xml:space="preserve">
+    <value>{RuleId}: The BizTalk SAP receive adapter sensitive property {PropertyName} in the receive location {ReceiveLocationName} is being defaulted to an empty value.</value>
+  </data>
+  <data name="BizTalkSapSendAdapterBindingPropertyFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk SAP send adapter property {PropertyName} was found in the send port {SendPortName}, using value {PropertyValue}.</value>
+  </data>
+  <data name="BizTalkSapSendAdapterBindingPropertyNotFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk SAP send adapter property {PropertyName} was not found in the send port {SendPortName}, defaulting value to {PropertyDefaultValue}.</value>
+  </data>
+  <data name="BizTalkSapSendAdapterBindingPropertySensitive" xml:space="preserve">
+    <value>{RuleId}: The BizTalk SAP send adapter sensitive property {PropertyName} in the send port {SendPortName} is being defaulted to an empty value.</value>
+  </data>
+  <data name="BizTalkSftpReceiveAdapterBindingPropertyFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk SFTP receive adapter property {PropertyName} was found in the receive location {ReceiveLocationName}, using value {PropertyValue}.</value>
+  </data>
+  <data name="BizTalkSftpReceiveAdapterBindingPropertyNotFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk SFTP receive adapter property {PropertyName} was not found in the receive location {ReceiveLocationName}, defaulting value to {PropertyDefaultValue}.</value>
+  </data>
+  <data name="BizTalkSftpReceiveAdapterBindingPropertySensitive" xml:space="preserve">
+    <value>{RuleId}: The BizTalk SFTP receive adapter sensitive property {PropertyName} in the receive location {ReceiveLocationName} is being defaulted to an empty value.</value>
+  </data>
+  <data name="BizTalkSftpSendAdapterBindingPropertyFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk SFTP send adapter property {PropertyName} was found in the send port {SendPortName}, using value {PropertyValue}.</value>
+  </data>
+  <data name="BizTalkSftpSendAdapterBindingPropertyNotFound" xml:space="preserve">
+    <value>{RuleId}: The BizTalk SFTP send adapter property {PropertyName} was not found in the send port {SendPortName}, defaulting value to {PropertyDefaultValue}.</value>
+  </data>
+  <data name="BizTalkSftpSendAdapterBindingPropertySensitive" xml:space="preserve">
+    <value>{RuleId}: The BizTalk SFTP send adapter sensitive property {PropertyName} in the send port {SendPortName} is being defaulted to an empty value.</value>
+  </data>
   <data name="BoundWorkflowChannel" xml:space="preserve">
     <value>{RuleId}: Channel {ChannelName} of type {ChannelType} in workflow {WorkflowName} has been bound to messaging channel {MessagingChannelName}.</value>
   </data>

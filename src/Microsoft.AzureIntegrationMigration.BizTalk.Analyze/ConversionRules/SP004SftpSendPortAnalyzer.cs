@@ -22,14 +22,14 @@ using Microsoft.Extensions.Logging;
 namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
 {
     /// <summary>
-    /// Implements rule SP001, which analyzes the model and creates EndPoints for each application send ftp location.
+    /// Implements rule SP004, which analyzes the model and creates EndPoints for each application send sftp location.
     /// </summary>
-    public sealed class SP001FtpSendPortAnalyzer : BizTalkAnalyzerBase
+    public sealed class SP004SftpSendPortAnalyzer : BizTalkAnalyzerBase
     {
         /// <summary>
         /// Defines the name of this rule.
         /// </summary>
-        private const string RuleName = "SP001";
+        private const string RuleName = "SP004";
 
         /// <summary>
         /// Defines a logger.
@@ -37,20 +37,20 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Creates a new instance of a <see cref="SP001FtpSendPortAnalyzer"/> class.
+        /// Creates a new instance of a <see cref="SP004SftpSendPortAnalyzer"/> class.
         /// </summary>
         /// <param name="model">The model.</param>
         /// <param name="context">The context.</param>
         /// <param name="logger">A logger.</param>
-        public SP001FtpSendPortAnalyzer(IApplicationModel model, MigrationContext context, ILogger logger)
-            : base(nameof(SP001FtpSendPortAnalyzer), model, context, logger)
+        public SP004SftpSendPortAnalyzer(IApplicationModel model, MigrationContext context, ILogger logger)
+            : base(nameof(SP004SftpSendPortAnalyzer), model, context, logger)
         {
             // Validate and set the member.
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
-        /// Creates the FTP send EndPoints for applications in the migration target.
+        /// Creates the SFTP send EndPoints for applications in the migration target.
         /// </summary>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task used to await the operation.</returns>
@@ -60,7 +60,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
             var parsedApplicationGroup = Model.GetSourceModel<ParsedBizTalkApplicationGroup>();
             if (parsedApplicationGroup?.Applications != null)
             {
-                _logger.LogDebug(TraceMessages.RunningRule, RuleName, nameof(SP001FtpSendPortAnalyzer));
+                _logger.LogDebug(TraceMessages.RunningRule, RuleName, nameof(SP004SftpSendPortAnalyzer));
 
                 foreach (var application in parsedApplicationGroup.Applications)
                 {
@@ -69,48 +69,48 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                     {
                         foreach(var sendPort in sendPorts)
                         {
-                            if (sendPort?.PrimaryTransport?.TransportType?.Name == "FTP")
+                            if (sendPort?.PrimaryTransport?.TransportType?.Name == "SFTP")
                             {
                                 // Find adapter in target model
                                 var adapterKey = $"{ModelConstants.MessageBusLeafKey}:{application.Application.Name.FormatKey()}:{sendPort.Name.FormatKey()}:{ModelConstants.AdapterEndpointLeafKey}";
                                 var adapter = Model.FindMessagingObject(adapterKey);
                                 if (adapter.messagingObject != null)
                                 {
-                                    var ftpAdapter = (AdapterEndpoint)adapter.messagingObject;
+                                    var sftpAdapter = (AdapterEndpoint)adapter.messagingObject;
 
                                     // Set conversion rating
-                                    ftpAdapter.Rating = ConversionRating.FullConversionWithFidelityLoss;
+                                    sftpAdapter.Rating = ConversionRating.FullConversionWithFidelityLoss;
 
-                                    // Change to Accept message exchange pattern as no ack can be delivered for FTP
-                                    ftpAdapter.MessageExchangePattern = MessageExchangePattern.Send;
+                                    // We're using a Send pattern
+                                    sftpAdapter.MessageExchangePattern = MessageExchangePattern.Send;
 
                                     // Set resource map key to hook into the configuration process
-                                    var messagingObject = Model.FindMessagingObject(ftpAdapter.Key);
+                                    var messagingObject = Model.FindMessagingObject(sftpAdapter.Key);
                                     var appName = $"{messagingObject.application.Name.Replace(".", "-").Replace(" ", string.Empty).Replace(":", "-")}";
-                                    var adapterName = ftpAdapter.Name.Replace(".", "-").Replace(" ", string.Empty).Replace(":", "-");
-                                    ftpAdapter.ResourceMapKey = $"ftpSendAdapterEndpoint{appName}{adapterName}";
+                                    var adapterName = sftpAdapter.Name.Replace(".", "-").Replace(" ", string.Empty).Replace(":", "-");
+                                    sftpAdapter.ResourceMapKey = $"sftpSendAdapterEndpoint{appName}{adapterName}";
 
                                     if (!string.IsNullOrEmpty(sendPort.PrimaryTransport.TransportTypeData))
                                     {
                                         var configItems = MapTransportTypeData(sendPort.PrimaryTransport.TransportTypeData);
 
-                                        MapAdapterProperties(configItems, ftpAdapter);
+                                        MapAdapterProperties(configItems, sftpAdapter);
 
                                         foreach (var item in configItems)
                                         {
-                                            ftpAdapter.ReportMessages.Add(new ReportMessage()
+                                            sftpAdapter.ReportMessages.Add(new ReportMessage()
                                             {
                                                 Severity = MessageSeverity.Warning,
-                                                Message = string.Format(CultureInfo.CurrentCulture, InformationMessages.BizTalkFtpAdapterPropertyNotSupported, item.Key, item.Value)
+                                                Message = string.Format(CultureInfo.CurrentCulture, InformationMessages.BizTalkSftpAdapterPropertyNotSupported, item.Key, item.Value)
                                             });
                                         }
 
-                                        ftpAdapter.ReportLinks.Add(AnalysisResources.FtpAdapterHelpLink);
+                                        sftpAdapter.ReportLinks.Add(AnalysisResources.SftpAdapterHelpLink);
                                     }
                                     else
                                     {
-                                        _logger.LogDebug(WarningMessages.SendPortTransportTypeDataNotFound, ftpAdapter.Name);
-                                        ftpAdapter.ReportMessages.Add(new ReportMessage() { Severity = MessageSeverity.Warning, Message = string.Format(CultureInfo.CurrentCulture, WarningMessages.SendPortTransportTypeDataNotFound, ftpAdapter.Name) });
+                                        _logger.LogDebug(WarningMessages.SendPortTransportTypeDataNotFound, sftpAdapter.Name);
+                                        sftpAdapter.ReportMessages.Add(new ReportMessage() { Severity = MessageSeverity.Warning, Message = string.Format(CultureInfo.CurrentCulture, WarningMessages.SendPortTransportTypeDataNotFound, sftpAdapter.Name) });
                                     }
                                 }
                                 else
@@ -123,31 +123,33 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                     }
                 }
 
-                _logger.LogDebug(TraceMessages.RuleCompleted, RuleName, nameof(SP001FtpSendPortAnalyzer));
+                _logger.LogDebug(TraceMessages.RuleCompleted, RuleName, nameof(SP004SftpSendPortAnalyzer));
             }
             else
             {
-                _logger.LogDebug(TraceMessages.SkippingRuleAsSourceModelMissing, RuleName, nameof(SP001FtpSendPortAnalyzer));
+                _logger.LogDebug(TraceMessages.SkippingRuleAsSourceModelMissing, RuleName, nameof(SP004SftpSendPortAnalyzer));
             }
 
             await Task.CompletedTask.ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Map the fields that are to be used by the azure ftp connector, expected fields that are not found are added with default value or a place holder text.
+        /// Map the fields that are to be used by the azure sftp connector, expected fields that are not found are added with default value or a place holder text.
         /// </summary>
         /// <param name="configItems">The adapter configuration properties.</param>
-        /// <param name="endpoint">The ftp endpoint.</param>
+        /// <param name="endpoint">The sftp endpoint.</param>
         private void MapAdapterProperties(Dictionary<string, string> configItems, AdapterEndpoint endpoint)
         {
             // Set supported property names and defaults
             var supportedProperties = new Dictionary<string, (string, object)>()
             {
-                { "serverAddress", ("serverAddress", "localhost") },
-                { "serverPort", ("serverPort", 21) },
-                { "userName", ("userName", "temp.user") },
-                { "representationType", ("isBinaryTransport", true) },
-                { "useSsl", ("isSSL", false) },
+                { "ServerAddress", ("serverAddress", "") },
+                { "Port", ("serverPort", 22) },
+                { "UserName", ("userName", "") },
+                { "PrivateKey", ("sshPrivateKey", "") },
+                { "AccessAnySSHServerHostKey", ("acceptAnySshHostKey", "false") },
+                { "SSHServerHostKey", ("sshHostKeyFingerprint", "") },
+                { "ClientAuthenticationMode", ("clientAuthenticationMode", "Password")},
                 { "targetFolder", ("targetFolder", "/") },
                 { "targetFileName", ("targetFileName", "%MessageID%.xml") }
             };
@@ -165,7 +167,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                     // Set value on endpoint
                     endpoint.Properties.Add(mappedProperty.mappedName, convertedValue);
 
-                    _logger.LogDebug(TraceMessages.BizTalkFtpSendAdapterBindingPropertyFound, RuleName, supportedProperty.Key, endpoint.Name, convertedValue);
+                    _logger.LogDebug(TraceMessages.BizTalkSftpSendAdapterBindingPropertyFound, RuleName, supportedProperty.Key, endpoint.Name, convertedValue);
 
                     // Remove handled property from BizTalk adapter property list
                     configItems.Remove(supportedProperty.Key);
@@ -175,16 +177,31 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                     // Set default value
                     endpoint.Properties.Add(mappedProperty.mappedName, mappedProperty.mappedValue);
 
-                    _logger.LogDebug(TraceMessages.BizTalkFtpSendAdapterBindingPropertyNotFound, RuleName, supportedProperty.Key, endpoint.Name, mappedProperty.mappedValue);
+                    _logger.LogDebug(TraceMessages.BizTalkSftpSendAdapterBindingPropertyNotFound, RuleName, supportedProperty.Key, endpoint.Name, mappedProperty.mappedValue);
                 }
             }
 
-            // Special case password because it is a sensitive value
-            endpoint.Properties.Add("password", "");
-            endpoint.ReportMessages.Add(new ReportMessage() { Severity = MessageSeverity.Information, Message = string.Format(CultureInfo.CurrentCulture, InformationMessages.BizTalkFtpAdapterSensitivePropertyMustBeSpecifiedLater, "password") });
-            configItems.Remove("password");
-
-            _logger.LogDebug(TraceMessages.BizTalkFtpSendAdapterBindingPropertySensitive, RuleName, "password", endpoint.Name);
+            // Special case for Password or PrivateKeyPassword because they are sensitive values
+            // Check the ClientAuthenticationMode
+            var authenticationMode = endpoint.Properties["clientAuthenticationMode"] as string;
+            if (authenticationMode == "Password")
+            {
+                endpoint.Properties.Add("password", "<redacted>");
+                _logger.LogDebug(TraceMessages.BizTalkSftpReceiveAdapterBindingPropertySensitive, RuleName, "password", endpoint.Name);
+                endpoint.ReportMessages.Add(new ReportMessage() { Severity = MessageSeverity.Information, Message = string.Format(CultureInfo.CurrentCulture, InformationMessages.BizTalkSftpAdapterSensitivePropertyMustBeSpecifiedLater, "password") });
+            }
+            else if (authenticationMode == "PublicKeyAuthentication")
+            {
+                endpoint.Properties.Add("sshPrivateKeyPassphrase", "<redacted>");
+                _logger.LogDebug(TraceMessages.BizTalkSftpReceiveAdapterBindingPropertySensitive, RuleName, "sshPrivateKeyPassphrase", endpoint.Name);
+                endpoint.ReportMessages.Add(new ReportMessage() { Severity = MessageSeverity.Information, Message = string.Format(CultureInfo.CurrentCulture, InformationMessages.BizTalkSftpAdapterSensitivePropertyMustBeSpecifiedLater, "sshPrivateKeyPassphrase") });
+            }
+            else
+            {
+                // Unsupported ClientAuthenticationMode (e.g. MFA)
+                endpoint.ReportMessages.Add(new ReportMessage() { Severity = MessageSeverity.Warning, Message = string.Format(CultureInfo.CurrentCulture, InformationMessages.BizTalkSftpAdapterPropertyNotSupported, "clientAuthenticationMode", authenticationMode) });
+            }
+            configItems.Remove("clientAuthenticationMode");
         }
 
         /// <summary>
@@ -197,13 +214,8 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
         {
             switch (propertyName)
             {
-                case "representationType":
-
-                    return propertyValue.ToString() == "binary" ? true : false;
-
-                case "useSsl":
-
-                    return propertyValue.ToString() == "False" ? false : true;
+                case "AccessAnySSHServerHostKey":
+                    return propertyValue.ToString() == "-1" ? "true" : "false";
 
                 case "targetFolder":
 

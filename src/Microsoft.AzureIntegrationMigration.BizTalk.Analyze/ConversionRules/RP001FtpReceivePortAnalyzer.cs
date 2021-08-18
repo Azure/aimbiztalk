@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation.
+﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 using System;
 using System.Collections.Generic;
@@ -151,9 +151,9 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
             // Set supported property names and defaults
             var supportedProperties = new Dictionary<string, (string, object)>()
             {
-                { "serverAddress", ("serverAddress", "") },
+                { "serverAddress", ("serverAddress", "localhost") },
                 { "serverPort", ("serverPort", 21) },
-                { "userName", ("userName", "") },
+                { "userName", ("userName", "temp.user") },
                 { "representationType", ("isBinaryTransport", true) },
                 { "useSsl", ("isSSL", false) },
                 { "targetFolder", ("targetFolder", "/") },
@@ -227,6 +227,11 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                     {
                         return 10;
                     }
+
+                case "targetFolder":
+
+                    return propertyValue.ToString().StartsWith("/") ? propertyValue : "/" + propertyValue.ToString();
+
             }
 
             return propertyValue;

@@ -20,14 +20,14 @@ using Microsoft.Extensions.Logging;
 namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
 {
     /// <summary>
-    /// Implements rule SP002, which analyzes the model and creates endpoints for each send file location.
+    /// Implements rule SP003, which analyzes the model and creates endpoints for each send http location.
     /// </summary>
-    public sealed class SP002FileSendPortAnalyzer : BizTalkAnalyzerBase
+    public sealed class SP003HttpSendPortAnalyzer : BizTalkAnalyzerBase
     {
         /// <summary>
         /// Defines the name of this rule.
         /// </summary>
-        private const string RuleName = "SP002";
+        private const string RuleName = "SP003";
 
         /// <summary>
         /// Defines a logger.
@@ -35,20 +35,20 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
         private readonly ILogger _logger;
 
         /// <summary>
-        /// Creates a new instance of a <see cref="SP002FileSendPortAnalyzer "/> class.
+        /// Creates a new instance of a <see cref="SP003HttpSendPortAnalyzer "/> class.
         /// </summary>
         /// <param name="model">The model.</param>
         /// <param name="context">The context.</param>
         /// <param name="logger">A logger.</param>
-        public SP002FileSendPortAnalyzer(IApplicationModel model, MigrationContext context, ILogger logger)
-            : base(nameof(SP002FileSendPortAnalyzer), model, context, logger)
+        public SP003HttpSendPortAnalyzer(IApplicationModel model, MigrationContext context, ILogger logger)
+            : base(nameof(SP003HttpSendPortAnalyzer), model, context, logger)
         {
             // Validate and set the member.
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
-        /// Creates the file send endpoints in the migration target.
+        /// Creates the http send endpoints in the migration target.
         /// </summary>
         /// <param name="token">The cancellation token.</param>
         /// <returns>Task used to await the operation.</returns>
@@ -58,7 +58,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
             var parsedApplicationGroup = Model.GetSourceModel<ParsedBizTalkApplicationGroup>();
             if (parsedApplicationGroup?.Applications != null)
             {
-                _logger.LogDebug(TraceMessages.RunningRule, RuleName, nameof(SP002FileSendPortAnalyzer));
+                _logger.LogDebug(TraceMessages.RunningRule, RuleName, nameof(SP003HttpSendPortAnalyzer));
 
                 foreach (var application in parsedApplicationGroup.Applications)
                 {
@@ -67,68 +67,51 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                     {
                         foreach(var sendPort in sendPorts)
                         {
-                            if (sendPort?.PrimaryTransport?.TransportType?.Name == "FILE")
+                            if (sendPort?.PrimaryTransport?.TransportType?.Name == "HTTP")
                             {
                                 // Find adapter in target model
                                 var adapterKey = $"{ModelConstants.MessageBusLeafKey}:{application.Application.Name.FormatKey()}:{sendPort.Name.FormatKey()}:{ModelConstants.AdapterEndpointLeafKey}";
                                 var adapter = Model.FindMessagingObject(adapterKey);
                                 if (adapter.messagingObject != null)
                                 {
-                                    var fileAdapter = (AdapterEndpoint)adapter.messagingObject;
+                                    var httpAdapter = (AdapterEndpoint)adapter.messagingObject;
 
                                     // Set conversion rating
-                                    fileAdapter.Rating = ConversionRating.FullConversionWithFidelityLoss;
+                                    httpAdapter.Rating = ConversionRating.FullConversionWithFidelityLoss;
 
                                     // Set the message exchange pattern.
-                                    fileAdapter.MessageExchangePattern = MessageExchangePattern.Send;
+                                    httpAdapter.MessageExchangePattern = MessageExchangePattern.Send;
 
                                     // Set resource map key to hook into the configuration process
-                                    var messagingObject = Model.FindMessagingObject(fileAdapter.Key);
+                                    var messagingObject = Model.FindMessagingObject(httpAdapter.Key);
                                     var appName = $"{messagingObject.application.Name.Replace(".", "-").Replace(" ", string.Empty).Replace(":", "-")}";
-                                    var adapterName = fileAdapter.Name.Replace(".", "-").Replace(" ", string.Empty).Replace(":", "-");
-                                    fileAdapter.ResourceMapKey = $"fileSendAdapterEndpoint{appName}{adapterName}";
+                                    var adapterName = httpAdapter.Name.Replace(".", "-").Replace(" ", string.Empty).Replace(":", "-");
+                                    httpAdapter.ResourceMapKey = $"httpSendAdapterEndpoint{appName}{adapterName}";
 
                                     if (!string.IsNullOrEmpty(sendPort.PrimaryTransport.TransportTypeData))
                                     {
                                         var configItems = MapTransportTypeData(sendPort.PrimaryTransport.TransportTypeData);
 
-                                        // Add the address to the config items.
-                                        var address = sendPort.PrimaryTransport.Address;
-                                        if (!string.IsNullOrEmpty(address))
-                                        {
-                                            if (configItems.TryGetValue("FileName", out var fileName))
-                                            {
-                                                address = address.Replace(fileName, string.Empty);
-                                            }
-                                            // Replace the path separator to ensure its can be processed by the Azure CLI.
-                                            address = address.Replace("\\", "/");
-                                        }
-                                        configItems.Add("Address", address);
-
-                                        MapAdapterProperties(configItems, fileAdapter);
+                                        MapAdapterProperties(configItems, httpAdapter);
 
                                         foreach (var item in configItems)
                                         {
-                                            fileAdapter.ReportMessages.Add(new ReportMessage()
+                                            httpAdapter.ReportMessages.Add(new ReportMessage()
                                             {
                                                 Severity = MessageSeverity.Warning,
-                                                Message = string.Format(CultureInfo.CurrentCulture, InformationMessages.BizTalkFileAdapterPropertyNotSupported, item.Key, item.Value)
+                                                Message = string.Format(CultureInfo.CurrentCulture, InformationMessages.BizTalkHttpAdapterPropertyNotSupported, item.Key, item.Value)
                                             });
                                         }
 
                                         // Map the config.
-                                        var configProperties = fileAdapter.Properties[ModelConstants.ConfigurationEntry] as Dictionary<string, object>;
+                                        var configProperties = httpAdapter.Properties[ModelConstants.ConfigurationEntry] as Dictionary<string, object>;
 
-                                        configProperties["copyMode"] = MapCopyMode(fileAdapter.Properties["copyMode"]);
-                                        configProperties["destinationFolder"] = fileAdapter.Properties["rootFolder"];
-                                        configProperties["fileName"] = fileAdapter.Properties["fileName"];
-
-                                        fileAdapter.ReportLinks.Add(AnalysisResources.FileAdapterHelpLink);
+                                        httpAdapter.ReportLinks.Add(AnalysisResources.HttpAdapterHelpLink);
                                     }
                                     else
                                     {
-                                        _logger.LogDebug(WarningMessages.SendPortTransportTypeDataNotFound, fileAdapter.Name);
-                                        fileAdapter.ReportMessages.Add(new ReportMessage() { Severity = MessageSeverity.Warning, Message = string.Format(CultureInfo.CurrentCulture, WarningMessages.SendPortTransportTypeDataNotFound, fileAdapter.Name) });
+                                        _logger.LogDebug(WarningMessages.SendPortTransportTypeDataNotFound, httpAdapter.Name);
+                                        httpAdapter.ReportMessages.Add(new ReportMessage() { Severity = MessageSeverity.Warning, Message = string.Format(CultureInfo.CurrentCulture, WarningMessages.SendPortTransportTypeDataNotFound, httpAdapter.Name) });
                                     }
                                 }
                                 else
@@ -140,30 +123,27 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                         }
                     }
                 }
-                _logger.LogDebug(TraceMessages.RuleCompleted, RuleName, nameof(SP002FileSendPortAnalyzer));
+                _logger.LogDebug(TraceMessages.RuleCompleted, RuleName, nameof(SP003HttpSendPortAnalyzer));
             }
             else
             {
-                _logger.LogDebug(TraceMessages.SkippingRuleAsSourceModelMissing, RuleName, nameof(SP002FileSendPortAnalyzer));
+                _logger.LogDebug(TraceMessages.SkippingRuleAsSourceModelMissing, RuleName, nameof(SP003HttpSendPortAnalyzer));
             }
 
             await Task.CompletedTask.ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Map the fields that used by the azure file connector, any expected fields that are not found are added with the default values.
+        /// Map the fields that used by the azure http connector, any expected fields that are not found are added with the default values.
         /// </summary>
         /// <param name="configItems">The adapter configuration properties.</param>
-        /// <param name="endpoint">The file endpoint.</param>
+        /// <param name="endpoint">The http endpoint.</param>
         private void MapAdapterProperties(Dictionary<string, string> configItems, AdapterEndpoint endpoint)
         {
             // Set supported property names and defaults
             var supportedProperties = new Dictionary<string, (string, object)>()
             {
-                { "Address", ("rootFolder", "C:/")},
-                { "FileName", ("fileName", "%MessageID%.xml") },
-                { "Username", ("userName", "temp.user")},
-                { "CopyMode", ("copyMode", 1) }
+                { "Address", ("address", "")}
             };
 
             // Search through the BizTalk adapter properties and match properties
@@ -176,7 +156,7 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                     // Set value on endpoint
                     endpoint.Properties.Add(mappedProperty.mappedName, configItems[supportedProperty.Key]);
 
-                    _logger.LogDebug(TraceMessages.BizTalkFileSendAdapterBindingPropertyFound, RuleName, supportedProperty.Key, endpoint.Name, mappedProperty.mappedValue);
+                    _logger.LogDebug(TraceMessages.BizTalkHttpSendAdapterBindingPropertyFound, RuleName, supportedProperty.Key, endpoint.Name, mappedProperty.mappedValue);
 
                     // Remove handled property from BizTalk adapter property list
                     configItems.Remove(supportedProperty.Key);
@@ -186,16 +166,11 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
                     // Set default value
                     endpoint.Properties.Add(mappedProperty.mappedName, mappedProperty.mappedValue);
 
-                    _logger.LogDebug(TraceMessages.BizTalkFileSendAdapterBindingPropertyFound, RuleName, supportedProperty.Key, endpoint.Name, mappedProperty.mappedValue);
+                    _logger.LogDebug(TraceMessages.BizTalkHttpSendAdapterBindingPropertyFound, RuleName, supportedProperty.Key, endpoint.Name, mappedProperty.mappedValue);
                 }
             }
 
-            // Special case password because it is a sensitive value
-            endpoint.Properties.Add("password", "");
-            endpoint.ReportMessages.Add(new ReportMessage() { Severity = MessageSeverity.Information, Message = string.Format(CultureInfo.CurrentCulture, InformationMessages.BizTalkFileAdapterSensitivePropertyMustBeSpecifiedLater, "password") });
-            configItems.Remove("Password");
-
-            _logger.LogDebug(TraceMessages.BizTalkFileSendAdapterBindingPropertySensitive, RuleName, "password", endpoint.Name);
+            _logger.LogDebug(TraceMessages.BizTalkHttpSendAdapterBindingPropertySensitive, RuleName, "password", endpoint.Name);
         }
 
         /// <summary>
@@ -220,26 +195,6 @@ namespace Microsoft.AzureIntegrationMigration.BizTalk.Analyze.ConversionRules
             }
 
             return items;
-        }
-
-        /// <summary>
-        /// Maps the copy mode value from its BizTalk to AIS value.
-        /// </summary>
-        /// <param name="copyMode">The copy mode to map from.</param>
-        /// <returns>The mapped copy mode.</returns>
-        private static string MapCopyMode(object copyMode)
-        {  
-            switch (int.Parse((string)copyMode, CultureInfo.InvariantCulture))
-            {
-                case 0:
-                    return "Append";
-
-                case 2:
-                    return "Update";
-
-                default:
-                    return "Create";                    
-            }
         }
     }
 }
