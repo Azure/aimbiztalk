@@ -1416,12 +1416,15 @@ resourceTemplates:
       - azure_resource_group_name: {{ system_application_group }}
       - key_vault_name: {{ key_vault_name }}
       - key_vault_apim_subscription_secret_name: {{ key_vault_apim_subscription_secret_name }}
+      - apim_instance_name: {{ api_management_service_name }}
     outputPath: applications/{{ system_application | to_safe_file_path | downcase }}/workflows
     files:
       - env: ['dev', 'prod']
         paths:
           - intermediaries/standard/Deploy-90-SystemApplication-LogicApp.ps1.liquid
+          - intermediaries/standard/Deploy-120-SystemApplication-ClearUrlCache.ps1.liquid
           - intermediaries/standard/New-SystemApplication-LogicApp.ps1
+          - intermediaries/standard/New-SystemApplication-ClearUrlCache.ps1
           - intermediaries/standard/TearDown-90-SystemApplication-LogicApp.ps1.liquid
           - intermediaries/standard/Remove-SystemApplication-LogicApp.ps1
 
