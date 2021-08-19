@@ -702,7 +702,7 @@ resourceTemplates:
         paths:
           - messagebus/standard/messagebuseventgrid.apiconnection.prod.parameters.json.liquid
 
-  - template: messageBusApplicationAzureEventGridApiConnectionAccessPolicy
+  - template: messageBusApplicationAzureEventGridApiConnPolicy
     templateType: microsoft.template.arm
     resourceName: {{ messagebus_event_grid_api_connection_name }}
     resourceType: microsoft.web.connections
@@ -1285,7 +1285,7 @@ resourceTemplates:
           - messagebus/standard/Remove-MessageBusEventGrid-ApiConnection.ps1
           - messagebus/standard/TearDown-80-MessageBusEventGrid-ApiConnection.ps1.liquid
 
-  - template: deployMessageBusAzureEventGridApiConnectionAccessPolicyStandard
+  - template: deployMessageBusAzureEventGridApiConnPolicyStandard
     templateType: microsoft.template.powershell
     resourceName: {{ messagebus_event_grid_api_connection_name }}
     resourceType: microsoft.scripts.powershell
@@ -1298,8 +1298,8 @@ resourceTemplates:
     files:
       - env: ['dev', 'prod']
         paths:                                       
-          - messagebus/standard/Deploy-95-MessageBusEventGrid-ApiConnectionAccessPolicy.ps1.liquid
-          - messagebus/standard/New-MessageBusEventGrid-ApiConnectionAccessPolicy.ps1
+          - messagebus/standard/Deploy-95-MessageBusEventGrid-ApiConnPolicy.ps1.liquid
+          - messagebus/standard/New-MessageBusEventGrid-ApiConnPolicy.ps1
 
   - template: deployMessageBusAppConfigStoreRoleAssignmentStandard
     templateType: microsoft.template.powershell

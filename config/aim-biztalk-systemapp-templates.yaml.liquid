@@ -439,7 +439,7 @@ resourceTemplates:
   # API Connection Access Policy
   # ------------------------------------------------------------------------------
 
-  - template: systemApplicationAzureServiceBusApiConnectionAccessPolicy
+  - template: systemApplicationAzureServiceBusApiConnPolicy
     templateType: microsoft.template.arm
     resourceName: {{ service_bus_api_connection_name }}
     resourceType: microsoft.web.connections
@@ -1445,7 +1445,7 @@ resourceTemplates:
           - intermediaries/standard/Remove-SystemApplicationServiceBus-ApiConnection.ps1
           - intermediaries/standard/TearDown-80-SystemApplicationServiceBus-ApiConnection.ps1.liquid
 
-  - template: deploySystemApplicationAzureServiceBusApiConnectionAccessPolicy
+  - template: deploySystemApplicationAzureServiceBusApiConnPolicy
     templateType: microsoft.template.powershell
     resourceName: {{ service_bus_api_connection_name }}
     resourceType: microsoft.scripts.powershell
@@ -1458,8 +1458,8 @@ resourceTemplates:
     files:
       - env: ['dev', 'prod']
         paths:                                       
-          - intermediaries/standard/Deploy-95-SystemApplicationServiceBus-ApiConnectionAccessPolicy.ps1.liquid
-          - intermediaries/standard/New-SystemApplicationServiceBus-ApiConnectionAccessPolicy.ps1
+          - intermediaries/standard/Deploy-95-SystemApplicationServiceBus-ApiConnPolicy.ps1.liquid
+          - intermediaries/standard/New-SystemApplicationServiceBus-ApiConnPolicy.ps1
 
   - template: deployContentDemoterAzureLogicAppConsumption
     templateType: microsoft.template.powershell
