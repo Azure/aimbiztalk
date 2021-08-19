@@ -112,7 +112,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/activatable/processmanager.workflowdefinition.snippet.json
+        path: intermediaries/procmgr/snippets/cons/act/processmanager.workflowdefinition.snippet.json
 
   - snippet: activatableWorkflowDefinitionStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -125,7 +125,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/activatable/processmanager.workflowdefinition.snippet.json
+        path: intermediaries/procmgr/snippets/std/act/processmanager.workflowdefinition.snippet.json
 
   # ------------------------------------------------------------------------------
   # Parameter Definitions
@@ -142,7 +142,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/activatable/processmanager.parametersdefinition.snippet.json
+        path: intermediaries/procmgr/snippets/cons/act/processmanager.parametersdefinition.snippet.json
 
   - snippet: activatableWorkflowParametersDefinitionStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -155,7 +155,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/activatable/processmanager.parameters.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/act/processmanager.parameters.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Local Parameter Definitions
@@ -172,7 +172,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/activatable/processmanager.parameters.local.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/act/processmanager.parameters.local.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # App Settings Definitions
@@ -189,7 +189,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/activatable/processmanager.appsettings.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/act/processmanager.appsettings.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Local App Settings Definitions
@@ -206,7 +206,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/activatable/processmanager.appsettings.local.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/act/processmanager.appsettings.local.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Connections Definitions
@@ -223,7 +223,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/activatable/processmanager.connections.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/act/processmanager.connections.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Workflow Channels
@@ -236,7 +236,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/activatable/processmanager.channel.trigger.servicebustopic.snippet.json
+        path: intermediaries/procmgr/snippets/cons/act/processmanager.channel.trigger.servicebustopic.snippet.json
 
   - snippet: channelServiceBusTopicTriggerStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -245,7 +245,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/activatable/processmanager.channel.trigger.servicebustopic.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/act/processmanager.channel.trigger.servicebustopic.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Workflow Activity Containers
@@ -258,7 +258,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/activatable/processmanager.activitycontainer.workflow.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/cons/act/processmanager.activitycontainer.workflow.snippet.json.liquid
 
   - snippet: activityContainerWorkflowStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -267,7 +267,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/activatable/processmanager.activitycontainer.workflow.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/act/processmanager.activitycontainer.workflow.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Pre-Built Actions
@@ -280,7 +280,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/activatable/processmanager.activitycontainer.workflow.sbmsg.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/cons/act/processmanager.activitycontainer.workflow.sbmsg.snippet.json.liquid
 
   - snippet: actionDecodeServiceBusMessageStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -289,7 +289,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/activatable/processmanager.activitycontainer.workflow.sbmsg.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/act/processmanager.activitycontainer.workflow.sbmsg.snippet.json.liquid
 
     {%- endif %}
   {%- endfor %}
@@ -319,7 +319,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/invokable/processmanager.workflowdefinition.snippet.json
+        path: intermediaries/procmgr/snippets/cons/inv/processmanager.workflowdefinition.snippet.json
 
   - snippet: invokableWorkflowDefinitionStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -332,7 +332,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/invokable/processmanager.workflowdefinition.snippet.json
+        path: intermediaries/procmgr/snippets/std/inv/processmanager.workflowdefinition.snippet.json
 
   # ------------------------------------------------------------------------------
   # Parameter Definitions
@@ -349,7 +349,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/invokable/processmanager.parametersdefinition.snippet.json
+        path: intermediaries/procmgr/snippets/cons/inv/processmanager.parametersdefinition.snippet.json
 
   - snippet: invokableWorkflowParametersDefinitionStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -362,7 +362,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/invokable/processmanager.parameters.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/inv/processmanager.parameters.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Local Parameter Definitions
@@ -379,7 +379,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/invokable/processmanager.parameters.local.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/inv/processmanager.parameters.local.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # App Settings Definitions
@@ -396,7 +396,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/invokable/processmanager.appsettings.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/inv/processmanager.appsettings.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Local App Settings Definitions
@@ -413,7 +413,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/invokable/processmanager.appsettings.local.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/inv/processmanager.appsettings.local.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Connections Definitions
@@ -430,7 +430,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/invokable/processmanager.connections.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/inv/processmanager.connections.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Workflow Channels
@@ -443,7 +443,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/invokable/processmanager.channel.trigger.http.snippet.json
+        path: intermediaries/procmgr/snippets/cons/inv/processmanager.channel.trigger.http.snippet.json
 
   - snippet: channelHttpTriggerStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -452,7 +452,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/invokable/processmanager.channel.trigger.http.snippet.json
+        path: intermediaries/procmgr/snippets/std/inv/processmanager.channel.trigger.http.snippet.json
     {%- endif %}
   {%- endfor %}
 {%- endfor %}
@@ -477,7 +477,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.messagebusresourcegroup.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.parameter.messagebusresourcegroup.snippet.json
 
   - snippet: parameterSystemApplicationResourceGroupConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -486,7 +486,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.systemapplicationresourcegroup.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.parameter.systemapplicationresourcegroup.snippet.json
 
   - snippet: parameterApimServiceConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -495,7 +495,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.apimservice.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.parameter.apimservice.snippet.json
 
   - snippet: parameterApimRetryPolicyConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -504,7 +504,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.apimretrypolicy.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.parameter.apimretrypolicy.snippet.json
 
   - snippet: parameterApimSubscriptionKeyConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -513,7 +513,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.apimsubscriptionkey.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.parameter.apimsubscriptionkey.snippet.json
 
   - snippet: parameterMessageSuspendProcessorLogicAppConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -522,7 +522,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.messagesuspendprocessorlogicapp.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.parameter.messagesuspendprocessorlogicapp.snippet.json
 
   - snippet: parameterSuspendQueueTopicConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -531,7 +531,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.suspendqueuetopic.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.parameter.suspendqueuetopic.snippet.json
 
   - snippet: parameterRoutingSlipRouterLogicAppConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -540,7 +540,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.routingsliprouterlogicapp.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.parameter.routingsliprouterlogicapp.snippet.json
 
   - snippet: parameterRoutingSlipRouterRetryPolicyConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -549,7 +549,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.routingsliprouterretrypolicy.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.parameter.routingsliprouterretrypolicy.snippet.json
 
   - snippet: parameterIntegrationAccountConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -558,7 +558,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.integrationaccount.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.parameter.integrationaccount.snippet.json
 
   - snippet: parameterServiceBusTopicPublishApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -567,7 +567,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.sbtopicpublishapiconnection.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.parameter.sbtopicpublishapiconnection.snippet.json
 
   - snippet: parameterServiceBusTopicSubscribeApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -576,7 +576,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.sbtopicsubscribeapiconnection.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.parameter.sbtopicsubscribeapiconnection.snippet.json
 
   - snippet: parameterServiceBusTopicConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -585,7 +585,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.servicebustopic.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.parameter.servicebustopic.snippet.json
 
   - snippet: parameterServiceBusTopicSubscriptionConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -594,7 +594,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.servicebustopicsubscription.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.parameter.servicebustopicsubscription.snippet.json
 
   - snippet: parameterServiceBusRecurrenceFrequencyConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -603,7 +603,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.servicebusrecurrencefrequency.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.parameter.servicebusrecurrencefrequency.snippet.json
 
   - snippet: parameterServiceBusRecurrenceIntervalConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -612,7 +612,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.servicebusrecurrenceinterval.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.parameter.servicebusrecurrenceinterval.snippet.json.liquid
 
   - snippet: parameterScenarioConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -621,7 +621,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.scenario.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.parameter.scenario.snippet.json
 
   - snippet: parameterScenarioStepConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -630,7 +630,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.scenariostep.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.parameter.scenariostep.snippet.json
 
   - snippet: parameterTagsConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -639,7 +639,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.parameter.tags.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.parameter.tags.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Workflow Parameters - Standard
@@ -652,7 +652,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.parameter.servicebustopic.snippet.json
+        path: intermediaries/procmgr/snippets/std/com/processmanager.parameter.servicebustopic.snippet.json
 
   - snippet: parameterServiceBusTopicSubscriptionStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -661,7 +661,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.parameter.servicebustopicsubscription.snippet.json
+        path: intermediaries/procmgr/snippets/std/com/processmanager.parameter.servicebustopicsubscription.snippet.json
 
   - snippet: parameterScenarioStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -670,7 +670,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.parameter.scenario.snippet.json
+        path: intermediaries/procmgr/snippets/std/com/processmanager.parameter.scenario.snippet.json
 
   - snippet: parameterScenarioStepStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -679,7 +679,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/workflows/application.logic.workflows/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.parameter.scenariostep.snippet.json
+        path: intermediaries/procmgr/snippets/std/com/processmanager.parameter.scenariostep.snippet.json
 
   # ------------------------------------------------------------------------------
   # Workflow Properties - Consumption
@@ -692,7 +692,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.property.tags.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.property.tags.snippet.json
 
   - snippet: propertyIntegrationAccountConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -701,7 +701,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.property.integrationaccount.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.property.integrationaccount.snippet.json
 
   # ------------------------------------------------------------------------------
   # Workflow Channels - Consumption
@@ -714,7 +714,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.channel.send.servicebustopic.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.channel.send.servicebustopic.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Workflow Channels - Standard
@@ -727,7 +727,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.channel.send.servicebustopic.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/com/processmanager.channel.send.servicebustopic.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Workflow ARM Template Variables - Consumption
@@ -740,7 +740,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.variable.apimservice.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.variable.apimservice.snippet.json
 
   - snippet: variableConfigurationManagerConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -749,7 +749,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.variable.configurationmanager.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.variable.configurationmanager.snippet.json
 
   - snippet: variableIntegrationAccountConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -758,7 +758,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.variable.integrationaccount.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.variable.integrationaccount.snippet.json
 
   - snippet: variableServiceBusPublishApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -767,7 +767,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.variable.sbtopicpublishapiconnection.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.variable.sbtopicpublishapiconnection.snippet.json
 
   - snippet: variableServiceBusSubscribeApiConnectionConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -776,7 +776,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.variable.sbtopicsubscribeapiconnection.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.variable.sbtopicsubscribeapiconnection.snippet.json
 
   - snippet: variableMessagingManagerConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -785,7 +785,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.variable.messagingmanager.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.variable.messagingmanager.snippet.json
 
   - snippet: variableRoutingManagerConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -794,7 +794,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.variable.routingmanager.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.variable.routingmanager.snippet.json
 
   - snippet: variableRoutingSlipRouterLogicAppConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -803,7 +803,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.variable.routingsliprouterlogicapp.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.variable.routingsliprouterlogicapp.snippet.json
 
   - snippet: variableMessageSuspendProcessorLogicAppConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -812,7 +812,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.variable.messagesuspendprocessorlogicapp.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.variable.messagesuspendprocessorlogicapp.snippet.json
 
   # ------------------------------------------------------------------------------
   # Workflow Variables - Consumption
@@ -825,7 +825,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.variable.initialize.configuration.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.variable.initialize.configuration.snippet.json
 
   - snippet: variableInitializeErrorMessageConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -834,7 +834,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.variable.initialize.errormessage.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.variable.initialize.errormessage.snippet.json
 
   - snippet: variableInitializeFaultMessageConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -843,7 +843,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.variable.initialize.faultmessage.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.variable.initialize.faultmessage.snippet.json
 
   - snippet: variableInitializeMessageTypeConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -852,7 +852,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.variable.initialize.messagetype.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.variable.initialize.messagetype.snippet.json
 
   - snippet: variableInitializeStatusCodeConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -861,7 +861,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.variable.initialize.statuscode.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.variable.initialize.statuscode.snippet.json
 
   - snippet: variablePlaceHolderConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -870,7 +870,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.variable.placeholder.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.variable.placeholder.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Workflow Variables - Standard
@@ -883,7 +883,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.variable.initialize.configuration.snippet.json
+        path: intermediaries/procmgr/snippets/std/com/processmanager.variable.initialize.configuration.snippet.json
 
   - snippet: variableInitializeErrorMessageStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -892,7 +892,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.variable.initialize.errormessage.snippet.json
+        path: intermediaries/procmgr/snippets/std/com/processmanager.variable.initialize.errormessage.snippet.json
 
   - snippet: variableInitializeFaultMessageStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -901,7 +901,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.variable.initialize.faultmessage.snippet.json
+        path: intermediaries/procmgr/snippets/std/com/processmanager.variable.initialize.faultmessage.snippet.json
 
   - snippet: variableInitializeMessageTypeStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -910,7 +910,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.variable.initialize.messagetype.snippet.json
+        path: intermediaries/procmgr/snippets/std/com/processmanager.variable.initialize.messagetype.snippet.json
 
   - snippet: variableInitializeStatusCodeStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -919,7 +919,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.variable.initialize.statuscode.snippet.json
+        path: intermediaries/procmgr/snippets/std/com/processmanager.variable.initialize.statuscode.snippet.json
 
   - snippet: variablePlaceHolderStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -928,7 +928,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.variable.placeholder.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/com/processmanager.variable.placeholder.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Workflow Messages - Consumption
@@ -941,7 +941,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.message.placeholder.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.message.placeholder.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Workflow Messages - Standard
@@ -954,7 +954,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.message.placeholder.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/com/processmanager.message.placeholder.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Workflow Activity Containers - Consumption
@@ -967,7 +967,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.activitycontainer.task.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.activitycontainer.task.snippet.json.liquid
 
   - snippet: activityContainerDecisionConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -976,7 +976,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.activitycontainer.decision.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.activitycontainer.decision.snippet.json.liquid
 
   - snippet: activityContainerDecisionBranchConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -985,7 +985,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.activitycontainer.decisionbranch.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.activitycontainer.decisionbranch.snippet.json.liquid
 
   - snippet: activityContainerPlaceHolderConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -994,7 +994,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.activitycontainer.placeholder.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.activitycontainer.placeholder.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Workflow Activity Containers - Standard
@@ -1007,7 +1007,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.activitycontainer.task.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/com/processmanager.activitycontainer.task.snippet.json.liquid
 
   - snippet: activityContainerDecisionStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -1016,7 +1016,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.activitycontainer.decision.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/com/processmanager.activitycontainer.decision.snippet.json.liquid
 
   - snippet: activityContainerDecisionBranchStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -1025,7 +1025,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.activitycontainer.decisionbranch.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/com/processmanager.activitycontainer.decisionbranch.snippet.json.liquid
 
   - snippet: activityContainerPlaceHolderStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -1034,7 +1034,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.activitycontainer.placeholder.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/com/processmanager.activitycontainer.placeholder.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Workflow Activities - Consumption
@@ -1047,7 +1047,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.activity.placeholder.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.activity.placeholder.snippet.json.liquid
 
   - snippet: activityCodeExpressionConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -1056,7 +1056,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.activity.codeexpression.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.activity.codeexpression.snippet.json.liquid
 
   - snippet: activityMessageTransformConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -1065,7 +1065,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.activity.messagetransform.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.activity.messagetransform.snippet.json.liquid
 
   - snippet: activityMessageConstructionConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -1074,7 +1074,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.activity.messageconstruction.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.activity.messageconstruction.snippet.json.liquid
 
   - snippet: activityInvokeWorkflowConsumption{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -1083,7 +1083,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.activity.invokeworkflow.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.activity.invokeworkflow.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Workflow Activities - Standard
@@ -1096,7 +1096,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.activity.placeholder.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/com/processmanager.activity.placeholder.snippet.json.liquid
 
   - snippet: activityCodeExpressionStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -1105,7 +1105,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.activity.codeexpression.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/com/processmanager.activity.codeexpression.snippet.json.liquid
 
   - snippet: activityMessageTransformStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -1114,7 +1114,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.activity.messagetransform.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/com/processmanager.activity.messagetransform.snippet.json.liquid
 
   - snippet: activityMessageConstructionStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -1123,7 +1123,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.activity.messageconstruction.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/com/processmanager.activity.messageconstruction.snippet.json.liquid
 
   - snippet: activityInvokeWorkflowStandard{{ app_name }}{{ intermediary_name }}
     snippetType: microsoft.snippet.json
@@ -1132,7 +1132,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.activity.invokeworkflow.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/com/processmanager.activity.invokeworkflow.snippet.json.liquid
 
   # ------------------------------------------------------------------------------
   # Pre-Built Actions - Consumption
@@ -1145,7 +1145,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/consumption/common/processmanager.activitycontainer.workflow.getconfig.snippet.json
+        path: intermediaries/procmgr/snippets/cons/com/processmanager.activitycontainer.workflow.getconfig.snippet.json
 
   # ------------------------------------------------------------------------------
   # Pre-Built Actions - Standard
@@ -1158,7 +1158,7 @@ resourceSnippets:
     outputPath: applications/{{ app_name | to_safe_file_path | downcase }}/intermediaries/{{ intermediary_name | to_safe_file_path | downcase }}/snippets
     files:
       - env: ['dev', 'prod']
-        path: intermediaries/processmanager/snippets/standard/common/processmanager.activitycontainer.workflow.getconfig.snippet.json.liquid
+        path: intermediaries/procmgr/snippets/std/com/processmanager.activitycontainer.workflow.getconfig.snippet.json.liquid
     {%- endif %}
   {%- endfor %}
 {%- endfor %}
