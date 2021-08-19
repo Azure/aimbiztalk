@@ -2632,13 +2632,13 @@ resourceTemplates:
     files:
       - env: ['dev', 'prod']
         paths:
-          - intermediaries/processmanager/processmanagerservicebus.apiconnection.json.liquid
+          - intermediaries/procmgr/processmanagerservicebus.apiconnection.json.liquid
       - env: ['dev']
         paths:
-          - intermediaries/processmanager/processmanagerservicebus.apiconnection.dev.parameters.json.liquid
+          - intermediaries/procmgr/processmanagerservicebus.apiconnection.dev.parameters.json.liquid
       - env: ['prod']
         paths:
-          - intermediaries/processmanager/processmanagerservicebus.apiconnection.prod.parameters.json.liquid
+          - intermediaries/procmgr/processmanagerservicebus.apiconnection.prod.parameters.json.liquid
     {%- endif %}
   {%- endfor %}
 {%- endfor %}
@@ -2762,13 +2762,13 @@ resourceTemplates:
     files:
       - env: ['dev', 'prod']
         paths:
-          - intermediaries/processmanager/processmanagerservicebus.apiconnection.json.liquid
+          - intermediaries/procmgr/processmanagerservicebus.apiconnection.json.liquid
       - env: ['dev']
         paths:
-          - intermediaries/processmanager/processmanagerservicebus.apiconnection.dev.parameters.json.liquid
+          - intermediaries/procmgr/processmanagerservicebus.apiconnection.dev.parameters.json.liquid
       - env: ['prod']
         paths:
-          - intermediaries/processmanager/processmanagerservicebus.apiconnection.prod.parameters.json.liquid
+          - intermediaries/procmgr/processmanagerservicebus.apiconnection.prod.parameters.json.liquid
     {%- endif %}
   {%- endfor %}
 {%- endfor %}
@@ -3887,10 +3887,10 @@ resourceTemplates:
     files:
       - env: ['dev', 'prod']
         paths:
-          - intermediaries/processmanager/Deploy-100-ProcessManagerServiceBus-ApiConnection.ps1.liquid
-          - intermediaries/processmanager/New-ProcessManagerServiceBus-ApiConnection.ps1
-          - intermediaries/processmanager/Remove-ProcessManagerServiceBus-ApiConnection.ps1
-          - intermediaries/processmanager/TearDown-100-ProcessManagerServiceBus-ApiConnection.ps1.liquid
+          - intermediaries/procmgr/Deploy-100-ProcessManagerServiceBus-ApiConnection.ps1.liquid
+          - intermediaries/procmgr/New-ProcessManagerServiceBus-ApiConnection.ps1
+          - intermediaries/procmgr/Remove-ProcessManagerServiceBus-ApiConnection.ps1
+          - intermediaries/procmgr/TearDown-100-ProcessManagerServiceBus-ApiConnection.ps1.liquid
     {%- endif %}
   {%- endfor %}
 {%- endfor %}
@@ -3915,10 +3915,10 @@ resourceTemplates:
     files:
       - env: ['dev', 'prod']
         paths:
-          - intermediaries/processmanager/Deploy-105-ProcessManager-LogicApp.ps1.liquid
-          - intermediaries/processmanager/New-ProcessManager-LogicApp.ps1
-          - intermediaries/processmanager/Remove-ProcessManager-LogicApp.ps1
-          - intermediaries/processmanager/TearDown-105-ProcessManager-LogicApp.ps1.liquid
+          - intermediaries/procmgr/Deploy-105-ProcessManager-LogicApp.ps1.liquid
+          - intermediaries/procmgr/New-ProcessManager-LogicApp.ps1
+          - intermediaries/procmgr/Remove-ProcessManager-LogicApp.ps1
+          - intermediaries/procmgr/TearDown-105-ProcessManager-LogicApp.ps1.liquid
     {%- endif %}
   {%- endfor %}
 {%- endfor %}
