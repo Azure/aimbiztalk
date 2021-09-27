@@ -142,7 +142,7 @@ jobs:
         shell: bash
         run: |         
           cp ./LICENSE ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/LICENSE.txt
-          cp ./VERIFICATION ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt"
+          cp ./VERIFICATION ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
           echo " - ${{ env.ANALYZE_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt"
           echo " - ${{ env.CONVERT_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt"
           echo " - ${{ env.DISCOVER_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt"
