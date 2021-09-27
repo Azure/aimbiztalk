@@ -120,19 +120,19 @@ jobs:
         if: github.event_name == 'release' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
         shell: bash
         run: |
-          packageUrl=$( gpr details "Azure" ${{ env.ANALYZE_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | jq '.packageContent' )
+          packageUrl=$( gpr details "Azure" ${{ env.ANALYZE_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | cat | jq '.packageContent' )
           echo "ANALYZE_PACKAGE_URL=$packageUrl" >> "$GITHUB_ENV"
-          packageUrl=$( gpr details "Azure" ${{ env.CONVERT_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | jq '.packageContent' )
+          packageUrl=$( gpr details "Azure" ${{ env.CONVERT_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | cat | jq '.packageContent' )
           echo "CONVERT_PACKAGE_URL=$packageUrl" >> "$GITHUB_ENV"
-          packageUrl=$( gpr details "Azure" ${{ env.DISCOVER_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | jq '.packageContent' )
+          packageUrl=$( gpr details "Azure" ${{ env.DISCOVER_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | cat | jq '.packageContent' )
           echo "DISCOVER_PACKAGE_URL=$packageUrl" >> "$GITHUB_ENV"
-          packageUrl=$( gpr details "Azure" ${{ env.PARSE_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | jq '.packageContent' )
+          packageUrl=$( gpr details "Azure" ${{ env.PARSE_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | cat | jq '.packageContent' )
           echo "PARSE_PACKAGE_URL=$packageUrl" >> "$GITHUB_ENV"
-          packageUrl=$( gpr details "Azure" ${{ env.REPORT_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | jq '.packageContent' )
+          packageUrl=$( gpr details "Azure" ${{ env.REPORT_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | cat | jq '.packageContent' )
           echo "REPORT_PACKAGE_URL=$packageUrl" >> "$GITHUB_ENV"
-          packageUrl=$( gpr details "Azure" ${{ env.PLUGIN_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | jq '.packageContent' )
+          packageUrl=$( gpr details "Azure" ${{ env.PLUGIN_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | cat | jq '.packageContent' )
           echo "PLUGIN_PACKAGE_URL=$packageUrl" >> "$GITHUB_ENV"
-          packageUrl=$( gpr details "Azure" ${{ env.TYPES_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | jq '.packageContent' )
+          packageUrl=$( gpr details "Azure" ${{ env.TYPES_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | cat | jq '.packageContent' )
           echo "TYPES_PACKAGE_URL=$packageUrl" >> "$GITHUB_ENV"
 
       - name: Publish the plugin library and dependency files for Chocolatey
