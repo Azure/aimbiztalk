@@ -4,8 +4,9 @@
     <id>biztalkmigrator-biztalk</id>
     <!-- Note This version will be overriden by the command line. -->
     <version>0.0.1-beta</version>
-    <packageSourceUrl>https://github.com/azure/aimbiztalk</packageSourceUrl>
+    <packageSourceUrl>https://github.com/Azure/aimbiztalk/blob/main/build/chocolatey/biztalkmigrator-biztalk/biztalkmigrator-biztalk.nuspec</packageSourceUrl>
     <title>BizTalk Migrator Dependency - BizTalk Rules</title>
+    <owners>probertdaniel,345paul</owners>
     <authors>Microsoft</authors>
     <projectUrl>https://github.com/azure/aimbiztalk</projectUrl>
     <projectSourceUrl>https://github.com/azure/aimbiztalk</projectSourceUrl>

@@ -1,0 +1,21 @@
+VERIFICATION
+Verification is intended to assist Chocolatey moderators and the Chocolatey community
+in verifying that this package's contents are trustworthy.
+
+This package contains a number of assemblies (DLL) files, along with scripts and templates.
+This file lists their SHA256 checksums, as well as supplying a link to the nupkg that contains the original files, so that you can verify those files.
+
+In order to verify the files:
+ - Download the appropriate .nupkg
+ - Extract the files
+    - Use nuget CLI (https://docs.microsoft.com/en-us/nuget/reference/nuget-exe-cli-reference)
+    - OR use a ZIP tool
+ - Obtain the checksum for the file, and compare to the value listed in here
+
+You can use one of the following methods to obtain the checksum
+  - Use powershell function 'Get-Filehash'
+  - Use chocolatey utility 'checksum.exe'
+
+File 'LICENSE.txt' is obtained from <https://github.com/Azure/aimbiztalk/blob/main/LICENSE>
+
+The nupkg sources are:

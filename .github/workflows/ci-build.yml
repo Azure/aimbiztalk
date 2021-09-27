@@ -34,9 +34,16 @@ env:
   PARSE_PROJECT_FILE: 'src/Microsoft.AzureIntegrationMigration.BizTalk.Parse/Microsoft.AzureIntegrationMigration.BizTalk.Parse.csproj'
   REPORT_PROJECT_FILE: 'src/Microsoft.AzureIntegrationMigration.BizTalk.Report/Microsoft.AzureIntegrationMigration.BizTalk.Report.csproj'
   PLUGIN_PROJECT_FILE: 'src/Microsoft.AzureIntegrationMigration.BizTalk.StageRunners/Microsoft.AzureIntegrationMigration.BizTalk.StageRunners.csproj'
+  TYPES_PROJECT_FILE: 'src/Microsoft.AzureIntegrationMigration.BizTalk.Types/Microsoft.AzureIntegrationMigration.BizTalk.Types.csproj'
+  ANALYZE_PACKAGE_NAME: 'Microsoft.AzureIntegrationMigration.BizTalk.Analyze'
+  CONVERT_PACKAGE_NAME: 'Microsoft.AzureIntegrationMigration.BizTalk.Convert'
+  DISCOVER_PACKAGE_NAME: 'Microsoft.AzureIntegrationMigration.BizTalk.Discover'
+  PARSE_PACKAGE_NAME: 'Microsoft.AzureIntegrationMigration.BizTalk.Parse'
+  REPORT_PACKAGE_NAME: 'Microsoft.AzureIntegrationMigration.BizTalk.Report'
+  PLUGIN_PACKAGE_NAME: 'Microsoft.AzureIntegrationMigration.BizTalk.StageRunners'
+  TYPES_PACKAGE_NAME: 'Microsoft.AzureIntegrationMigration.BizTalk.Types'
   SCRIPT_MAX_RETRIES: 4
   SCRIPT_RETRY_SLEEP_IN_SECONDS: 10
-  TYPES_PROJECT_FILE: 'src/Microsoft.AzureIntegrationMigration.BizTalk.Types/Microsoft.AzureIntegrationMigration.BizTalk.Types.csproj'
   VERSION_NUMBER_SEM1: 'NOT SET'
   VERSION_NUMBER_SEM2: 'NOT SET'
   VERSION_NUMBER_SUFFIX_SEM1: ''
@@ -102,12 +109,31 @@ jobs:
           dotnet pack ${{ env.PLUGIN_PROJECT_FILE }} --configuration ${{ env.BUILD_TYPE }} -o ${{ env.OUTPUT_DIR }} -p:Version=${{ env.VERSION_NUMBER_SEM2 }} --no-build
           dotnet pack ${{ env.TYPES_PROJECT_FILE }} --configuration ${{ env.BUILD_TYPE }} -o ${{ env.OUTPUT_DIR }} -p:Version=${{ env.VERSION_NUMBER_SEM2 }} --no-build
 
-      # Publish the packge to GitHub package repository using the GPR tool as this is more stable than dotnet nuget push.
+      # Publish the package to GitHub package repository using the GPR tool (as this is currently more stable than dotnet nuget push).
       - name: Publish the package to GitHub package repository
         if: github.event_name == 'release' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
         run: |
           dotnet tool update gpr -g
           gpr push .\${{ env.OUTPUT_DIR }}\*.nupkg --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }}
+
+      - name: Get the nupkg URLs for each package
+        if: github.event_name == 'release' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+        shell: bash
+        run: |
+          packageUrl=$( gpr details "Azure" ${{ env.ANALYZE_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | jq '.packageContent' )
+          echo "ANALYZE_PACKAGE_URL=$packageUrl" >> "$GITHUB_ENV"
+          packageUrl=$( gpr details "Azure" ${{ env.CONVERT_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | jq '.packageContent' )
+          echo "CONVERT_PACKAGE_URL=$packageUrl" >> "$GITHUB_ENV"
+          packageUrl=$( gpr details "Azure" ${{ env.DISCOVER_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | jq '.packageContent' )
+          echo "DISCOVER_PACKAGE_URL=$packageUrl" >> "$GITHUB_ENV"
+          packageUrl=$( gpr details "Azure" ${{ env.PARSE_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | jq '.packageContent' )
+          echo "PARSE_PACKAGE_URL=$packageUrl" >> "$GITHUB_ENV"
+          packageUrl=$( gpr details "Azure" ${{ env.REPORT_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | jq '.packageContent' )
+          echo "REPORT_PACKAGE_URL=$packageUrl" >> "$GITHUB_ENV"
+          packageUrl=$( gpr details "Azure" ${{ env.PLUGIN_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | jq '.packageContent' )
+          echo "PLUGIN_PACKAGE_URL=$packageUrl" >> "$GITHUB_ENV"
+          packageUrl=$( gpr details "Azure" ${{ env.TYPES_PACKAGE_NAME }} ${{ env.VERSION_NUMBER_SEM2 }} --api-key ${{ secrets.NUGET_PACKAGE_REPO_API_SECRET }} | jq '.packageContent' )
+          echo "TYPES_PACKAGE_URL=$packageUrl" >> "$GITHUB_ENV"
 
       - name: Publish the plugin library and dependency files for Chocolatey
         run: dotnet publish ${{ env.PLUGIN_PROJECT_FILE }} -r win-x64 -o ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }} --configuration ${{ env.BUILD_TYPE }} -p:Version=${{ env.VERSION_NUMBER_SEM2 }} -p:TargetFramework=net5.0 --self-contained true
@@ -116,13 +142,22 @@ jobs:
         shell: bash
         run: |         
           cp ./LICENSE ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/LICENSE.txt
-          verificationFile=./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
-          touch $verificationFile
+          cp ./VERIFICATION ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
+          echo " - ${{ env.ANALYZE_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
+          echo " - ${{ env.CONVERT_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
+          echo " - ${{ env.DISCOVER_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
+          echo " - ${{ env.PARSE_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
+          echo " - ${{ env.REPORT_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
+          echo " - ${{ env.PLUGIN_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
+          echo " - ${{ env.TYPES_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
+          echo " " >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
+          echo "Checksums for the files in the package are:" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
           find ${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }} -type f  | 
           while read f
           do
-            filename="$basename -- $f"
-            echo $filename >> $verificationFile
+            filename="$(basename $f) [$f]"
+            filehash=$(sha256sum $f | awk '{print $1}')
+            echo "$filename -- $filehash" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
           done
 
       - name: Create the Chocolatey package output directory
