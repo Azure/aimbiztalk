@@ -143,21 +143,21 @@ jobs:
         run: |         
           cp ./LICENSE ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/LICENSE.txt
           cp ./VERIFICATION ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
-          echo " - ${{ env.ANALYZE_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt"
-          echo " - ${{ env.CONVERT_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt"
-          echo " - ${{ env.DISCOVER_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt"
-          echo " - ${{ env.PARSE_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt"
-          echo " - ${{ env.REPORT_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt"
-          echo " - ${{ env.PLUGIN_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt"
-          echo " - ${{ env.TYPES_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt"
-          echo " " >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt"
-          echo "Checksums for the files in the package are:" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt"
+          echo " - ${{ env.ANALYZE_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
+          echo " - ${{ env.CONVERT_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
+          echo " - ${{ env.DISCOVER_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
+          echo " - ${{ env.PARSE_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
+          echo " - ${{ env.REPORT_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
+          echo " - ${{ env.PLUGIN_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
+          echo " - ${{ env.TYPES_PACKAGE_URL }}" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
+          echo " " >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
+          echo "Checksums for the files in the package are:" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
           find ${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }} -type f  | 
           while read f
           do
             filename="$(basename $f) [$f]"
             filehash=$(sha256sum $f | awk '{print $1}')
-            echo "$filename -- $filehash" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt"
+            echo "$filename -- $filehash" >> ./${{ env.OUTPUT_DIR }}/${{ env.CHOCO_SRC_DIR }}/VERIFICATION.txt
           done
 
       - name: Create the Chocolatey package output directory
